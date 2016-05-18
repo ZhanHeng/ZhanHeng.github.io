@@ -205,7 +205,7 @@ public class SegmentTree{ public static void main(String args &hellip;">
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2016/05/14/HelloWorld/">Hello World</a></h1>
+      <h1 class="entry-title"><a href="/blog/2016/05/14/HelloWorld/">字符串加密</a></h1>
     
     
       <p class="meta">
@@ -221,9 +221,96 @@ public class SegmentTree{ public static void main(String args &hellip;">
   </header>
 
 
-  <div class="entry-content"><h1>你好</h1>
+  <div class="entry-content"><h4>选择一个单词作为密钥，然后输入明文。输出密文</h4>
 
-<h2>这是Octopress起步</h2>
+<p>举例：
+选择一个单词作为密匙：TRAILBLAZERS<br/>
+明文Attack AT DAWN(黎明时攻击)</p>
+
+<p>如果单词中包含有重复的字母，只保留第1个，其余几个丢弃。现在，修改过的那个单词置于字母表的下面，如下所示：</p>
+
+<p>A B C D E F G H I J K L M N O P Q R S T U V W X Y Z</p>
+
+<p>T R A I L B Z E S C D F G H J K M N O P Q U V W X Y</p>
+
+<p>其他的用字母表中剩余的字母填充完整。在对信息进行加密时，信息中的每个字母被固定于顶上那行，并用下面那行的对应字母一一取代原文的字母(字母字符的大小写状态应该保留)。</p>
+
+<p>所以最后的密文是 <strong>Tpptad TP ITVH</strong></p>
+
+<figure class='code'><figcaption><span>字符串加密 </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public static String encrypt(String key, String data ){
+</span><span class='line'>       List&lt;Character> list = new ArrayList&lt;Character>();
+</span><span class='line'>       String p = "abcdefghijklmnopqrstuvwxyz";
+</span><span class='line'>       String res = "";
+</span><span class='line'>      // 去重
+</span><span class='line'>       for(int i = 0 ; i&lt;key.length() ;i++){
+</span><span class='line'>           if(!list.contains(key.charAt(i))){
+</span><span class='line'>               list.add(key.charAt(i));
+</span><span class='line'>               res+=key.charAt(i);
+</span><span class='line'>           }
+</span><span class='line'>       } 
+</span><span class='line'>      // 拼接
+</span><span class='line'>       StringBuilder sb = new StringBuilder();
+</span><span class='line'>       sb.append(res);
+</span><span class='line'>       for (int i = 0; i &lt; p.length(); i++) {
+</span><span class='line'>         if (!sb.toString().contains(p.substring(i, i+1).toLowerCase())
+</span><span class='line'>             &&!sb.toString().contains(p.substring(i, i+1).toUpperCase())) {
+</span><span class='line'>             sb.append(p.charAt(i));
+</span><span class='line'>         }
+</span><span class='line'>       }
+</span><span class='line'>       String result = "";
+</span><span class='line'>       String str = data.toLowerCase();
+</span><span class='line'>       String temp= sb.toString();
+</span><span class='line'>     //处理输出
+</span><span class='line'>       for (int i = 0; i &lt; str.length(); i++) {
+</span><span class='line'>        int index= p.indexOf(str.substring(i, i+1));//找到字符出现的位置
+</span><span class='line'>        if (Character.isLowerCase(data.charAt(i))) {// 小写字母
+</span><span class='line'>            result+= Character.toLowerCase(temp.charAt(index)) ;
+</span><span class='line'>        }else if(Character.isUpperCase(data.charAt(i))){// 大写字母
+</span><span class='line'>            result+= Character.toUpperCase(temp.charAt(index)) ;
+</span><span class='line'>        }else // 处理非字母的
+</span><span class='line'>            result+=data.charAt(i);
+</span><span class='line'>       }
+</span><span class='line'>       return result;
+</span><span class='line'>    }</span></code></pre></td></tr></table></div></figure>
+
+
+
 </div>
   
   
@@ -248,7 +335,7 @@ public class SegmentTree{ public static void main(String args &hellip;">
       </li>
     
       <li class="post">
-        <a href="/blog/2016/05/14/HelloWorld/">Hello World</a>
+        <a href="/blog/2016/05/14/HelloWorld/">字符串加密</a>
       </li>
     
   </ul>
