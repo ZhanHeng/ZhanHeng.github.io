@@ -4,7 +4,7 @@
   <title><![CDATA[Blog Like a Hacker]]></title>
   <link href="http://zhanheng.github.io/atom.xml" rel="self"/>
   <link href="http://zhanheng.github.io/"/>
-  <updated>2016-05-18T11:26:47+08:00</updated>
+  <updated>2016-05-18T23:36:41+08:00</updated>
   <id>http://zhanheng.github.io/</id>
   <author>
     <name><![CDATA[ZhanHeng]]></name>
@@ -115,6 +115,217 @@
 </span><span class='line'>        sort(a, i + 1, right);/*用同样的方式对分出来的右边的小组进行同上的做法*/
 </span><span class='line'>    }</span></code></pre></td></tr></table></div></figure>
 
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[防止XSS攻击]]></title>
+    <link href="http://zhanheng.github.io/blog/2016/05/14/XssSQLSecurity/"/>
+    <updated>2016-05-14T23:10:30+08:00</updated>
+    <id>http://zhanheng.github.io/blog/2016/05/14/XssSQLSecurity</id>
+    <content type="html"><![CDATA[<p>在开发项目的过程中，网站的安全问题不能被忽视，其中Xss跨脚本攻击很常见。下面就XSS攻击做一下基本介绍，同时给出了我自己的解决办法。</p>
+
+<h5>XSS又称CSS，全称Cross Site Script，跨站脚本攻击，是Web程序中常见的漏洞，XSS属于被动式且用于客户端的攻击方式，所以容易被忽略其危害性。其原理是攻击者向有XSS漏洞的网站中输入(传入)恶意的HTML代码，当其它用户浏览该网站时，这段HTML代码会自动执行，从而达到攻击的目的。如，盗取用户Cookie、破坏页面结构、重定向到其它网站等。</h5>
+
+<p>举个简单的例子：页面名字叫test.jsp：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;html&gt;
+</span><span class='line'>&lt;head&gt;
+</span><span class='line'>&lt;title&gt;XSS测试&lt;/title&gt;
+</span><span class='line'>&lt;/head&gt;
+</span><span class='line'>&lt;body&gt;
+</span><span class='line'>页面内容：&lt;%=request.getParameter("content")%&gt;
+</span><span class='line'>&lt;/body&gt;
+</span><span class='line'>&lt;/html&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>请求下面链接就会出现问题了：
+<code>http://www.domain.com/test.jsp?content=&lt;script&gt;alert(' XSS注入' ); &lt;/script&gt;</code>
+为了防止在请求链接中插入恶意的代码，我采用了以下方法：
+首先自定义一个Filter 取名XssFilter, 在Web.xml中配置如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> &lt;filter&gt;
+</span><span class='line'>  &lt;filter-name&gt;XssFilter&lt;/filter-name&gt;
+</span><span class='line'>  &lt;filter-class&gt;test.XssFilter&lt;/filter-class&gt;
+</span><span class='line'>&lt;/filter&gt;
+</span><span class='line'>&lt;filter-mapping&gt;
+</span><span class='line'>  &lt;filter-name&gt;XssFilter&lt;/filter-name&gt;
+</span><span class='line'>  &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+</span><span class='line'>&lt;/filter-mapping&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第二步，自定义一个类继承HttpServletRequestWrapper类，并重写父类的方法。
+其中包括getParameter() ， getHeader() ,getParameterValues()
+其中最重要的是自定义一个过滤特殊字符的方法。</p>
+
+<p>具体实现代码如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import javax.servlet.http.HttpServletRequest;
+</span><span class='line'>import javax.servlet.http.HttpServletRequestWrapper;
+</span><span class='line'>
+</span><span class='line'>public class XssHttpServletRequestWapper extends HttpServletRequestWrapper {
+</span><span class='line'>
+</span><span class='line'>  public XssHttpServletRequestWapper(HttpServletRequest request) {
+</span><span class='line'>      super(request);
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  @Override
+</span><span class='line'>  public String getParameter(String name) {
+</span><span class='line'>      return clearXss(super.getParameter(name));
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  @Override
+</span><span class='line'>  public String getHeader(String name) {
+</span><span class='line'>      return clearXss(super.getHeader(name));
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  @Override
+</span><span class='line'>  public String[] getParameterValues(String name) {
+</span><span class='line'>      String[] values = super.getParameterValues(name);
+</span><span class='line'>      String[] newValues = new String[values.length];
+</span><span class='line'>      for (int i = 0; i &lt; values.length; i++) {
+</span><span class='line'>          newValues[i] = clearXss(values[i]);
+</span><span class='line'>      }
+</span><span class='line'>      return newValues;
+</span><span class='line'>  }
+</span><span class='line'>  /**
+</span><span class='line'>   *  处理 字符转义 
+</span><span class='line'>   *  &gt; &lt; ( ) '  javascript: 
+</span><span class='line'>   */
+</span><span class='line'>  private String clearXss(String value){
+</span><span class='line'>      if (value==null || "".equals(value)) {
+</span><span class='line'>          return value;
+</span><span class='line'>      }
+</span><span class='line'>      value = value.replaceAll("&lt;", "&lt").replaceAll("&gt;", "&gt");
+</span><span class='line'>      value = value.replaceAll("(", "&#40").replaceAll("\\)", "&#41");
+</span><span class='line'>      value = value.replaceAll("'", "&#39");
+</span><span class='line'>      value = value.replaceAll("eval\\((.*)\\)", "");
+</span><span class='line'>      value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
+</span><span class='line'>      value = value.replaceAll("script", "");
+</span><span class='line'>      return value;
+</span><span class='line'>  }
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最后一步，在自定义的Filter中引用上述方法，执行过滤操作。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import java.io.IOException;
+</span><span class='line'>import javax.servlet.Filter;
+</span><span class='line'>import javax.servlet.FilterChain;
+</span><span class='line'>import javax.servlet.FilterConfig;
+</span><span class='line'>import javax.servlet.ServletException;
+</span><span class='line'>import javax.servlet.ServletRequest;
+</span><span class='line'>import javax.servlet.ServletResponse;
+</span><span class='line'>import javax.servlet.http.HttpServletRequest;
+</span><span class='line'>
+</span><span class='line'>public class XssFilter implements Filter {
+</span><span class='line'>  public void doFilter(ServletRequest request, ServletResponse response,
+</span><span class='line'>          FilterChain chain) throws IOException, ServletException {
+</span><span class='line'>      XssHttpServletRequestWapper xssRequest = new XssHttpServletRequestWapper((HttpServletRequest) request);
+</span><span class='line'>        chain.doFilter(xssRequest, response);
+</span><span class='line'>  }
+</span><span class='line'>  public void init(FilterConfig filterConfig) throws ServletException {
+</span><span class='line'>      
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  public void destroy() {
+</span><span class='line'>      
+</span><span class='line'>  }
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上是我整个解决的思路和方法，比较容易能想到，能防止大部分的Xss攻击，一些具体的要求还得大家在开发过程中去留意和总结。</p>
+
+<blockquote><p><a href="http://www.2cto.com/Article/201312/264747.html">http://www.2cto.com/Article/201312/264747.html</a></p>
+
+<p><a href="http://hc24.iteye.com/blog/1995213">http://hc24.iteye.com/blog/1995213</a></p></blockquote>
 ]]></content>
   </entry>
   
