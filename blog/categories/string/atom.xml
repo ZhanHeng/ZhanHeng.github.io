@@ -4,7 +4,7 @@
   <title><![CDATA[Category: String | Blog Like a Hacker]]></title>
   <link href="http://zhanheng.github.io/blog/categories/string/atom.xml" rel="self"/>
   <link href="http://zhanheng.github.io/"/>
-  <updated>2016-05-18T23:36:41+08:00</updated>
+  <updated>2016-05-20T00:07:05+08:00</updated>
   <id>http://zhanheng.github.io/</id>
   <author>
     <name><![CDATA[ZhanHeng]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[字符串加密]]></title>
-    <link href="http://zhanheng.github.io/blog/2016/05/14/HelloWorld/"/>
+    <link href="http://zhanheng.github.io/blog/2016/05/14/StringEncrypt/"/>
     <updated>2016-05-14T23:10:30+08:00</updated>
-    <id>http://zhanheng.github.io/blog/2016/05/14/HelloWorld</id>
+    <id>http://zhanheng.github.io/blog/2016/05/14/StringEncrypt</id>
     <content type="html"><![CDATA[<h4>选择一个单词作为密钥，然后输入明文。输出密文</h4>
 
 <p>举例：

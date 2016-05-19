@@ -9,15 +9,7 @@
   <meta name="author" content="ZhanHeng">
 
   
-  <meta name="description" content="你好 Octopress 这里介绍Segmentree算法 这段文字被加粗了 标亮 Android
-PHP
-HTML CSS3
-HTML5 引用 百度一下 1
-2
-3
-4
-5
-public class SegmentTree{ public static void main(String args &hellip;">
+  <meta name="description" content="在开发项目的过程中，网站的安全问题不能被忽视，其中Xss跨脚本攻击很常见。下面就XSS攻击做一下基本介绍，同时给出了我自己的解决办法。 XSS又称CSS，全称Cross Site Script，跨站脚本攻击，是Web程序中常见的漏洞，XSS属于被动式且用于客户端的攻击方式，所以容易被忽略其危害性。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -64,9 +56,9 @@ public class SegmentTree{ public static void main(String args &hellip;">
 </form>
   
 <ul class="main-navigation">
-  <li><a href="/">博客</a></li>
-  <li><a href="/blog/archives">分档</a></li>
-  <li><a href="/aboutme">关于</a></li>
+  <li style="margin:0px 0px 0px 20px"><a href="/">博客</a></li>
+  <li style="margin:0px 0px 0px 20px"><a href="/blog/archives">分档</a></li>
+  <li style="margin:0px 0px 0px 20px"><a href="/aboutme">关于</a></li>
 </ul>
 
 </nav>
@@ -74,131 +66,6 @@ public class SegmentTree{ public static void main(String args &hellip;">
     <div id="content">
       <div class="blog-index">
   
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/05/14/segmenttree/">segmentTree</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-05-14T23:10:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>11:10 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>你好 Octopress</h1>
-
-<h2>这里介绍Segmentree算法</h2>
-
-<p><strong>这段文字被加粗了</strong></p>
-
-<p><code>标亮</code></p>
-
-<ul>
-<li>Android</li>
-<li>PHP</li>
-<li>HTML
-
-<ul>
-<li>CSS3</li>
-<li>HTML5
-
-<blockquote><p>引用</p></blockquote></li>
-</ul>
-</li>
-</ul>
-
-
-<p><a href="http://www.baidu.com">百度一下</a></p>
-
-<p><img src="http://www.nxist.com/Economic/images/banner1.jpg" alt="image" /></p>
-
-<p><video width='640' height='320' preload='metadata' controls poster='http://assets.jikexueyuan.com/practice/list_android.jpg'><source src='http://static-jkxy.qiniudn.com/event/jkxy_profile20150318.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></video></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public class SegmentTree{
-</span><span class='line'>  public static void main(String args[]){
-</span><span class='line'>      System.out.println("Hello Octopress!");
-</span><span class='line'>  }
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<figure class='code'><figcaption><span>快速排序Java版 </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>void sort(int []a, int left, int right){
-</span><span class='line'>        if(left >= right)/*如果左边索引大于或者等于右边的索引就代表已经整理完成一个组了*/
-</span><span class='line'>        {
-</span><span class='line'>            return ;
-</span><span class='line'>        }
-</span><span class='line'>        int i = left;
-</span><span class='line'>        int j = right;
-</span><span class='line'>        int key = a[left];
-</span><span class='line'>
-</span><span class='line'>        while(i &lt; j)                               /*控制在当组内寻找一遍*/
-</span><span class='line'>        {
-</span><span class='line'>            while(i &lt; j && key &lt;= a[j])
-</span><span class='line'>            {
-</span><span class='line'>                j--;/*向前寻找*/
-</span><span class='line'>            }
-</span><span class='line'>            a[i] = a[j];
-</span><span class='line'>            while(i &lt; j && key >= a[i])
-</span><span class='line'>            {
-</span><span class='line'>                i++;
-</span><span class='line'>            }
-</span><span class='line'>            a[j] = a[i];
-</span><span class='line'>        }
-</span><span class='line'>
-</span><span class='line'>        a[i] = key;/*当在当组内找完一遍以后就把中间数key回归*/
-</span><span class='line'>        sort(a, left, i - 1);/*最后用同样的方式对分出来的左边的小组进行同上的做法*/
-</span><span class='line'>        sort(a, i + 1, right);/*用同样的方式对分出来的右边的小组进行同上的做法*/
-</span><span class='line'>    }</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
   
   
     <article>
@@ -436,7 +303,7 @@ public class SegmentTree{ public static void main(String args &hellip;">
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2016/05/14/HelloWorld/">字符串加密</a></h1>
+      <h1 class="entry-title"><a href="/blog/2016/05/14/StringEncrypt/">字符串加密</a></h1>
     
     
       <p class="meta">
@@ -562,15 +429,11 @@ public class SegmentTree{ public static void main(String args &hellip;">
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2016/05/14/segmenttree/">segmentTree</a>
-      </li>
-    
-      <li class="post">
         <a href="/blog/2016/05/14/XssSQLSecurity/">防止XSS攻击</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2016/05/14/HelloWorld/">字符串加密</a>
+        <a href="/blog/2016/05/14/StringEncrypt/">字符串加密</a>
       </li>
     
   </ul>
