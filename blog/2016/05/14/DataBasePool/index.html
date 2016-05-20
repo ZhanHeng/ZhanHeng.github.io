@@ -1,0 +1,347 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Java数据库连接池之 HikariCP - JustDoit</title>
+  <meta name="author" content="ZhanHeng">
+
+  
+  <meta name="description" content="在web项目开发过程中，数据的持久化是个老生常谈的话题，如何高效的与数据库建立连接就是我们需要解决的问题。 连接池技术的核心思想：连接复用，通过建立一个数据库连接池以及一套连接使用、分配、管理策略，使得该连接池中的连接可以得到高效、安全的复用，避免了数据库连接频繁建立、关闭的开销。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://zhanheng.github.io/blog/2016/05/14/DataBasePool/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="JustDoit" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">JustDoit</a></h1>
+  
+    <h2>代码改变世界 !</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://www.baidu.com" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="zhanheng.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li style="margin:0px 0px 0px 20px"><a href="/">博客</a></li>
+  <li style="margin:0px 0px 0px 20px"><a href="/blog/archives">分档</a></li>
+  <li style="margin:0px 0px 0px 20px"><a href="/aboutme">关于</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Java数据库连接池之 HikariCP</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-05-14T23:10:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>11:10 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>在web项目开发过程中，数据的持久化是个老生常谈的话题，如何高效的与数据库建立连接就是我们需要解决的问题。</p>
+
+<h5>连接池技术的核心思想：连接复用，通过建立一个数据库连接池以及一套连接使用、分配、管理策略，使得该连接池中的连接可以得到高效、安全的复用，避免了数据库连接频繁建立、关闭的开销。</h5>
+
+<h4>连接池的组成部分：连接池的建立、连接池的管理、连接池的关闭。</h4>
+
+<p>自己维护一些数据库连接，需要使用的时候直接使用其中一个连接，用完之后不是关闭而是将他归还，等待其他操作使用。</p>
+
+<p>proxool、DBCP、C3P0最为常见的三种JDBC连接池技术。</p>
+
+<p>proxool是一种Java数据库连接池技术。sourceforge下的一个开源项目,这个项目提供一个健壮、易用的连接池，最为关键的是这个连接池提供监控的功能，方便易用，便于发现连接泄漏的情况。</p>
+
+<p>单例模式（Singleton）简单的说就是类在系统中只能被实例化一次，外界只有唯一一个类实例可以使用。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class Singleton {  
+</span><span class='line'>    private static class LazyLoadSingleton{  
+</span><span class='line'>        private static final Singleton singleton = new Singleton();  
+</span><span class='line'>    }   
+</span><span class='line'>    private Singleton() {} 
+</span><span class='line'>    public static Singleton getSingleton(){  
+</span><span class='line'>        return LazyLoadSingleton.singleton;  
+</span><span class='line'>    }  
+</span><span class='line'>} </span></code></pre></td></tr></table></div></figure>
+
+
+<p>但是今天在这里介绍一个重量级的数据库连接池HiKariCP,它是数据库连接池的一个后起之秀，号称性能最好，可以完美地PK掉其他连接池。可能你会问 ：什么？为何要使用HiKariCP？不是有C3P0/DBCP这些成熟的数据库连接池吗？</p>
+
+<p>这要先从BoneCP说起：一直用的好好的，为什么又搞出一个BoneCP来？因为，传说中BoneCP在快速这个特点上做到了极致，官方数据是C3P0等的25倍左右。看数据对比图：
+<img src="http://img.blog.csdn.net/20150717155314196?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /></p>
+
+<p>但是……什么？又来一个CP？……什么是Hikari？
+Hikari来自日文，是“光”（阳光的光，不是光秃秃的光）的意思。作者估计是为了借助这个词来暗示这个CP速度飞快。不知作者是不是日本人，不过日本也有很多优秀的码农，听说比特币据说日本人搞出来的。。。</p>
+
+<p>这个产品的口号是“快速、简单、可靠”。实际情况跟这个口号真的匹配吗？又是有图有真相
+<img src="http://img.blog.csdn.net/20150717155421650?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /></p>
+
+<p>这个图，也间接地、再一次地证明了boneCP比c3p0强大很多，当然，跟“光”比起来，又弱了不少啊。</p>
+
+<p>那么，这么好的P是怎么做到的呢？官网详细地说明了HikariCP所做的一些优化，总结如下：
+字节码精简：优化代码，直到编译后的字节码最少，这样，CPU缓存可以加载更多的程序代码；
+优化代理和拦截器：减少代码，例如HikariCP的Statement proxy只有100行代码，只有BoneCP的十分之一；
+自定义数组类型（FastStatementList）代替ArrayList：避免每次get()调用都要进行range check，避免调用remove()时的从头到尾的扫描；
+自定义集合类型（ConcurrentBag）：提高并发读写的效率；
+其他针对BoneCP缺陷的优化，比如对于耗时超过一个CPU时间片的方法调用的研究（但没说具体怎么优化）。
+很多优化的对比都是针对BoneCP的。</p>
+
+<p>几个连接池的代码量对比（代码量越少，一般意味着执行效率越高、发生bug的可能性越低）：</p>
+
+<p><img src="http://img.blog.csdn.net/20150717155444740?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /></p>
+
+<p>第三方关于速度的测试：</p>
+
+<p><img src="http://img.blog.csdn.net/20150717155541525?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /></p>
+
+<p>也许你会说，速度高，如果不稳定也是硬伤啊。于是，关于稳定性的图也来了:
+<img src="http://img.blog.csdn.net/20150717155601214?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /></p>
+
+<p>另外，关于可靠性方面，也是有实验和数据支持的。对于数据库连接中断的情况，通过测试getConnection()，各种CP的不相同处理方法如下：
+（所有CP都配置了跟connectionTimeout类似的参数为5秒钟）
+<strong>HikariCP</strong>：等待5秒钟后，如果连接还是没有恢复，则抛出一个SQLExceptions 异常；后续的getConnection()也是一样处理；</p>
+
+<p><strong>C3P0</strong>：完全没有反应，没有提示，也不会在“CheckoutTimeout”配置的时长超时后有任何通知给调用者；然后等待2分钟后终于醒来了，返回一个error；</p>
+
+<p><strong>Tomcat</strong>：返回一个connection，然后……调用者如果利用这个无效的connection执行SQL语句……结果可想而知；大约55秒之后终于醒来了，这时候的getConnection()终于可以返回一个error，但没有等待参数配置的5秒钟，而是立即返回error；</p>
+
+<p><strong>BoneCP</strong>：跟Tomcat的处理方法一样；也是大约55秒之后才醒来，有了正常的反应，并且终于会等待5秒钟之后返回error了；</p>
+
+<p>可见，HikariCP的处理方式是最合理的。根据这个测试结果，对于各个CP处理数据库中断的情况，评分如下：</p>
+
+<p><img src="http://img.blog.csdn.net/20150717155628899?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /></p>
+
+<p>下面来看看HiKariCP的数据源配置，如果之前用的是BoneCP配置的数据源，那么，就简单了，只需要把dataSource换一下，稍微调整一下参数就行了：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;!-- Hikari Datasource --&gt;
+</span><span class='line'> &lt;bean id="dataSourceHikari" class="com.zaxxer.hikari.HikariDataSource"  destroy-method="shutdown"&gt;
+</span><span class='line'>  &lt;!-- &lt;property name="driverClassName" value="${db.driverClass}" /&gt; --&gt; &lt;!-- 无需指定，除非系统无法自动识别 --&gt;
+</span><span class='line'>  &lt;property name="jdbcUrl" value="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8" /&gt;
+</span><span class='line'>  &lt;property name="username" value="${db.username}" /&gt;
+</span><span class='line'>  &lt;property name="password" value="${db.password}" /&gt;
+</span><span class='line'>   &lt;!-- 连接只读数据库时配置为true， 保证安全 --&gt;
+</span><span class='line'>  &lt;property name="readOnly" value="false" /&gt;
+</span><span class='line'>  &lt;!-- 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒 --&gt;
+</span><span class='line'>  &lt;property name="connectionTimeout" value="30000" /&gt;
+</span><span class='line'>  &lt;!-- 一个连接idle状态的最大时长（毫秒），超时则被释放（retired），缺省:10分钟 --&gt;
+</span><span class='line'>  &lt;property name="idleTimeout" value="600000" /&gt;
+</span><span class='line'>  &lt;!-- 一个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟，建议设置比数据库超时时长少30秒，参考MySQL wait_timeout参数（show variables like '%timeout%';） --&gt;
+</span><span class='line'>  &lt;property name="maxLifetime" value="1800000" /&gt;
+</span><span class='line'>  &lt;!-- 连接池中允许的最大连接数。缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count) --&gt;
+</span><span class='line'>  &lt;property name="maximumPoolSize" value="15" /&gt;
+</span><span class='line'> &lt;/bean&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中，很多配置都使用缺省值就行了，除了maxLifetime和maximumPoolSize要注意自己计算一下。
+其他的配置（sqlSessionFactory、MyBatis MapperScannerConfigurer、transactionManager等）统统不用变。</p>
+
+<p>其他关于Datasource配置参数的建议：
+Configure your HikariCP idleTimeout and maxLifeTime settings to be one minute less than the wait_timeout of MySQL.
+对于有Java连接池的系统，建议MySQL的wait_timeout使用缺省的8小时（<a href="http://www.rackspace.com/knowledge_center/article/how-to-change-the-mysql-timeout-on-a-server%EF%BC%89%E3%80%82">http://www.rackspace.com/knowledge_center/article/how-to-change-the-mysql-timeout-on-a-server%EF%BC%89%E3%80%82</a></p>
+
+<p>另外：对于web项目，记得要配置：destroy-method=&ldquo;shutdown&rdquo;</p>
+
+<blockquote><p><a href="https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole">https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole</a></p>
+
+<p><a href="http://www.bubuko.com/infodetail-978464.html">http://www.bubuko.com/infodetail-978464.html</a></p>
+
+<p><a href="https://github.com/brettwooldridge/HikariCP/wiki/Bad-Behavior:-Handling-Database-Down">https://github.com/brettwooldridge/HikariCP/wiki/Bad-Behavior:-Handling-Database-Down</a></p></blockquote>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">ZhanHeng</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-05-14T23:10:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>11:10 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/security/'>security</a>, <a class='category' href='/blog/categories/web/'>web</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+    
+		<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_32x32">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2016/05/14/StringEncrypt/" title="Next Post: 字符串加密">字符串加密 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><div class="ds-thread" data-thread-key="/blog/2016/05/14/DataBasePool" data-title="Java数据库连接池之 HikariCP" data-url="http://zhanheng.github.io/blog/2016/05/14/DataBasePool/"></div>
+
+<script type="text/javascript">
+var duoshuoQuery = {short_name: "dtyu100"};
+(function(){
+	var ds = document.createElement("script");
+	ds.type = "text/javascript"; ds.async= true;
+	ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:' )+ '//static.duoshuo.com/embed.js';
+	ds.charset = "utf-8";
+	(document.getElementsByTagName('head')[0]
+	|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/05/14/XssSQLSecurity/">防止XSS攻击</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/14/StringEncrypt/">字符串加密</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/14/DataBasePool/">Java数据库连接池之 HikariCP</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - ZhanHeng -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Web | JustDoit]]></title>
   <link href="http://zhanheng.github.io/blog/categories/web/atom.xml" rel="self"/>
   <link href="http://zhanheng.github.io/"/>
-  <updated>2016-05-20T00:20:04+08:00</updated>
+  <updated>2016-05-20T23:41:36+08:00</updated>
   <id>http://zhanheng.github.io/</id>
   <author>
     <name><![CDATA[ZhanHeng]]></name>
@@ -37,109 +37,406 @@
 <code>http://www.domain.com/test.jsp?content=&lt;script&gt;alert(' XSS注入' ); &lt;/script&gt;</code>
 为了防止在请求链接中插入恶意的代码，我采用了以下方法：
 首先自定义一个Filter 取名XssFilter, 在Web.xml中配置如下：
-```
-     <filter>
-        <filter-name>XssFilter</filter-name>
-        <filter-class>test.XssFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>XssFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping></p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> &lt;filter&gt;
+</span><span class='line'>    &lt;filter-name&gt;XssFilter&lt;/filter-name&gt;
+</span><span class='line'>    &lt;filter-class&gt;test.XssFilter&lt;/filter-class&gt;
+</span><span class='line'>&lt;/filter&gt;
+</span><span class='line'>&lt;filter-mapping&gt;
+</span><span class='line'>    &lt;filter-name&gt;XssFilter&lt;/filter-name&gt;
+</span><span class='line'>    &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+</span><span class='line'>&lt;/filter-mapping&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;第二步，自定义一个类继承HttpServletRequestWrapper类，并重写父类的方法。
+</span><span class='line'>其中包括getParameter() ， getHeader() ,getParameterValues()
+</span><span class='line'>其中最重要的是自定义一个过滤特殊字符的方法。
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>具体实现代码如下：
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;import javax.servlet.http.HttpServletRequest;
+</span><span class='line'>import javax.servlet.http.HttpServletRequestWrapper;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;public class XssHttpServletRequestWapper extends HttpServletRequestWrapper {&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;public XssHttpServletRequestWapper(HttpServletRequest request) {
+</span><span class='line'>super(request);
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@Override
+</span><span class='line'>public String getParameter(String name) {
+</span><span class='line'>return clearXss(super.getParameter(name));
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@Override
+</span><span class='line'>public String getHeader(String name) {
+</span><span class='line'>return clearXss(super.getHeader(name));
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@Override
+</span><span class='line'>public String[] getParameterValues(String name) {
+</span><span class='line'>String[] values = super.getParameterValues(name);
+</span><span class='line'>String[] newValues = new String[values.length];
+</span><span class='line'>for (int i = 0; i &lt; values.length; i++) {
+</span><span class='line'>    newValues[i] = clearXss(values[i]);
+</span><span class='line'>}
+</span><span class='line'>return newValues;
+</span><span class='line'>}
+</span><span class='line'>/**
+</span><span class='line'> *  处理 字符转义 
+</span><span class='line'> *  &gt; &lt; ( ) '  javascript: 
+</span><span class='line'> */
+</span><span class='line'>private String clearXss(String value){
+</span><span class='line'>if (value==null || "".equals(value)) {
+</span><span class='line'>    return value;
+</span><span class='line'>}
+</span><span class='line'>value = value.replaceAll("&lt;", "&amp;lt").replaceAll("&gt;", "&amp;gt");
+</span><span class='line'>value = value.replaceAll("(", "&amp;#40").replaceAll("\\)", "&amp;#41");
+</span><span class='line'>value = value.replaceAll("'", "&amp;#39");
+</span><span class='line'>value = value.replaceAll("eval\\((.*)\\)", "");
+</span><span class='line'>value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
+</span><span class='line'>value = value.replaceAll("script", "");
+</span><span class='line'>return value;
+</span><span class='line'>}
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;}&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;
+</span><span class='line'>最后一步，在自定义的Filter中引用上述方法，执行过滤操作。
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;import java.io.IOException;
+</span><span class='line'>import javax.servlet.Filter;
+</span><span class='line'>import javax.servlet.FilterChain;
+</span><span class='line'>import javax.servlet.FilterConfig;
+</span><span class='line'>import javax.servlet.ServletException;
+</span><span class='line'>import javax.servlet.ServletRequest;
+</span><span class='line'>import javax.servlet.ServletResponse;
+</span><span class='line'>import javax.servlet.http.HttpServletRequest;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;public class XssFilter implements Filter {
+</span><span class='line'>public void doFilter(ServletRequest request, ServletResponse response,
+</span><span class='line'>        FilterChain chain) throws IOException, ServletException {
+</span><span class='line'>    XssHttpServletRequestWapper xssRequest = new XssHttpServletRequestWapper((HttpServletRequest) request);
+</span><span class='line'>    chain.doFilter(xssRequest, response);
+</span><span class='line'>}
+</span><span class='line'>public void init(FilterConfig filterConfig) throws ServletException {&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;}
+</span><span class='line'>
+</span><span class='line'>public void destroy() {
+</span><span class='line'>
+</span><span class='line'>}
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;}&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;```&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;以上是我整个解决的思路和方法，比较容易能想到，能防止大部分的Xss攻击，一些具体的要求还得大家在开发过程中去留意和总结。&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;blockquote&gt;&lt;p&gt;&lt;a href="http://www.2cto.com/Article/201312/264747.html"&gt;http://www.2cto.com/Article/201312/264747.html&lt;/a&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;a href="http://hc24.iteye.com/blog/1995213"&gt;http://hc24.iteye.com/blog/1995213&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
+</span><span class='line'>]]&gt;&lt;/content&gt;
+</span><span class='line'>  &lt;/entry&gt;
+</span><span class='line'>  
+</span><span class='line'>  &lt;entry&gt;
+</span><span class='line'>&lt;title type="html"&gt;&lt;![CDATA[Java数据库连接池之 HikariCP]]&gt;&lt;/title&gt;
+</span><span class='line'>&lt;link href="http://zhanheng.github.io/blog/2016/05/14/DataBasePool/"/&gt;
+</span><span class='line'>&lt;updated&gt;2016-05-14T23:10:30+08:00&lt;/updated&gt;
+</span><span class='line'>&lt;id&gt;http://zhanheng.github.io/blog/2016/05/14/DataBasePool&lt;/id&gt;
+</span><span class='line'>&lt;content type="html"&gt;&lt;![CDATA[&lt;p&gt;在web项目开发过程中，数据的持久化是个老生常谈的话题，如何高效的与数据库建立连接就是我们需要解决的问题。&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h5&gt;连接池技术的核心思想：连接复用，通过建立一个数据库连接池以及一套连接使用、分配、管理策略，使得该连接池中的连接可以得到高效、安全的复用，避免了数据库连接频繁建立、关闭的开销。&lt;/h5&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h4&gt;连接池的组成部分：连接池的建立、连接池的管理、连接池的关闭。&lt;/h4&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;自己维护一些数据库连接，需要使用的时候直接使用其中一个连接，用完之后不是关闭而是将他归还，等待其他操作使用。&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;proxool、DBCP、C3P0最为常见的三种JDBC连接池技术。&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;proxool是一种Java数据库连接池技术。sourceforge下的一个开源项目,这个项目提供一个健壮、易用的连接池，最为关键的是这个连接池提供监控的功能，方便易用，便于发现连接泄漏的情况。&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;单例模式（Singleton）简单的说就是类在系统中只能被实例化一次，外界只有唯一一个类实例可以使用。&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;public class Singleton {  
+</span><span class='line'>private static class LazyLoadSingleton{  
+</span><span class='line'>    private static final Singleton singleton = new Singleton();  
+</span><span class='line'>}   
+</span><span class='line'>private Singleton() {} 
+</span><span class='line'>  public static Singleton getSingleton(){  
+</span><span class='line'>    return LazyLoadSingleton.singleton;  
+</span><span class='line'>}  
+</span><span class='line'>} 
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;但是今天在这里介绍一个重量级的数据库连接池HiKariCP,它是数据库连接池的一个后起之秀，号称性能最好，可以完美地PK掉其他连接池。可能你会问 ：什么？为何要使用HiKariCP？不是有C3P0/DBCP这些成熟的数据库连接池吗？&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;这要先从BoneCP说起：一直用的好好的，为什么又搞出一个BoneCP来？因为，传说中BoneCP在快速这个特点上做到了极致，官方数据是C3P0等的25倍左右。看数据对比图：
+</span><span class='line'>&lt;img src="http://img.blog.csdn.net/20150717155314196?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;但是……什么？又来一个CP？……什么是Hikari？
+</span><span class='line'>Hikari来自日文，是“光”（阳光的光，不是光秃秃的光）的意思。作者估计是为了借助这个词来暗示这个CP速度飞快。不知作者是不是日本人，不过日本也有很多优秀的码农，听说比特币据说日本人搞出来的。。。&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;这个产品的口号是“快速、简单、可靠”。实际情况跟这个口号真的匹配吗？又是有图有真相
+</span><span class='line'>&lt;img src="http://img.blog.csdn.net/20150717155421650?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;这个图，也间接地、再一次地证明了boneCP比c3p0强大很多，当然，跟“光”比起来，又弱了不少啊。&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;那么，这么好的P是怎么做到的呢？官网详细地说明了HikariCP所做的一些优化，总结如下：
+</span><span class='line'>字节码精简：优化代码，直到编译后的字节码最少，这样，CPU缓存可以加载更多的程序代码；
+</span><span class='line'>优化代理和拦截器：减少代码，例如HikariCP的Statement proxy只有100行代码，只有BoneCP的十分之一；
+</span><span class='line'>自定义数组类型（FastStatementList）代替ArrayList：避免每次get()调用都要进行range check，避免调用remove()时的从头到尾的扫描；
+</span><span class='line'>自定义集合类型（ConcurrentBag）：提高并发读写的效率；
+</span><span class='line'>其他针对BoneCP缺陷的优化，比如对于耗时超过一个CPU时间片的方法调用的研究（但没说具体怎么优化）。
+</span><span class='line'>很多优化的对比都是针对BoneCP的。&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;几个连接池的代码量对比（代码量越少，一般意味着执行效率越高、发生bug的可能性越低）：&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;img src="http://img.blog.csdn.net/20150717155444740?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;第三方关于速度的测试：&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;img src="http://img.blog.csdn.net/20150717155541525?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;也许你会说，速度高，如果不稳定也是硬伤啊。于是，关于稳定性的图也来了:
+</span><span class='line'>&lt;img src="http://img.blog.csdn.net/20150717155601214?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;另外，关于可靠性方面，也是有实验和数据支持的。对于数据库连接中断的情况，通过测试getConnection()，各种CP的不相同处理方法如下：
+</span><span class='line'>（所有CP都配置了跟connectionTimeout类似的参数为5秒钟）
+</span><span class='line'>&lt;strong&gt;HikariCP&lt;/strong&gt;：等待5秒钟后，如果连接还是没有恢复，则抛出一个SQLExceptions 异常；后续的getConnection()也是一样处理；&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;strong&gt;C3P0&lt;/strong&gt;：完全没有反应，没有提示，也不会在“CheckoutTimeout”配置的时长超时后有任何通知给调用者；然后等待2分钟后终于醒来了，返回一个error；&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;strong&gt;Tomcat&lt;/strong&gt;：返回一个connection，然后……调用者如果利用这个无效的connection执行SQL语句……结果可想而知；大约55秒之后终于醒来了，这时候的getConnection()终于可以返回一个error，但没有等待参数配置的5秒钟，而是立即返回error；&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;strong&gt;BoneCP&lt;/strong&gt;：跟Tomcat的处理方法一样；也是大约55秒之后才醒来，有了正常的反应，并且终于会等待5秒钟之后返回error了；&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;可见，HikariCP的处理方式是最合理的。根据这个测试结果，对于各个CP处理数据库中断的情况，评分如下：&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;img src="http://img.blog.csdn.net/20150717155628899?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;下面来看看HiKariCP的数据源配置，如果之前用的是BoneCP配置的数据源，那么，就简单了，只需要把dataSource换一下，稍微调整一下参数就行了：</span></code></pre></td></tr></table></div></figure></p>
 
-<pre><code>第二步，自定义一个类继承HttpServletRequestWrapper类，并重写父类的方法。
-其中包括getParameter() ， getHeader() ,getParameterValues()
-其中最重要的是自定义一个过滤特殊字符的方法。
+<!-- Hikari Datasource -->
 
 
-具体实现代码如下：
-</code></pre>
+<p> <bean id="dataSourceHikari" class="com.zaxxer.hikari.HikariDataSource"  destroy-method="shutdown">
+  <!-- <property name="driverClassName" value="${db.driverClass}" /> &ndash;> <!-- 无需指定，除非系统无法自动识别 -->
+  <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8" />
+  <property name="username" value="${db.username}" />
+  <property name="password" value="${db.password}" />
+   <!-- 连接只读数据库时配置为true， 保证安全 -->
+  <property name="readOnly" value="false" />
+  <!-- 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒 -->
+  <property name="connectionTimeout" value="30000" />
+  <!-- 一个连接idle状态的最大时长（毫秒），超时则被释放（retired），缺省:10分钟 -->
+  <property name="idleTimeout" value="600000" />
+  <!-- 一个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟，建议设置比数据库超时时长少30秒，参考MySQL wait_timeout参数（show variables like '%timeout%';） -->
+  <property name="maxLifetime" value="1800000" />
+  <!-- 连接池中允许的最大连接数。缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count) -->
+  <property name="maximumPoolSize" value="15" />
+ </bean>
+```</p>
 
-<p>import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;</p>
+<p>其中，很多配置都使用缺省值就行了，除了maxLifetime和maximumPoolSize要注意自己计算一下。
+其他的配置（sqlSessionFactory、MyBatis MapperScannerConfigurer、transactionManager等）统统不用变。</p>
 
-<p>public class XssHttpServletRequestWapper extends HttpServletRequestWrapper {</p>
+<p>其他关于Datasource配置参数的建议：
+Configure your HikariCP idleTimeout and maxLifeTime settings to be one minute less than the wait_timeout of MySQL.
+对于有Java连接池的系统，建议MySQL的wait_timeout使用缺省的8小时（<a href="http://www.rackspace.com/knowledge_center/article/how-to-change-the-mysql-timeout-on-a-server%EF%BC%89%E3%80%82">http://www.rackspace.com/knowledge_center/article/how-to-change-the-mysql-timeout-on-a-server%EF%BC%89%E3%80%82</a></p>
 
-<pre><code>public XssHttpServletRequestWapper(HttpServletRequest request) {
-    super(request);
-}
+<p>另外：对于web项目，记得要配置：destroy-method=&ldquo;shutdown&rdquo;</p>
 
-@Override
-public String getParameter(String name) {
-    return clearXss(super.getParameter(name));
-}
+<blockquote><p><a href="https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole">https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole</a></p>
 
-@Override
-public String getHeader(String name) {
-    return clearXss(super.getHeader(name));
-}
+<p><a href="http://www.bubuko.com/infodetail-978464.html">http://www.bubuko.com/infodetail-978464.html</a></p>
 
-@Override
-public String[] getParameterValues(String name) {
-    String[] values = super.getParameterValues(name);
-    String[] newValues = new String[values.length];
-    for (int i = 0; i &lt; values.length; i++) {
-        newValues[i] = clearXss(values[i]);
-    }
-    return newValues;
-}
-/**
- *  处理 字符转义 
- *  &gt; &lt; ( ) '  javascript: 
- */
-private String clearXss(String value){
-    if (value==null || "".equals(value)) {
-        return value;
-    }
-    value = value.replaceAll("&lt;", "&amp;lt").replaceAll("&gt;", "&amp;gt");
-    value = value.replaceAll("(", "&amp;#40").replaceAll("\\)", "&amp;#41");
-    value = value.replaceAll("'", "&amp;#39");
-    value = value.replaceAll("eval\\((.*)\\)", "");
-    value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
-    value = value.replaceAll("script", "");
-    return value;
-}
-</code></pre>
-
-<p>}</p>
-
-<pre><code>
-最后一步，在自定义的Filter中引用上述方法，执行过滤操作。
-</code></pre>
-
-<p>import java.io.IOException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;</p>
-
-<p>public class XssFilter implements Filter {
-    public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain) throws IOException, ServletException {
-        XssHttpServletRequestWapper xssRequest = new XssHttpServletRequestWapper((HttpServletRequest) request);
-        chain.doFilter(xssRequest, response);
-    }
-    public void init(FilterConfig filterConfig) throws ServletException {</p>
-
-<pre><code>}
-
-public void destroy() {
-
-}
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>以上是我整个解决的思路和方法，比较容易能想到，能防止大部分的Xss攻击，一些具体的要求还得大家在开发过程中去留意和总结。</p>
-
-<blockquote><p><a href="http://www.2cto.com/Article/201312/264747.html">http://www.2cto.com/Article/201312/264747.html</a></p>
-
-<p><a href="http://hc24.iteye.com/blog/1995213">http://hc24.iteye.com/blog/1995213</a></p></blockquote>
+<p><a href="https://github.com/brettwooldridge/HikariCP/wiki/Bad-Behavior:-Handling-Database-Down">https://github.com/brettwooldridge/HikariCP/wiki/Bad-Behavior:-Handling-Database-Down</a></p></blockquote>
 ]]></content>
   </entry>
   
