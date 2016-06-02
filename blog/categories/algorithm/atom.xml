@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Algorithm | JustDoit]]></title>
   <link href="http://zhanheng.github.io/blog/categories/algorithm/atom.xml" rel="self"/>
   <link href="http://zhanheng.github.io/"/>
-  <updated>2016-05-20T23:41:36+08:00</updated>
+  <updated>2016-06-02T23:53:12+08:00</updated>
   <id>http://zhanheng.github.io/</id>
   <author>
     <name><![CDATA[ZhanHeng]]></name>
@@ -104,6 +104,43 @@
 </span><span class='line'>              result+=data.charAt(i);
 </span><span class='line'>       }
 </span><span class='line'>       return result;
+</span><span class='line'>    }</span></code></pre></td></tr></table></div></figure></p>
+
+<h3>把一个字符串的大写字母放到字符串的后面，各个字符的相对位置不变，不能申请额外的空间</h3>
+
+<p>借助冒泡排序的思想，大写字母往后移动，小写字母往前移动。</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public static String sort(String string) {
+</span><span class='line'>        int y = 0;
+</span><span class='line'>        int nLen = string.length();
+</span><span class='line'>        char[] str = string.toCharArray();
+</span><span class='line'>        for (int i = nLen - 1; i >= 0; i&ndash;) {
+</span><span class='line'>            if (str[i] >= &lsquo;A&rsquo; &amp;&amp; str[i] &lt;= &lsquo;Z&rsquo;) {
+</span><span class='line'>                char temp = str[i]; //值存起来
+</span><span class='line'>                int k = i;          //下标存起来
+</span><span class='line'>                for (; k &lt; nLen - 1 - y; k++)
+</span><span class='line'>                    str[k] = str[k + 1]; //小写字母往前移动
+</span><span class='line'>                str[k] = temp;  //把大写字母放到后边去
+</span><span class='line'>                y++;            //大写字母个数
+</span><span class='line'>            }
+</span><span class='line'>        }
+</span><span class='line'>        return String.valueOf(str);
 </span><span class='line'>    }</span></code></pre></td></tr></table></div></figure></p>
 ]]></content>
   </entry>

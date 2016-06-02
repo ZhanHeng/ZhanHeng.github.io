@@ -4,7 +4,7 @@
   <title><![CDATA[JustDoit]]></title>
   <link href="http://zhanheng.github.io/atom.xml" rel="self"/>
   <link href="http://zhanheng.github.io/"/>
-  <updated>2016-05-20T23:41:36+08:00</updated>
+  <updated>2016-06-02T23:53:12+08:00</updated>
   <id>http://zhanheng.github.io/</id>
   <author>
     <name><![CDATA[ZhanHeng]]></name>
@@ -225,6 +225,39 @@
   </entry>
   
   <entry>
+    <title type="html"><![CDATA[Tomcat 虚拟目录配置]]></title>
+    <link href="http://zhanheng.github.io/blog/2016/05/14/Tomcat/"/>
+    <updated>2016-05-14T23:10:30+08:00</updated>
+    <id>http://zhanheng.github.io/blog/2016/05/14/Tomcat</id>
+    <content type="html"><![CDATA[<p>Tomcat 是开发过程中经常用到的容器，它是免费的基于 JAVA 的开源 Web 应用服务器。由于它拥有先进的技术、稳定的性能以及良好的扩展性，深受 JAVA 开发者的喜爱以及得到众多软件开发商的认可，成为目前比较流行的 Web 应用服务器。 今天将学习到的Tomcat 虚拟目录配置进行了整理。</p>
+
+<h4>例如：<a href="http://www.xyz.com/course/1024.html">http://www.xyz.com/course/1024.html</a></h4>
+
+<h5>1.Tomcat的基准目录、根目录 。</h5>
+
+<p>上述URL中www.xyz.com表示：WEB服务器的地址(名称)，后边的‘/’代表站点根目录</p>
+
+<p>Tomcat的默认根目录是：apache-tomcat-8.0.24\webapps\ROOT
+其中webapps是Tomcat的默认基准目录，Tomcat启动时会加载基准目录下的所有web应用.</p>
+
+<p>修改基准目录 通过修改conf文件夹下的server.xml文件的的Host节点在的appbase属性即可。</p>
+
+<p><Host name="localhost" appBase="webapps" unpackWARs="true"
+autoDeploy="true"></Host></p>
+
+<h5>2.虚拟子目录。</h5>
+
+<p>物理目录：实际存放在主目录(根目录)的子文件夹</p>
+
+<p>虚拟子目录：URL地址中不存在于主目录(根目录)下的子文件夹</p>
+
+<p>上述URL中的course就是一个虚拟子目录</p>
+
+<h5>3.虚拟目录的映射原理。</h5>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[字符串加密]]></title>
     <link href="http://zhanheng.github.io/blog/2016/05/14/StringEncrypt/"/>
     <updated>2016-05-14T23:10:30+08:00</updated>
@@ -316,6 +349,44 @@
 </span><span class='line'>       }
 </span><span class='line'>       return result;
 </span><span class='line'>    }</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>把一个字符串的大写字母放到字符串的后面，各个字符的相对位置不变，不能申请额外的空间</h3>
+
+<p>借助冒泡排序的思想，大写字母往后移动，小写字母往前移动。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public static String sort(String string) {
+</span><span class='line'>      int y = 0;
+</span><span class='line'>      int nLen = string.length();
+</span><span class='line'>      char[] str = string.toCharArray();
+</span><span class='line'>      for (int i = nLen - 1; i >= 0; i--) {
+</span><span class='line'>          if (str[i] >= 'A' && str[i] &lt;= 'Z') {
+</span><span class='line'>              char temp = str[i]; //值存起来
+</span><span class='line'>              int k = i;          //下标存起来
+</span><span class='line'>              for (; k &lt; nLen - 1 - y; k++)
+</span><span class='line'>                  str[k] = str[k + 1]; //小写字母往前移动
+</span><span class='line'>              str[k] = temp;  //把大写字母放到后边去
+</span><span class='line'>              y++;            //大写字母个数
+</span><span class='line'>          }
+</span><span class='line'>      }
+</span><span class='line'>      return String.valueOf(str);
+</span><span class='line'>  }</span></code></pre></td></tr></table></div></figure>
 
 
 

@@ -176,6 +176,44 @@
 </span><span class='line'>    }</span></code></pre></td></tr></table></div></figure>
 
 
+<h3>把一个字符串的大写字母放到字符串的后面，各个字符的相对位置不变，不能申请额外的空间</h3>
+
+<p>借助冒泡排序的思想，大写字母往后移动，小写字母往前移动。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public static String sort(String string) {
+</span><span class='line'>      int y = 0;
+</span><span class='line'>      int nLen = string.length();
+</span><span class='line'>      char[] str = string.toCharArray();
+</span><span class='line'>      for (int i = nLen - 1; i >= 0; i--) {
+</span><span class='line'>          if (str[i] >= 'A' && str[i] &lt;= 'Z') {
+</span><span class='line'>              char temp = str[i]; //值存起来
+</span><span class='line'>              int k = i;          //下标存起来
+</span><span class='line'>              for (; k &lt; nLen - 1 - y; k++)
+</span><span class='line'>                  str[k] = str[k + 1]; //小写字母往前移动
+</span><span class='line'>              str[k] = temp;  //把大写字母放到后边去
+</span><span class='line'>              y++;            //大写字母个数
+</span><span class='line'>          }
+</span><span class='line'>      }
+</span><span class='line'>      return String.valueOf(str);
+</span><span class='line'>  }</span></code></pre></td></tr></table></div></figure>
+
+
 
 </div>
 
@@ -230,7 +268,7 @@
         <a class="basic-alignment left" href="/blog/2016/05/14/DataBasePool/" title="Previous Post: Java数据库连接池之 HikariCP">&laquo; Java数据库连接池之 HikariCP</a>
       
       
-        <a class="basic-alignment right" href="/blog/2016/05/14/XssSQLSecurity/" title="Next Post: 防止XSS攻击">防止XSS攻击 &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2016/05/14/Tomcat/" title="Next Post: Tomcat 虚拟目录配置">Tomcat 虚拟目录配置 &raquo;</a>
       
     </p>
   </footer>
@@ -264,6 +302,10 @@ var duoshuoQuery = {short_name: "dtyu100"};
     
       <li class="post">
         <a href="/blog/2016/05/14/XssSQLSecurity/">防止XSS攻击</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/14/Tomcat/">Tomcat 虚拟目录配置</a>
       </li>
     
       <li class="post">
