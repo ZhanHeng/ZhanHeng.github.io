@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Algorithm | JustDoit]]></title>
   <link href="http://zhanheng.github.io/blog/categories/algorithm/atom.xml" rel="self"/>
   <link href="http://zhanheng.github.io/"/>
-  <updated>2016-06-11T14:16:58+08:00</updated>
+  <updated>2016-06-11T16:57:11+08:00</updated>
   <id>http://zhanheng.github.io/</id>
   <author>
     <name><![CDATA[ZhanHeng]]></name>
@@ -34,114 +34,66 @@
 
 <p>所以最后的密文是 <strong>Tpptad TP ITVH</strong></p>
 
-<p><figure class='code'><figcaption><span>字符串加密 </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public static String encrypt(String key, String data ){
-</span><span class='line'>       List&lt;Character> list = new ArrayList&lt;Character>();
-</span><span class='line'>       String p = &ldquo;abcdefghijklmnopqrstuvwxyz&rdquo;;
-</span><span class='line'>       String res = &ldquo;&rdquo;;
-</span><span class='line'>        // 去重
-</span><span class='line'>       for(int i = 0 ; i&lt;key.length() ;i++){
-</span><span class='line'>           if(!list.contains(key.charAt(i))){
-</span><span class='line'>               list.add(key.charAt(i));
-</span><span class='line'>               res+=key.charAt(i);
-</span><span class='line'>           }
-</span><span class='line'>       }
-</span><span class='line'>        // 拼接
-</span><span class='line'>       StringBuilder sb = new StringBuilder();
-</span><span class='line'>       sb.append(res);
-</span><span class='line'>       for (int i = 0; i &lt; p.length(); i++) {
-</span><span class='line'>           if (!sb.toString().contains(p.substring(i, i+1).toLowerCase())
-</span><span class='line'>               &amp;&amp;!sb.toString().contains(p.substring(i, i+1).toUpperCase())) {
-</span><span class='line'>               sb.append(p.charAt(i));
-</span><span class='line'>           }
-</span><span class='line'>       }
-</span><span class='line'>       String result = &ldquo;&rdquo;;
-</span><span class='line'>       String str = data.toLowerCase();
-</span><span class='line'>       String temp= sb.toString();
-</span><span class='line'>       //处理输出
-</span><span class='line'>       for (int i = 0; i &lt; str.length(); i++) {
-</span><span class='line'>          int index= p.indexOf(str.substring(i, i+1));//找到字符出现的位置
-</span><span class='line'>          if (Character.isLowerCase(data.charAt(i))) {// 小写字母
-</span><span class='line'>              result+= Character.toLowerCase(temp.charAt(index)) ;
-</span><span class='line'>          }else if(Character.isUpperCase(data.charAt(i))){// 大写字母
-</span><span class='line'>              result+= Character.toUpperCase(temp.charAt(index)) ;
-</span><span class='line'>          }else // 处理非字母的
-</span><span class='line'>              result+=data.charAt(i);
-</span><span class='line'>       }
-</span><span class='line'>       return result;
-</span><span class='line'>    }</span></code></pre></td></tr></table></div></figure></p>
+<p>{% codeblock  字符串加密 %}
+public static String encrypt(String key, String data ){
+       List<Character> list = new ArrayList<Character>();
+       String p = &ldquo;abcdefghijklmnopqrstuvwxyz&rdquo;;
+       String res = &ldquo;&rdquo;;
+        // 去重
+       for(int i = 0 ; i&lt;key.length() ;i++){
+           if(!list.contains(key.charAt(i))){
+               list.add(key.charAt(i));
+               res+=key.charAt(i);
+           }
+       }
+        // 拼接
+       StringBuilder sb = new StringBuilder();
+       sb.append(res);
+       for (int i = 0; i &lt; p.length(); i++) {
+           if (!sb.toString().contains(p.substring(i, i+1).toLowerCase())
+               &amp;&amp;!sb.toString().contains(p.substring(i, i+1).toUpperCase())) {
+               sb.append(p.charAt(i));
+           }
+       }
+       String result = &ldquo;&rdquo;;
+       String str = data.toLowerCase();
+       String temp= sb.toString();
+       //处理输出
+       for (int i = 0; i &lt; str.length(); i++) {
+          int index= p.indexOf(str.substring(i, i+1));//找到字符出现的位置
+          if (Character.isLowerCase(data.charAt(i))) {// 小写字母
+              result+= Character.toLowerCase(temp.charAt(index)) ;
+          }else if(Character.isUpperCase(data.charAt(i))){// 大写字母
+              result+= Character.toUpperCase(temp.charAt(index)) ;
+          }else // 处理非字母的
+              result+=data.charAt(i);
+       }
+       return result;
+    }
+{% endcodeblock %}</p>
 
 <h3>把一个字符串的大写字母放到字符串的后面，各个字符的相对位置不变，不能申请额外的空间</h3>
 
 <p>借助冒泡排序的思想，大写字母往后移动，小写字母往前移动。</p>
 
-<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public static String sort(String string) {
-</span><span class='line'>        int y = 0;
-</span><span class='line'>        int nLen = string.length();
-</span><span class='line'>        char[] str = string.toCharArray();
-</span><span class='line'>        for (int i = nLen - 1; i >= 0; i&ndash;) {
-</span><span class='line'>            if (str[i] >= &lsquo;A&rsquo; &amp;&amp; str[i] &lt;= &lsquo;Z&rsquo;) {
-</span><span class='line'>                char temp = str[i]; //值存起来
-</span><span class='line'>                int k = i;          //下标存起来
-</span><span class='line'>                for (; k &lt; nLen - 1 - y; k++)
-</span><span class='line'>                    str[k] = str[k + 1]; //小写字母往前移动
-</span><span class='line'>                str[k] = temp;  //把大写字母放到后边去
-</span><span class='line'>                y++;            //大写字母个数
-</span><span class='line'>            }
-</span><span class='line'>        }
-</span><span class='line'>        return String.valueOf(str);
-</span><span class='line'>    }</span></code></pre></td></tr></table></div></figure></p>
+<p>{% codeblock   %}
+public static String sort(String string) {
+        int y = 0;
+        int nLen = string.length();
+        char[] str = string.toCharArray();
+        for (int i = nLen - 1; i >= 0; i&ndash;) {
+            if (str[i] >= &lsquo;A&rsquo; &amp;&amp; str[i] &lt;= &lsquo;Z&rsquo;) {
+                char temp = str[i]; //值存起来
+                int k = i;          //下标存起来
+                for (; k &lt; nLen - 1 - y; k++)
+                    str[k] = str[k + 1]; //小写字母往前移动
+                str[k] = temp;  //把大写字母放到后边去
+                y++;            //大写字母个数
+            }
+        }
+        return String.valueOf(str);
+    }
+{% endcodeblock %}</p>
 ]]></content>
   </entry>
   

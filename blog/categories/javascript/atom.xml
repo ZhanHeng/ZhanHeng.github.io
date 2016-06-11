@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Javascript | JustDoit]]></title>
+  <link href="http://zhanheng.github.io/blog/categories/javascript/atom.xml" rel="self"/>
+  <link href="http://zhanheng.github.io/"/>
+  <updated>2016-06-11T16:57:11+08:00</updated>
+  <id>http://zhanheng.github.io/</id>
+  <author>
+    <name><![CDATA[ZhanHeng]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Js固定侧边栏]]></title>
+    <link href="http://zhanheng.github.io/blog/2016/05/17/javaScriptFixSideBar/"/>
+    <updated>2016-05-17T13:10:30+08:00</updated>
+    <id>http://zhanheng.github.io/blog/2016/05/17/javaScriptFixSideBar</id>
+    <content type="html"><![CDATA[<p>随着内容的滚动，左侧的菜单栏可以悬停的效果</p>
+
+<p>先用原生js操作，第一步封装一些常用的js函数。</p>
+
+<pre><code class="<script>">        var Getid = function(id){return document.getElementById(id);}
+        var addEvent = function(obj,event,fun){
+            if(obj.addEventListener()){
+                obj.addEventListener(event,fun,false);
+            }else if(obj.attachEvent()){
+                obj.attachEvent("on"+event,fun);
+            }
+        }
+    &lt;/script&gt;
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

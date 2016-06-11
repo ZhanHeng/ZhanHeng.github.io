@@ -5,6 +5,10 @@
 <lastmod>2016-05-24T13:10:30+08:00</lastmod>
 </url>
 <url>
+<loc>http://zhanheng.github.io/blog/2016/05/17/javaScriptFixSideBar/</loc>
+<lastmod>2016-05-17T13:10:30+08:00</lastmod>
+</url>
+<url>
 <loc>http://zhanheng.github.io/blog/2016/05/16/XssSQLSecurity/</loc>
 <lastmod>2016-05-16T10:15:30+08:00</lastmod>
 </url>
@@ -42,5 +46,8 @@
 </url>
 <url>
 <loc>http://zhanheng.github.io/blog/categories/algorithm/</loc>
+</url>
+<url>
+<loc>http://zhanheng.github.io/blog/categories/javascript/</loc>
 </url>
 </urlset>
