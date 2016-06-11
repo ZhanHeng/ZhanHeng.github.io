@@ -9,7 +9,7 @@
   <meta name="author" content="ZhanHeng">
 
   
-  <meta name="description" content="在开发项目的过程中，网站的安全问题不能被忽视，其中Xss跨脚本攻击很常见。下面就XSS攻击做一下基本介绍，同时给出了我自己的解决办法。 XSS又称CSS，全称Cross Site Script，跨站脚本攻击，是Web程序中常见的漏洞，XSS属于被动式且用于客户端的攻击方式，所以容易被忽略其危害性。 &hellip;">
+  <meta name="description" content="Tomcat 是开发过程中经常用到的容器，它是免费的基于 JAVA 的开源 Web 应用服务器。由于它拥有先进的技术、稳定的性能以及良好的扩展性，深受 JAVA 开发者的喜爱以及得到众多软件开发商的认可，成为目前比较流行的 Web 应用服务器。 今天将学习到的Tomcat 虚拟目录配置进行了整理 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -72,7 +72,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2016/05/14/XssSQLSecurity/">防止XSS攻击</a></h1>
+      <h1 class="entry-title"><a href="/blog/2016/05/24/Tomcat/">Tomcat 虚拟目录配置</a></h1>
     
     
       <p class="meta">
@@ -81,7 +81,87 @@
 
 
 
-<time class='entry-date' datetime='2016-05-14T23:10:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>11:10 pm</span></time>
+<time class='entry-date' datetime='2016-05-24T13:10:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:10 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Tomcat 是开发过程中经常用到的容器，它是免费的基于 JAVA 的开源 Web 应用服务器。由于它拥有先进的技术、稳定的性能以及良好的扩展性，深受 JAVA 开发者的喜爱以及得到众多软件开发商的认可，成为目前比较流行的 Web 应用服务器。 今天将学习到的Tomcat 虚拟目录配置进行了整理。</p>
+
+<h4>例如：<a href="http://www.xyz.com/course/1024.html">http://www.xyz.com/course/1024.html</a></h4>
+
+<h5>1.Tomcat的基准目录、根目录 。</h5>
+
+<p>上述URL中www.xyz.com表示：WEB服务器的地址(名称)，后边的‘/’代表站点根目录</p>
+
+<p>Tomcat的默认根目录是：apache-tomcat-8.0.24\webapps\ROOT
+其中webapps是Tomcat的默认基准目录，Tomcat启动时会加载基准目录下的所有web应用.</p>
+
+<p>修改基准目录的方法：</p>
+
+<h5>方法一：通过修改conf文件夹下的server.xml文件的的Host节点在的appbase属性即可。</h5>
+
+<blockquote><p><code>&lt;Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="true"&gt;&lt;/Host&gt;</code></p></blockquote>
+
+<h5>方法二：使用server.xml文件中的<Context>元素（不建议）</h5>
+
+<blockquote><p><code>&lt;Context docBase="E:\myapp" path="" autoDeploy="true"&gt;</code></p></blockquote>
+
+<h5>方法三：在<catalina_home>/conf/Catalina/localhost/下增加ROOT.xml文件（推荐）</h5>
+
+<blockquote><p><code>&lt;Context docBase="E:\myapp" path="" autoDeploy="true"&gt;</code></p></blockquote>
+
+<h5>2.虚拟子目录。</h5>
+
+<p>物理目录：实际存放在主目录(根目录)的子文件夹</p>
+
+<p>虚拟子目录：URL地址中不存在于主目录(根目录)下的子文件夹</p>
+
+<p>上述URL中的course就是一个虚拟子目录。</p>
+
+<p>下面介绍 修改虚拟子目录的方法：</p>
+
+<h5>方法一：通过修改conf文件夹下的server.xml文件的的<Context>元素在的path属性即可,默认是空的。（不建议）</h5>
+
+<blockquote><p><code>&lt;Context docBase="E:\myapp" path="/myweb" autoDeploy="true"&gt;</code></p></blockquote>
+
+<h5>方法二：在<catalina_home>/conf/Catalina/localhost/下增加xml文件,增加<Context>元素这种方法path属性中的值不再起作用，xml文件名就是虚拟子目录的名称</h5>
+
+<p>先在E盘建一个mycourse文件夹并新建个test.html文件，在<catalina_home>/conf/Catalina/localhost/下增加course.xml文件,增加<Context>元素，最后访问localhost:8080/course/test.html即可。</p>
+
+<p>如果有多级子目录，文件名中的‘/’改用‘#’代替,例如myapp#course.xml,最后访问localhost:8080/myapp/course/test.html即可。</p>
+
+<blockquote><p><code>&lt;Context docBase="E:\mycourse" path="" autoDeploy="true"&gt;</code></p></blockquote>
+
+<h5>方法三：在基准目录下直接放文件夹（通俗易懂）</h5>
+
+<h5>方法四：在基准目录下直接放WAR文件</h5>
+
+<p> 由于 有 unpackWARs=&ldquo;true&rdquo; autoDeploy=&ldquo;true&rdquo; 这两个属性。自动解压并且部署</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/05/16/XssSQLSecurity/">防止XSS攻击</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-05-16T10:15:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:15 am</span></time>
         
       </p>
     
@@ -291,59 +371,6 @@
 <blockquote><p><a href="http://www.2cto.com/Article/201312/264747.html">http://www.2cto.com/Article/201312/264747.html</a></p>
 
 <p><a href="http://hc24.iteye.com/blog/1995213">http://hc24.iteye.com/blog/1995213</a></p></blockquote>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/05/14/Tomcat/">Tomcat 虚拟目录配置</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-05-14T23:10:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>11:10 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Tomcat 是开发过程中经常用到的容器，它是免费的基于 JAVA 的开源 Web 应用服务器。由于它拥有先进的技术、稳定的性能以及良好的扩展性，深受 JAVA 开发者的喜爱以及得到众多软件开发商的认可，成为目前比较流行的 Web 应用服务器。 今天将学习到的Tomcat 虚拟目录配置进行了整理。</p>
-
-<h4>例如：<a href="http://www.xyz.com/course/1024.html">http://www.xyz.com/course/1024.html</a></h4>
-
-<h5>1.Tomcat的基准目录、根目录 。</h5>
-
-<p>上述URL中www.xyz.com表示：WEB服务器的地址(名称)，后边的‘/’代表站点根目录</p>
-
-<p>Tomcat的默认根目录是：apache-tomcat-8.0.24\webapps\ROOT
-其中webapps是Tomcat的默认基准目录，Tomcat启动时会加载基准目录下的所有web应用.</p>
-
-<p>修改基准目录 通过修改conf文件夹下的server.xml文件的的Host节点在的appbase属性即可。</p>
-
-<p><Host name="localhost" appBase="webapps" unpackWARs="true"
-autoDeploy="true"></Host></p>
-
-<h5>2.虚拟子目录。</h5>
-
-<p>物理目录：实际存放在主目录(根目录)的子文件夹</p>
-
-<p>虚拟子目录：URL地址中不存在于主目录(根目录)下的子文件夹</p>
-
-<p>上述URL中的course就是一个虚拟子目录</p>
-
-<h5>3.虚拟目录的映射原理。</h5>
 </div>
   
   
@@ -680,11 +707,11 @@ Configure your HikariCP idleTimeout and maxLifeTime settings to be one minute le
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2016/05/14/XssSQLSecurity/">防止XSS攻击</a>
+        <a href="/blog/2016/05/24/Tomcat/">Tomcat 虚拟目录配置</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2016/05/14/Tomcat/">Tomcat 虚拟目录配置</a>
+        <a href="/blog/2016/05/16/XssSQLSecurity/">防止XSS攻击</a>
       </li>
     
       <li class="post">

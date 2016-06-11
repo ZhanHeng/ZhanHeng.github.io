@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Security | JustDoit]]></title>
   <link href="http://zhanheng.github.io/blog/categories/security/atom.xml" rel="self"/>
   <link href="http://zhanheng.github.io/"/>
-  <updated>2016-06-02T23:53:12+08:00</updated>
+  <updated>2016-06-11T14:16:58+08:00</updated>
   <id>http://zhanheng.github.io/</id>
   <author>
     <name><![CDATA[ZhanHeng]]></name>
@@ -14,10 +14,70 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Tomcat 虚拟目录配置]]></title>
+    <link href="http://zhanheng.github.io/blog/2016/05/24/Tomcat/"/>
+    <updated>2016-05-24T13:10:30+08:00</updated>
+    <id>http://zhanheng.github.io/blog/2016/05/24/Tomcat</id>
+    <content type="html"><![CDATA[<p>Tomcat 是开发过程中经常用到的容器，它是免费的基于 JAVA 的开源 Web 应用服务器。由于它拥有先进的技术、稳定的性能以及良好的扩展性，深受 JAVA 开发者的喜爱以及得到众多软件开发商的认可，成为目前比较流行的 Web 应用服务器。 今天将学习到的Tomcat 虚拟目录配置进行了整理。</p>
+
+<h4>例如：<a href="http://www.xyz.com/course/1024.html">http://www.xyz.com/course/1024.html</a></h4>
+
+<h5>1.Tomcat的基准目录、根目录 。</h5>
+
+<p>上述URL中www.xyz.com表示：WEB服务器的地址(名称)，后边的‘/’代表站点根目录</p>
+
+<p>Tomcat的默认根目录是：apache-tomcat-8.0.24\webapps\ROOT
+其中webapps是Tomcat的默认基准目录，Tomcat启动时会加载基准目录下的所有web应用.</p>
+
+<p>修改基准目录的方法：</p>
+
+<h5>方法一：通过修改conf文件夹下的server.xml文件的的Host节点在的appbase属性即可。</h5>
+
+<blockquote><p><code>&lt;Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="true"&gt;&lt;/Host&gt;</code></p></blockquote>
+
+<h5>方法二：使用server.xml文件中的<Context>元素（不建议）</h5>
+
+<blockquote><p><code>&lt;Context docBase="E:\myapp" path="" autoDeploy="true"&gt;</code></p></blockquote>
+
+<h5>方法三：在<catalina_home>/conf/Catalina/localhost/下增加ROOT.xml文件（推荐）</h5>
+
+<blockquote><p><code>&lt;Context docBase="E:\myapp" path="" autoDeploy="true"&gt;</code></p></blockquote>
+
+<h5>2.虚拟子目录。</h5>
+
+<p>物理目录：实际存放在主目录(根目录)的子文件夹</p>
+
+<p>虚拟子目录：URL地址中不存在于主目录(根目录)下的子文件夹</p>
+
+<p>上述URL中的course就是一个虚拟子目录。</p>
+
+<p>下面介绍 修改虚拟子目录的方法：</p>
+
+<h5>方法一：通过修改conf文件夹下的server.xml文件的的<Context>元素在的path属性即可,默认是空的。（不建议）</h5>
+
+<blockquote><p><code>&lt;Context docBase="E:\myapp" path="/myweb" autoDeploy="true"&gt;</code></p></blockquote>
+
+<h5>方法二：在<catalina_home>/conf/Catalina/localhost/下增加xml文件,增加<Context>元素这种方法path属性中的值不再起作用，xml文件名就是虚拟子目录的名称</h5>
+
+<p>先在E盘建一个mycourse文件夹并新建个test.html文件，在<catalina_home>/conf/Catalina/localhost/下增加course.xml文件,增加<Context>元素，最后访问localhost:8080/course/test.html即可。</p>
+
+<p>如果有多级子目录，文件名中的‘/’改用‘#’代替,例如myapp#course.xml,最后访问localhost:8080/myapp/course/test.html即可。</p>
+
+<blockquote><p><code>&lt;Context docBase="E:\mycourse" path="" autoDeploy="true"&gt;</code></p></blockquote>
+
+<h5>方法三：在基准目录下直接放文件夹（通俗易懂）</h5>
+
+<h5>方法四：在基准目录下直接放WAR文件</h5>
+
+<p> 由于 有 unpackWARs=&ldquo;true&rdquo; autoDeploy=&ldquo;true&rdquo; 这两个属性。自动解压并且部署</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[防止XSS攻击]]></title>
-    <link href="http://zhanheng.github.io/blog/2016/05/14/XssSQLSecurity/"/>
-    <updated>2016-05-14T23:10:30+08:00</updated>
-    <id>http://zhanheng.github.io/blog/2016/05/14/XssSQLSecurity</id>
+    <link href="http://zhanheng.github.io/blog/2016/05/16/XssSQLSecurity/"/>
+    <updated>2016-05-16T10:15:30+08:00</updated>
+    <id>http://zhanheng.github.io/blog/2016/05/16/XssSQLSecurity</id>
     <content type="html"><![CDATA[<p>在开发项目的过程中，网站的安全问题不能被忽视，其中Xss跨脚本攻击很常见。下面就XSS攻击做一下基本介绍，同时给出了我自己的解决办法。</p>
 
 <h5>XSS又称CSS，全称Cross Site Script，跨站脚本攻击，是Web程序中常见的漏洞，XSS属于被动式且用于客户端的攻击方式，所以容易被忽略其危害性。其原理是攻击者向有XSS漏洞的网站中输入(传入)恶意的HTML代码，当其它用户浏览该网站时，这段HTML代码会自动执行，从而达到攻击的目的。如，盗取用户Cookie、破坏页面结构、重定向到其它网站等。</h5>
@@ -219,39 +279,6 @@
 <span class='line-number'>180</span>
 <span class='line-number'>181</span>
 <span class='line-number'>182</span>
-<span class='line-number'>183</span>
-<span class='line-number'>184</span>
-<span class='line-number'>185</span>
-<span class='line-number'>186</span>
-<span class='line-number'>187</span>
-<span class='line-number'>188</span>
-<span class='line-number'>189</span>
-<span class='line-number'>190</span>
-<span class='line-number'>191</span>
-<span class='line-number'>192</span>
-<span class='line-number'>193</span>
-<span class='line-number'>194</span>
-<span class='line-number'>195</span>
-<span class='line-number'>196</span>
-<span class='line-number'>197</span>
-<span class='line-number'>198</span>
-<span class='line-number'>199</span>
-<span class='line-number'>200</span>
-<span class='line-number'>201</span>
-<span class='line-number'>202</span>
-<span class='line-number'>203</span>
-<span class='line-number'>204</span>
-<span class='line-number'>205</span>
-<span class='line-number'>206</span>
-<span class='line-number'>207</span>
-<span class='line-number'>208</span>
-<span class='line-number'>209</span>
-<span class='line-number'>210</span>
-<span class='line-number'>211</span>
-<span class='line-number'>212</span>
-<span class='line-number'>213</span>
-<span class='line-number'>214</span>
-<span class='line-number'>215</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'> &lt;filter&gt;
 </span><span class='line'>    &lt;filter-name&gt;XssFilter&lt;/filter-name&gt;
 </span><span class='line'>    &lt;filter-class&gt;test.XssFilter&lt;/filter-class&gt;
@@ -354,39 +381,6 @@
 </span><span class='line'>&lt;blockquote&gt;&lt;p&gt;&lt;a href="http://www.2cto.com/Article/201312/264747.html"&gt;http://www.2cto.com/Article/201312/264747.html&lt;/a&gt;&lt;/p&gt;
 </span><span class='line'>
 </span><span class='line'>&lt;p&gt;&lt;a href="http://hc24.iteye.com/blog/1995213"&gt;http://hc24.iteye.com/blog/1995213&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
-</span><span class='line'>]]&gt;&lt;/content&gt;
-</span><span class='line'>  &lt;/entry&gt;
-</span><span class='line'>  
-</span><span class='line'>  &lt;entry&gt;
-</span><span class='line'>&lt;title type="html"&gt;&lt;![CDATA[Tomcat 虚拟目录配置]]&gt;&lt;/title&gt;
-</span><span class='line'>&lt;link href="http://zhanheng.github.io/blog/2016/05/14/Tomcat/"/&gt;
-</span><span class='line'>&lt;updated&gt;2016-05-14T23:10:30+08:00&lt;/updated&gt;
-</span><span class='line'>&lt;id&gt;http://zhanheng.github.io/blog/2016/05/14/Tomcat&lt;/id&gt;
-</span><span class='line'>&lt;content type="html"&gt;&lt;![CDATA[&lt;p&gt;Tomcat 是开发过程中经常用到的容器，它是免费的基于 JAVA 的开源 Web 应用服务器。由于它拥有先进的技术、稳定的性能以及良好的扩展性，深受 JAVA 开发者的喜爱以及得到众多软件开发商的认可，成为目前比较流行的 Web 应用服务器。 今天将学习到的Tomcat 虚拟目录配置进行了整理。&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h4&gt;例如：&lt;a href="http://www.xyz.com/course/1024.html"&gt;http://www.xyz.com/course/1024.html&lt;/a&gt;&lt;/h4&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h5&gt;1.Tomcat的基准目录、根目录 。&lt;/h5&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;上述URL中www.xyz.com表示：WEB服务器的地址(名称)，后边的‘/’代表站点根目录&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;Tomcat的默认根目录是：apache-tomcat-8.0.24\webapps\ROOT
-</span><span class='line'>其中webapps是Tomcat的默认基准目录，Tomcat启动时会加载基准目录下的所有web应用.&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;修改基准目录 通过修改conf文件夹下的server.xml文件的的Host节点在的appbase属性即可。&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;&lt;Host name="localhost" appBase="webapps" unpackWARs="true"
-</span><span class='line'>autoDeploy="true"&gt;&lt;/Host&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h5&gt;2.虚拟子目录。&lt;/h5&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;物理目录：实际存放在主目录(根目录)的子文件夹&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;虚拟子目录：URL地址中不存在于主目录(根目录)下的子文件夹&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;上述URL中的course就是一个虚拟子目录&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h5&gt;3.虚拟目录的映射原理。&lt;/h5&gt;
 </span><span class='line'>]]&gt;&lt;/content&gt;
 </span><span class='line'>  &lt;/entry&gt;
 </span><span class='line'>  
