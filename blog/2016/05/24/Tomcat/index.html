@@ -1,0 +1,290 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Tomcat 虚拟目录配置 - Ranger</title>
+  <meta name="author" content="Zhan">
+
+  
+  <meta name="description" content="Tomcat 是开发过程中经常用到的容器，它是免费的基于 JAVA 的开源 Web 应用服务器。由于它拥有先进的技术、稳定的性能以及良好的扩展性，深受 JAVA 开发者的喜爱以及得到众多软件开发商的认可，成为目前比较流行的 Web 应用服务器。 今天将学习到的Tomcat 虚拟目录配置进行了整理 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://zhanheng.github.io/blog/2016/05/24/Tomcat/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Ranger" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Ranger</a></h1>
+  
+    <h2>简单不先于复杂，而是在复杂之后.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="zhanheng.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">博客</a></li>
+  <li><a href="/blog/archives">列表</a></li>
+  <li><a href="/aboutme">关于</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Tomcat 虚拟目录配置</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-05-24T13:10:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:10 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Tomcat 是开发过程中经常用到的容器，它是免费的基于 JAVA 的开源 Web 应用服务器。由于它拥有先进的技术、稳定的性能以及良好的扩展性，深受 JAVA 开发者的喜爱以及得到众多软件开发商的认可，成为目前比较流行的 Web 应用服务器。 今天将学习到的Tomcat 虚拟目录配置进行了整理。</p>
+
+<h4>例如：<a href="http://www.xyz.com/course/1024.html">http://www.xyz.com/course/1024.html</a></h4>
+
+<h5>1.Tomcat的基准目录、根目录 。</h5>
+
+<p>上述URL中www.xyz.com表示：WEB服务器的地址(名称)，后边的‘/’代表站点根目录</p>
+
+<p>Tomcat的默认根目录是：apache-tomcat-8.0.24\webapps\ROOT
+其中webapps是Tomcat的默认基准目录，Tomcat启动时会加载基准目录下的所有web应用.</p>
+
+<p>修改基准目录的方法：</p>
+
+<h5>方法一：通过修改conf文件夹下的server.xml文件的的Host节点在的appbase属性即可。</h5>
+
+<blockquote><p><code>&lt;Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="true"&gt;&lt;/Host&gt;</code></p></blockquote>
+
+<h5>方法二：使用server.xml文件中的<Context>元素（不建议）</h5>
+
+<blockquote><p><code>&lt;Context docBase="E:\myapp" path="" autoDeploy="true"&gt;</code></p></blockquote>
+
+<h5>方法三：在<catalina_home>/conf/Catalina/localhost/下增加ROOT.xml文件（推荐）</h5>
+
+<blockquote><p><code>&lt;Context docBase="E:\myapp" path="" autoDeploy="true"&gt;</code></p></blockquote>
+
+<h5>2.虚拟子目录。</h5>
+
+<p>物理目录：实际存放在主目录(根目录)的子文件夹</p>
+
+<p>虚拟子目录：URL地址中不存在于主目录(根目录)下的子文件夹</p>
+
+<p>上述URL中的course就是一个虚拟子目录。</p>
+
+<p>下面介绍 修改虚拟子目录的方法：</p>
+
+<h5>方法一：通过修改conf文件夹下的server.xml文件的的<Context>元素在的path属性即可,默认是空的。（不建议）</h5>
+
+<blockquote><p><code>&lt;Context docBase="E:\myapp" path="/myweb" autoDeploy="true"&gt;</code></p></blockquote>
+
+<h5>方法二：在<catalina_home>/conf/Catalina/localhost/下增加xml文件,增加<Context>元素这种方法path属性中的值不再起作用，xml文件名就是虚拟子目录的名称</h5>
+
+<p>先在E盘建一个mycourse文件夹并新建个test.html文件，在<catalina_home>/conf/Catalina/localhost/下增加course.xml文件,增加<Context>元素，最后访问localhost:8080/course/test.html即可。</p>
+
+<p>如果有多级子目录，文件名中的‘/’改用‘#’代替,例如myapp#course.xml,最后访问localhost:8080/myapp/course/test.html即可。</p>
+
+<blockquote><p><code>&lt;Context docBase="E:\mycourse" path="" autoDeploy="true"&gt;</code></p></blockquote>
+
+<h5>方法三：在基准目录下直接放文件夹（通俗易懂）</h5>
+
+<h5>方法四：在基准目录下直接放WAR文件</h5>
+
+<p> 由于 有 unpackWARs=&ldquo;true&rdquo; autoDeploy=&ldquo;true&rdquo; 这两个属性。自动解压并且部署</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Zhan</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-05-24T13:10:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:10 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/security/'>security</a>, <a class='category' href='/blog/categories/web/'>web</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing" style="margin-bottom:15px">
+  
+  
+  
+  
+    <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_32x32">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  
+</div>
+
+    
+    <p class="meta" style="margin-top:15px">
+      
+        <a class="basic-alignment left" href="/blog/2016/05/20/DataBasePool/" title="Previous Post: Java数据库连接池之 HikariCP">&laquo; Java数据库连接池之 HikariCP</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2016/06/11/jsfixedsidebar/" title="Next Post: jQuery实现常用功能">jQuery实现常用功能 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite">
+<div class="ds-thread" data-source-thread-id="/blog/2016/05/24/Tomcat" data-title="Tomcat 虚拟目录配置"  data-url="http://zhanheng.github.io/blog/2016/05/24/Tomcat/" ></div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jikeblog"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:' )+ 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 
+
+<script type="text/javascript">
+var duoshuoQuery = {short_name: "dtyu100"};
+(function(){
+	var ds = document.createElement("script");
+	ds.type = "text/javascript"; ds.async= true;
+	ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:' )+ '//static.duoshuo.com/embed.js';
+	ds.charset = "utf-8";
+	(document.getElementsByTagName('head')[0]
+	|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+--></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>最近发布</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/06/11/jsfixedsidebar/">jQuery实现常用功能</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/24/Tomcat/">Tomcat 虚拟目录配置</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/20/DataBasePool/">Java数据库连接池之 HikariCP</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/16/XssSQLSecurity/">防止XSS攻击</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/14/StringEncrypt/">字符串加密</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Zhan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

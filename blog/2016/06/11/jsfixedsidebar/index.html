@@ -1,0 +1,481 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>jQuery实现常用功能 - Ranger</title>
+  <meta name="author" content="Zhan">
+
+  
+  <meta name="description" content="1.在实际开发过程中，当网页内容往下滚动一定距离的时候，左边的菜单栏通常需要固定。 原生js： 1.封装原生的js常用方法 2.对sideBar进行固定操作，改变其css 封装原生js的常用方法 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+&lt;script> var Getid = &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://zhanheng.github.io/blog/2016/06/11/jsfixedsidebar/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Ranger" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Ranger</a></h1>
+  
+    <h2>简单不先于复杂，而是在复杂之后.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="zhanheng.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">博客</a></li>
+  <li><a href="/blog/archives">列表</a></li>
+  <li><a href="/aboutme">关于</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">jQuery实现常用功能</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-06-11T14:34:59+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>2:34 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h4>1.在实际开发过程中，当网页内容往下滚动一定距离的时候，左边的菜单栏通常需要固定。</h4>
+
+<p>原生js：</p>
+
+<pre><code>1.封装原生的js常用方法     2.对sideBar进行固定操作，改变其css
+</code></pre>
+
+<figure class='code'><figcaption><span>封装原生js的常用方法 </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script>
+</span><span class='line'>      var Getid = function(id){ return document.getElementById(id);}
+</span><span class='line'>      var addEvent = function(obj,event,fun){
+</span><span class='line'>          if(obj.addEventListener()){
+</span><span class='line'>              obj.addEventListener(event,fun,false);
+</span><span class='line'>          }else if(obj.attachEvent()){
+</span><span class='line'>              obj.attachEvent("on"+event,fun);
+</span><span class='line'>          }
+</span><span class='line'>      }
+</span><span class='line'>  &lt;/script></span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span>用jQuery改变侧边栏的css </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script>
+</span><span class='line'>      //获取菜单栏的div
+</span><span class='line'>      var lnSider = Getid("left-nav"); 
+</span><span class='line'>      addEvent(window,"scroll",function(){
+</span><span class='line'>      var scrollHeight = document.body.scrollTop;
+</span><span class='line'>      var contentHeight=Getid("changeid").offsetHeight - lnSider.offsetHeight;
+</span><span class='line'>      if(scrollHeight>253 && scrollHeight&lt;contentHeight+253){
+</span><span class='line'>          lnSider.style.position = "absolute";
+</span><span class='line'>          lnSider.style.left = "0px";
+</span><span class='line'>          lnSider.style.top = scrollHeight - 253 +"px";
+</span><span class='line'>      }else if(scrollHeight&lt;=253){
+</span><span class='line'>          lnSider.style.position = "absolute";
+</span><span class='line'>          lnSider.style.left = "0px";
+</span><span class='line'>          lnSider.style.top = "0px";
+</span><span class='line'>      }
+</span><span class='line'>  });
+</span><span class='line'>  &lt;/script></span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用jQuery进行代码优化</p>
+
+<figure class='code'><figcaption><span>用js改变侧边栏的css </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script>
+</span><span class='line'>      //获取window对象
+</span><span class='line'>      var jWindow = $(window); 
+</span><span class='line'>      jWindow.scroll(function(){
+</span><span class='line'>          var scrollHeight = jWindow.scrollTop();
+</span><span class='line'>          var contentHeight= $("#changeid").Height() - $("#left-nav").Height();
+</span><span class='line'>          if(scrollHeight>253 && scrollHeight&lt;contentHeight+253){
+</span><span class='line'>              $("#left-nav").css({
+</span><span class='line'>                  position:"absolute";
+</span><span class='line'>                  left:"0px";
+</span><span class='line'>                  top:scrollHeight - 253 +"px";
+</span><span class='line'>              });
+</span><span class='line'>          }else if(scrollHeight&lt;=253){
+</span><span class='line'>              $("#left-nav").css({
+</span><span class='line'>                  position:"absolute";
+</span><span class='line'>                  left:"0px";
+</span><span class='line'>                  top:"0px";
+</span><span class='line'>              });
+</span><span class='line'>          }
+</span><span class='line'>      });
+</span><span class='line'>  &lt;/script></span></code></pre></td></tr></table></div></figure>
+
+
+<h4>2.用jQuery实现图片的瀑布流并模拟动态加载 ，实际应用中很常见。</h4>
+
+<p>主要思想就是:先获取每个照片盒子的宽度，计算出屏幕能放几张照片。从第二行的照片开始，放在上一行高度最小的照片下面</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//实现瀑布流图片定位
+</span><span class='line'>function imgLocation(){
+</span><span class='line'>    var box = $(".box");
+</span><span class='line'>    var boxWidth = box.eq(0).width();
+</span><span class='line'>    var num = Math.floor($(window).width()/boxWidth);
+</span><span class='line'>  //存第一行照片的高度
+</span><span class='line'>    var boxArr=[];
+</span><span class='line'>    box.each(function(index,value){
+</span><span class='line'>        var boxHeight = box.eq(index).height();
+</span><span class='line'>        if(index&lt;num){
+</span><span class='line'>            boxArr[index]= boxHeight;
+</span><span class='line'>        }else{
+</span><span class='line'>          //找到boxArr数组中最小的高度
+</span><span class='line'>            var minboxHeight = Math.min.apply(null,boxArr);
+</span><span class='line'>          //找到boxArr数组中最小的高度的下标索引
+</span><span class='line'>            var minboxIndex = $.inArray(minboxHeight,boxArr);
+</span><span class='line'>          //找到位置后，改变当前照片盒子的CSS样式
+</span><span class='line'>            $(value).css({
+</span><span class='line'>                "position":"absolute",
+</span><span class='line'>                "top":minboxHeight,
+</span><span class='line'>                "left":box.eq(minboxIndex).position().left
+</span><span class='line'>            });
+</span><span class='line'>          //堆叠照片以后，更新数组的值
+</span><span class='line'>            boxArr[minboxIndex]+=box.eq(index).height();
+</span><span class='line'>        }
+</span><span class='line'>    });
+</span><span class='line'>}
+</span><span class='line'>// 是否滚动到最后一张照片的一半的位置
+</span><span class='line'>function scrollside(){
+</span><span class='line'>    var box = $(".box");
+</span><span class='line'>    var lastboxHeight = box.last().get(0).offsetTop+Math.floor(box.last().height()/2);
+</span><span class='line'>    var documentHeight = $(document).width();
+</span><span class='line'>    var scrollHeight = $(window).scrollTop();
+</span><span class='line'>    return (lastboxHeight&lt;scrollHeight+documentHeight)?true:false;
+</span><span class='line'>}
+</span><span class='line'>// 模拟动态加载的过程
+</span><span class='line'>$(document).ready(function(){
+</span><span class='line'>    $(window).on("load",function(){
+</span><span class='line'>        imgLocation();
+</span><span class='line'>      //模拟后台加载出来的数据
+</span><span class='line'>        var dataImg = {"data":[{"src":"1.jpg"},{"src":"2.jpg"},{"src":"3.jpg"},{"src":"4.jpg"},{"src":"5.jpg"}]};
+</span><span class='line'>        window.onscroll = function(){
+</span><span class='line'>            if(scrollside()){
+</span><span class='line'>              if($(".box").length&lt;=125){
+</span><span class='line'>                  $.each(dataImg.data,function(index,value){
+</span><span class='line'>                    var box = $("&lt;div>").addClass("box").appendTo($("#container"));
+</span><span class='line'>                    var content = $("&lt;div>").addClass("content").appendTo(box);
+</span><span class='line'>                    $("&lt;img>").attr("src","./img/"+$(value).attr("src")).appendTo(content);
+</span><span class='line'>                  });
+</span><span class='line'>                  // 图片加入以后实现瀑布流定位
+</span><span class='line'>                  imgLocation();
+</span><span class='line'>              }else{
+</span><span class='line'>                  return false;
+</span><span class='line'>              }
+</span><span class='line'>            }
+</span><span class='line'>        };
+</span><span class='line'>    });
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Zhan</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-06-11T14:34:59+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>2:34 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>, <a class='category' href='/blog/categories/jquery/'>jquery</a>, <a class='category' href='/blog/categories/webqian-duan/'>web前端</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing" style="margin-bottom:15px">
+  
+  
+  
+  
+    <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_32x32">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  
+</div>
+
+    
+    <p class="meta" style="margin-top:15px">
+      
+        <a class="basic-alignment left" href="/blog/2016/05/24/Tomcat/" title="Previous Post: Tomcat 虚拟目录配置">&laquo; Tomcat 虚拟目录配置</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite">
+<div class="ds-thread" data-source-thread-id="/blog/2016/06/11/jsfixedsidebar" data-title="jQuery实现常用功能"  data-url="http://zhanheng.github.io/blog/2016/06/11/jsfixedsidebar/" ></div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jikeblog"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:' )+ 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 
+
+<script type="text/javascript">
+var duoshuoQuery = {short_name: "dtyu100"};
+(function(){
+	var ds = document.createElement("script");
+	ds.type = "text/javascript"; ds.async= true;
+	ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:' )+ '//static.duoshuo.com/embed.js';
+	ds.charset = "utf-8";
+	(document.getElementsByTagName('head')[0]
+	|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+--></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>最近发布</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/06/11/jsfixedsidebar/">jQuery实现常用功能</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/24/Tomcat/">Tomcat 虚拟目录配置</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/20/DataBasePool/">Java数据库连接池之 HikariCP</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/16/XssSQLSecurity/">防止XSS攻击</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/05/14/StringEncrypt/">字符串加密</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Zhan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
