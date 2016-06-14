@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Algorithm | Ranger]]></title>
   <link href="http://zhanheng.github.io/blog/categories/algorithm/atom.xml" rel="self"/>
   <link href="http://zhanheng.github.io/"/>
-  <updated>2016-06-12T13:15:40+08:00</updated>
+  <updated>2016-06-15T02:24:30+08:00</updated>
   <id>http://zhanheng.github.io/</id>
   <author>
     <name><![CDATA[Zhan]]></name>
@@ -12,6 +12,338 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[页面置换算法FIFO和LRU的JAVA实现]]></title>
+    <link href="http://zhanheng.github.io/blog/2016/06/14/fifoandlru/"/>
+    <updated>2016-06-14T14:39:53+08:00</updated>
+    <id>http://zhanheng.github.io/blog/2016/06/14/fifoandlru</id>
+    <content type="html"><![CDATA[<h3>1.先看最简单的FIFO算法，获取未命中次数：</h3>
+
+<p><figure class='code'><figcaption><span>FIFO 模拟实现Java </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import java.util.*;&lt;/p>
+</span><span class='line'>
+</span><span class='line'>&lt;pre>&lt;code>public class FIFO {
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'> *  FIFO算法
+</span><span class='line'> */
+</span><span class='line'>private static final int PRO_MEMORY = 3;            //系统分配的内存块数
+</span><span class='line'>private static int[] pages = new int[PRO_MEMORY];   //用数组模拟内存块
+</span><span class='line'>public static void main(String[] args){
+</span><span class='line'>    System.out.println("--------FIFO算法------------");
+</span><span class='line'>    int[] arr ={1 ,2 ,3 ,4 ,5 ,1 ,2 ,5 ,1 ,2 ,3 ,4 ,5};
+</span><span class='line'>    System.out.println(getMissTimes(PRO_MEMORY, arr));
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>//查找内存中是否有该页面
+</span><span class='line'>public static boolean search(int pageId){
+</span><span class='line'>     for(int i=0;i&lt;pages.length;i++){  
+</span><span class='line'>            if(pages[i] == pageId){  
+</span><span class='line'>                return true;  
+</span><span class='line'>            }  
+</span><span class='line'>        }  
+</span><span class='line'>        return false;  
+</span><span class='line'>}
+</span><span class='line'>//显示当前内存页
+</span><span class='line'>public static void display(){
+</span><span class='line'>    System.out.print("当前内存中的页数为:");
+</span><span class='line'>     for(int i=0;i&lt;pages.length;i++)
+</span><span class='line'>         System.out.print(pages[i]+" "); 
+</span><span class='line'>     System.out.println();
+</span><span class='line'>}
+</span><span class='line'>//获取缺页次数
+</span><span class='line'>public static int getMissTimes(int maxcache ,int[] cache){
+</span><span class='line'>    int countOldPoint = 0;  //纪录最久的页面下标
+</span><span class='line'>    int count = 0 ;         //纪录当前在使用的总页面数  
+</span><span class='line'>    int lackTime = 0 ;      //缺页次数
+</span><span class='line'>    //列表置入替换
+</span><span class='line'>    for(int i = 0 ; i&lt;cache.length ; i++){
+</span><span class='line'>        countOldPoint = countOldPoint % maxcache;
+</span><span class='line'>        int inPageId = cache[i];
+</span><span class='line'>        //查找内存中是否有该页面
+</span><span class='line'>        if(search(inPageId)){   //命中了，不做任何操作
+</span><span class='line'>            System.out.print("页号"+inPageId+"命中！");
+</span><span class='line'>        }
+</span><span class='line'>        else if(count&lt;maxcache){//有空闲内存页
+</span><span class='line'>            pages[count] = inPageId;
+</span><span class='line'>            count ++;
+</span><span class='line'>            lackTime ++;
+</span><span class='line'>        }
+</span><span class='line'>        else{                   //没命中，则替换
+</span><span class='line'>            int outPageId = pages[countOldPoint];
+</span><span class='line'>            pages[countOldPoint] = inPageId;
+</span><span class='line'>            System.out.print("页号"+inPageId+" 正在放入内存 , 页号 "+outPageId+"被替换出去  ，");
+</span><span class='line'>            lackTime ++;
+</span><span class='line'>            countOldPoint ++;
+</span><span class='line'>        }
+</span><span class='line'>        display();
+</span><span class='line'>    }
+</span><span class='line'>    return lackTime;
+</span><span class='line'>}
+</span><span class='line'>}
+</span><span class='line'>&lt;/code>&lt;/pre>
+</span><span class='line'>
+</span><span class='line'>&lt;p></span></code></pre></td></tr></table></div></figure></p>
+
+<h3>2.最近最久未使用(LRU)算法，获取未命中次数</h3>
+
+<p><figure class='code'><figcaption><span>LRU 模拟实现Java </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import java.util.&lt;em>;
+</span><span class='line'>    public class LRU {
+</span><span class='line'>    /**
+</span><span class='line'>    *  LRU算法
+</span><span class='line'>    &lt;/em>/
+</span><span class='line'>    private static Queue&lt;Integer> queue = new LinkedList&lt;Integer>(); //用队列模拟
+</span><span class='line'>    public static void main(String[] args) {
+</span><span class='line'>        System.out.println(&ldquo;&mdash;&mdash;-LRU算法&mdash;&mdash;&mdash;&mdash;&rdquo;);
+</span><span class='line'>        int[] arr ={1 ,2 ,3 ,4 ,5 ,1 ,2 ,5 ,1 ,2 ,3 ,4 ,5};
+</span><span class='line'>        System.out.println(getLRUMissTimes(3,  arr));
+</span><span class='line'>    }
+</span><span class='line'>    //查找内存中是否有该页面
+</span><span class='line'>    public static boolean search(int pageId){
+</span><span class='line'>            Iterator&lt;Integer> iter = queue.iterator();
+</span><span class='line'>            while (iter.hasNext()) {
+</span><span class='line'>                Integer temp = (Integer) iter.next();
+</span><span class='line'>                if (temp==pageId) {
+</span><span class='line'>                    return true;
+</span><span class='line'>                }
+</span><span class='line'>            }
+</span><span class='line'>            return false;
+</span><span class='line'>    }
+</span><span class='line'>    //将命中元素更新到 队列末尾
+</span><span class='line'>    public static void update(int pageId){
+</span><span class='line'>        Iterator&lt;Integer> iter = queue.iterator();
+</span><span class='line'>        int res = 0;
+</span><span class='line'>        while (iter.hasNext()) {
+</span><span class='line'>            Integer temp = (Integer) iter.next();
+</span><span class='line'>            if (temp==pageId) {
+</span><span class='line'>                res = temp;
+</span><span class='line'>                iter.remove(); // 移除这个元素,然后添加到队列的末端
+</span><span class='line'>                break;
+</span><span class='line'>            }
+</span><span class='line'>        }
+</span><span class='line'>        queue.offer(res);
+</span><span class='line'>    }
+</span><span class='line'>    //显示当前内存页
+</span><span class='line'>    public static void display(){
+</span><span class='line'>        System.out.print(&ldquo;当前内存中的页数为:&rdquo;);
+</span><span class='line'>        Iterator&lt;Integer> iter = queue.iterator();
+</span><span class='line'>        while (iter.hasNext()) {
+</span><span class='line'>            Integer integer = (Integer) iter.next();
+</span><span class='line'>            System.out.print(integer+&ldquo; &rdquo;);
+</span><span class='line'>        }
+</span><span class='line'>        System.out.println();
+</span><span class='line'>    }
+</span><span class='line'>    //获取未命中次数
+</span><span class='line'>    public static int getLRUMissTimes(int maxcache ,int[] cache){
+</span><span class='line'>        int count = 0 ;         //纪录当前在使用的总页面数&lt;br/>
+</span><span class='line'>        int lackTime = 0 ;      //缺页次数
+</span><span class='line'>        for (int i = 0; i &lt; cache.length; i++) {
+</span><span class='line'>            int pageid = cache[i];
+</span><span class='line'>            if(search(pageid)){ // 命中之后，将命中元素调整到队列末尾
+</span><span class='line'>                System.out.print(&ldquo;页号&rdquo;+pageid+&ldquo; 命中！&rdquo;);
+</span><span class='line'>                update(pageid);
+</span><span class='line'>            }else if(count&lt;maxcache){ //有空闲块加入内存
+</span><span class='line'>                queue.offer(pageid);
+</span><span class='line'>                System.out.print(&ldquo;页号&rdquo;+pageid+&ldquo; 正在放入内存  ，&rdquo;);
+</span><span class='line'>                count++;
+</span><span class='line'>                lackTime++;
+</span><span class='line'>            }else{  //没命中,淘汰队列头元素，加入新元素
+</span><span class='line'>                System.out.print(&ldquo;页号&rdquo;+pageid+&ldquo; 正在放入内存 , 页号 &rdquo;+queue.peek()+&ldquo;被替换出去  ，&rdquo;);
+</span><span class='line'>                queue.poll();
+</span><span class='line'>                queue.offer(pageid);
+</span><span class='line'>                lackTime++;
+</span><span class='line'>            }
+</span><span class='line'>            display();
+</span><span class='line'>        }
+</span><span class='line'>        return lackTime;
+</span><span class='line'>    } &lt;br/>
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[异或的神奇]]></title>
+    <link href="http://zhanheng.github.io/blog/2016/06/14/xor/"/>
+    <updated>2016-06-14T10:39:53+08:00</updated>
+    <id>http://zhanheng.github.io/blog/2016/06/14/xor</id>
+    <content type="html"><![CDATA[<p><img src="https://www.lijinma.com/images/post/xor.png" alt="image" /></p>
+
+<h2>什么是异或</h2>
+
+<p><strong>在逻辑学中，逻辑算符异或</strong><code>exclusive or</code><strong>是对两个运算元的一种逻辑析取类型，符号为 XOR 或 EOR 或 ⊕（编程语言中常用</strong><code>^</code><strong>）。但与一般的逻辑或不同，异或算符的值为真仅当两个运算元中恰有一个的值为真，而另外一个的值为非真。转化为命题，就是：“两者的值不同。”或“有且仅有一个为真。</strong></p>
+
+<h3>异或的特性</h3>
+
+<ul>
+<li> 恒等率：    <code>X^0 = X</code></li>
+<li> 归零率：    <code>X^X = 0</code></li>
+<li> 交换律：    <code>X^Y=Y^X</code></li>
+<li> 结合率：    <code>X^(Y^Z)=(X^Y)^Z</code></li>
+</ul>
+
+
+<h2>异或有什么神奇之处（应用）？</h2>
+
+<h3>（1）快速比较两个值</h3>
+
+<p>先让我们来一个简单的问题；判断两个int数字a，b是否相等，你肯定会想到判断<code>a - b == 0</code>，但是如果判断<code>a ^ b == 0</code>效率将会更高</p>
+
+<h3>（2）在汇编语言中经常用于将变量置零：xor a,a；</h3>
+
+<h3>（3）我们可以使用异或来使某些特定的位翻转，因为不管是0或者是1与1做异或将得到原值的相反值；</h3>
+
+<p>例如：翻转<code>10100001</code>的第6位， 答案：可以将该数与<code>00100000</code>进行按位异或运算;<code>10100001</code> ^ <code>00100000</code> = <code>10000001</code></p>
+
+<h3>（4）我们使用异或来判断一个二进制数中1的数量是奇数还是偶数</h3>
+
+<p>例如：求<code>10100001</code>中1的数量是奇数还是偶数； 答案：<code>1 ^ 0 ^ 1 ^ 0 ^ 0 ^ 0 ^ 0 ^ 1 = 1</code>,结果为<code>1</code>就是奇数个1，结果为<code>0</code>就是偶数个1； 应用：这条性质可用于奇偶校验（Parity Check），比如在串口通信过程中，每个字节的数据都计算一个校验位，数据和校验位一起发送出去，这样接收方可以根据校验位粗略地判断接收到的数据是否有误</p>
+
+<h3>（5）校验和恢复</h3>
+
+<p>校验和恢复主要利用的了异或的特性：<code>IF a ^ b = c THEN a ^ c = b</code> 应用：一个很好的应用实例是<code>RAID5</code>，使用3块磁盘（A、B、C）组成<code>RAID5</code>阵列，当用户写数据时，将数据分成两部分，分别写到磁盘A和磁盘B，<code>A ^ B</code>的结果写到磁盘C；当读取A的数据时，通过<code>B ^ C</code>可以对A的数据做校验，当A盘出错时，通过<code>B ^ C</code>也可以恢复A盘的数据。</p>
+
+<p><code>RAID5</code>的实现比上述的描述复杂多了，但是原理就是使用 异或，有兴趣的同学看下<code>RAID5</code></p>
+
+<h3>（6）经典题目：不使用其他空间，交换两个值</h3>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[字符串加密]]></title>

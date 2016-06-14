@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Tomcat 虚拟目录配置 - Ranger</title>
+  <title>异或的神奇 - Ranger</title>
   <meta name="author" content="Zhan">
 
   
-  <meta name="description" content="Tomcat 是开发过程中经常用到的容器，它是免费的基于 JAVA 的开源 Web 应用服务器。由于它拥有先进的技术、稳定的性能以及良好的扩展性，深受 JAVA 开发者的喜爱以及得到众多软件开发商的认可，成为目前比较流行的 Web 应用服务器。 今天将学习到的Tomcat 虚拟目录配置进行了整理 &hellip;">
+  <meta name="description" content="什么是异或 在逻辑学中，逻辑算符异或exclusive or是对两个运算元的一种逻辑析取类型，符号为 XOR 或 EOR 或 ⊕（编程语言中常用^）。但与一般的逻辑或不同，异或算符的值为真仅当两个运算元中恰有一个的值为真，而另外一个的值为非真。转化为命题，就是：“两者的值不同。”或“ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://zhanheng.github.io/blog/2016/05/24/Tomcat/">
+  <link rel="canonical" href="http://zhanheng.github.io/blog/2016/06/14/xor/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Ranger" type="application/atom+xml">
@@ -69,7 +69,7 @@
   
   <header>
     
-      <h1 class="entry-title">Tomcat 虚拟目录配置</h1>
+      <h1 class="entry-title">异或的神奇</h1>
     
     
       <p class="meta">
@@ -78,65 +78,52 @@
 
 
 
-<time class='entry-date' datetime='2016-05-24T13:10:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:10 pm</span></time>
+<time class='entry-date' datetime='2016-06-14T10:39:53+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:39 am</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Tomcat 是开发过程中经常用到的容器，它是免费的基于 JAVA 的开源 Web 应用服务器。由于它拥有先进的技术、稳定的性能以及良好的扩展性，深受 JAVA 开发者的喜爱以及得到众多软件开发商的认可，成为目前比较流行的 Web 应用服务器。 今天将学习到的Tomcat 虚拟目录配置进行了整理。</p>
+<div class="entry-content"><p><img src="https://www.lijinma.com/images/post/xor.png" alt="image" /></p>
 
-<h4>例如：<a href="http://www.xyz.com/course/1024.html">http://www.xyz.com/course/1024.html</a></h4>
+<h2>什么是异或</h2>
 
-<h5>1.Tomcat的基准目录、根目录 。</h5>
+<p><strong>在逻辑学中，逻辑算符异或</strong><code>exclusive or</code><strong>是对两个运算元的一种逻辑析取类型，符号为 XOR 或 EOR 或 ⊕（编程语言中常用</strong><code>^</code><strong>）。但与一般的逻辑或不同，异或算符的值为真仅当两个运算元中恰有一个的值为真，而另外一个的值为非真。转化为命题，就是：“两者的值不同。”或“有且仅有一个为真。</strong></p>
 
-<p>上述URL中www.xyz.com表示：WEB服务器的地址(名称)，后边的‘/’代表站点根目录</p>
+<h3>异或的特性</h3>
 
-<p>Tomcat的默认根目录是：apache-tomcat-8.0.24\webapps\ROOT
-其中webapps是Tomcat的默认基准目录，Tomcat启动时会加载基准目录下的所有web应用.</p>
+<ul>
+<li> 恒等率：    <code>X^0 = X</code></li>
+<li> 归零率：    <code>X^X = 0</code></li>
+<li> 交换律：    <code>X^Y=Y^X</code></li>
+<li> 结合率：    <code>X^(Y^Z)=(X^Y)^Z</code></li>
+</ul>
 
-<p>修改基准目录的方法：</p>
 
-<h5>方法一：通过修改conf文件夹下的server.xml文件的的Host节点在的appbase属性即可。</h5>
+<h2>异或有什么神奇之处（应用）？</h2>
 
-<blockquote><p><code>&lt;Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="true"&gt;&lt;/Host&gt;</code></p></blockquote>
+<h3>（1）快速比较两个值</h3>
 
-<h5>方法二：使用server.xml文件中的<Context>元素（不建议）</h5>
+<p>先让我们来一个简单的问题；判断两个int数字a，b是否相等，你肯定会想到判断<code>a - b == 0</code>，但是如果判断<code>a ^ b == 0</code>效率将会更高</p>
 
-<blockquote><p><code>&lt;Context docBase="E:\myapp" path="" autoDeploy="true"&gt;</code></p></blockquote>
+<h3>（2）在汇编语言中经常用于将变量置零：xor a,a；</h3>
 
-<h5>方法三：在<catalina_home>/conf/Catalina/localhost/下增加ROOT.xml文件（推荐）</h5>
+<h3>（3）我们可以使用异或来使某些特定的位翻转，因为不管是0或者是1与1做异或将得到原值的相反值；</h3>
 
-<blockquote><p><code>&lt;Context docBase="E:\myapp" path="" autoDeploy="true"&gt;</code></p></blockquote>
+<p>例如：翻转<code>10100001</code>的第6位， 答案：可以将该数与<code>00100000</code>进行按位异或运算;<code>10100001</code> ^ <code>00100000</code> = <code>10000001</code></p>
 
-<h5>2.虚拟子目录。</h5>
+<h3>（4）我们使用异或来判断一个二进制数中1的数量是奇数还是偶数</h3>
 
-<p>物理目录：实际存放在主目录(根目录)的子文件夹</p>
+<p>例如：求<code>10100001</code>中1的数量是奇数还是偶数； 答案：<code>1 ^ 0 ^ 1 ^ 0 ^ 0 ^ 0 ^ 0 ^ 1 = 1</code>,结果为<code>1</code>就是奇数个1，结果为<code>0</code>就是偶数个1； 应用：这条性质可用于奇偶校验（Parity Check），比如在串口通信过程中，每个字节的数据都计算一个校验位，数据和校验位一起发送出去，这样接收方可以根据校验位粗略地判断接收到的数据是否有误</p>
 
-<p>虚拟子目录：URL地址中不存在于主目录(根目录)下的子文件夹</p>
+<h3>（5）校验和恢复</h3>
 
-<p>上述URL中的course就是一个虚拟子目录。</p>
+<p>校验和恢复主要利用的了异或的特性：<code>IF a ^ b = c THEN a ^ c = b</code> 应用：一个很好的应用实例是<code>RAID5</code>，使用3块磁盘（A、B、C）组成<code>RAID5</code>阵列，当用户写数据时，将数据分成两部分，分别写到磁盘A和磁盘B，<code>A ^ B</code>的结果写到磁盘C；当读取A的数据时，通过<code>B ^ C</code>可以对A的数据做校验，当A盘出错时，通过<code>B ^ C</code>也可以恢复A盘的数据。</p>
 
-<p>下面介绍 修改虚拟子目录的方法：</p>
+<p><code>RAID5</code>的实现比上述的描述复杂多了，但是原理就是使用 异或，有兴趣的同学看下<code>RAID5</code></p>
 
-<h5>方法一：通过修改conf文件夹下的server.xml文件的的<Context>元素在的path属性即可,默认是空的。（不建议）</h5>
-
-<blockquote><p><code>&lt;Context docBase="E:\myapp" path="/myweb" autoDeploy="true"&gt;</code></p></blockquote>
-
-<h5>方法二：在<catalina_home>/conf/Catalina/localhost/下增加xml文件,增加<Context>元素这种方法path属性中的值不再起作用，xml文件名就是虚拟子目录的名称</h5>
-
-<p>先在E盘建一个mycourse文件夹并新建个test.html文件，在<catalina_home>/conf/Catalina/localhost/下增加course.xml文件,增加<Context>元素，最后访问localhost:8080/course/test.html即可。</p>
-
-<p>如果有多级子目录，文件名中的‘/’改用‘#’代替,例如myapp#course.xml,最后访问localhost:8080/myapp/course/test.html即可。</p>
-
-<blockquote><p><code>&lt;Context docBase="E:\mycourse" path="" autoDeploy="true"&gt;</code></p></blockquote>
-
-<h5>方法三：在基准目录下直接放文件夹（通俗易懂）</h5>
-
-<h5>方法四：在基准目录下直接放WAR文件</h5>
-
-<p> 由于 有 unpackWARs=&ldquo;true&rdquo; autoDeploy=&ldquo;true&rdquo; 这两个属性。自动解压并且部署</p>
+<h3>（6）经典题目：不使用其他空间，交换两个值</h3>
 </div>
 
 
@@ -152,12 +139,12 @@
 
 
 
-<time class='entry-date' datetime='2016-05-24T13:10:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:10 pm</span></time>
+<time class='entry-date' datetime='2016-06-14T10:39:53+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:39 am</span></time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/security/'>security</a>, <a class='category' href='/blog/categories/web/'>web</a>
+    <a class='category' href='/blog/categories/algorithm/'>algorithm</a>
   
 </span>
 
@@ -194,10 +181,10 @@
     
     <p class="meta" style="margin-top:15px">
       
-        <a class="basic-alignment left" href="/blog/2016/05/20/DataBasePool/" title="Previous Post: Java数据库连接池之 HikariCP">&laquo; Java数据库连接池之 HikariCP</a>
+        <a class="basic-alignment left" href="/blog/2016/06/11/jsfixedsidebar/" title="Previous Post: jQuery实现常用功能">&laquo; jQuery实现常用功能</a>
       
       
-        <a class="basic-alignment right" href="/blog/2016/06/11/jsfixedsidebar/" title="Next Post: jQuery实现常用功能">jQuery实现常用功能 &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2016/06/14/fifoandlru/" title="Next Post: 页面置换算法FIFO和LRU的JAVA实现">页面置换算法FIFO和LRU的JAVA实现 &raquo;</a>
       
     </p>
   </footer>
@@ -206,7 +193,7 @@
   <section>
     <h1>Comments</h1>
     <div id="disqus_thread" aria-live="polite">
-<div class="ds-thread" data-source-thread-id="/blog/2016/05/24/Tomcat" data-title="Tomcat 虚拟目录配置"  data-url="http://zhanheng.github.io/blog/2016/05/24/Tomcat/" ></div>
+<div class="ds-thread" data-source-thread-id="/blog/2016/06/14/xor" data-title="异或的神奇"  data-url="http://zhanheng.github.io/blog/2016/06/14/xor/" ></div>
 <!--多说js加载开始，一个页面只需要加载一次 -->
 <script type="text/javascript">
 var duoshuoQuery = {short_name:"jikeblog"};
