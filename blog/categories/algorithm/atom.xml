@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Algorithm | Ranger]]></title>
   <link href="http://zhanheng.github.io/blog/categories/algorithm/atom.xml" rel="self"/>
   <link href="http://zhanheng.github.io/"/>
-  <updated>2016-06-15T02:24:30+08:00</updated>
+  <updated>2016-06-15T11:34:49+08:00</updated>
   <id>http://zhanheng.github.io/</id>
   <author>
     <name><![CDATA[Zhan]]></name>
@@ -311,13 +311,11 @@
 
 <h3>异或的特性</h3>
 
-<ul>
-<li> 恒等率：    <code>X^0 = X</code></li>
-<li> 归零率：    <code>X^X = 0</code></li>
-<li> 交换律：    <code>X^Y=Y^X</code></li>
-<li> 结合率：    <code>X^(Y^Z)=(X^Y)^Z</code></li>
-</ul>
-
+<pre><code>* 恒等率：    `X^0 = X`  
+* 归零率：    `X^X = 0`
+* 交换律：    `X^Y=Y^X`
+* 结合率：    `X^(Y^Z)=(X^Y)^Z`
+</code></pre>
 
 <h2>异或有什么神奇之处（应用）？</h2>
 
@@ -342,6 +340,316 @@
 <p><code>RAID5</code>的实现比上述的描述复杂多了，但是原理就是使用 异或，有兴趣的同学看下<code>RAID5</code></p>
 
 <h3>（6）经典题目：不使用其他空间，交换两个值</h3>
+
+<pre><code>    a = a ^ b;
+    b = a ^ b; //a ^ b ^ b = a ^ 0 = a;
+    a = a ^ b;
+</code></pre>
+
+<h3>（7）面试题：互换二进制数的奇偶位；</h3>
+
+<p>题目：写一个宏定义，实现的功能是将一个int型的数的奇偶位互换，例如6的2进制为00000110，(从右向左)第一位与第二位互换，第三位与第四位互换，其余都是0不需要交换，得到00001001，输出应该为9；</p>
+
+<p>思路：我们可以把我们的问题分为三步（难道这也是分治法吗 -。-），第一步，根据原值的偶数位获取到目标值的奇数位，并把不需要的位清零；第二步，根据原值的奇数位获取到目标值的偶数位，并把不需要的位清零；第三步：把上述两个残缺的目标值合并成一个完整的目标值；</p>
+
+<p>代码为：
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 互换二进制数的奇偶位,第一位与第二位互换，第三位与第四位互换依次类推
+</span><span class='line'>public static int N(int n){
+</span><span class='line'>    return ((n&lt;&lt;1)&amp;(0xAAAAAAAA))|((n&gt;&gt;1)&amp;(0x55555555));
+</span><span class='line'>}
+</span><span class='line'>public static void main(String[] args) {
+</span><span class='line'>    // 输出9  (1001)
+</span><span class='line'>    System.out.println(N(6));
+</span><span class='line'>}&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;
+</span><span class='line'>解释： 
+</span><span class='line'>
+</span><span class='line'>1. 为简化说明，我们以4位二进制码为例，0xAAAAAAAA 我们用 1010 代替；0x55555555 我们用 0101 代替；
+</span><span class='line'>
+</span><span class='line'>2. (n&lt;&lt;1)&amp;(1010) 把n先左移1位，再与1010做与运算，只保留移位之后的偶数位的值，奇数位全为0，实际上是只保留了n的奇数位的值，并把它们交换到了偶数位上。比如 n = 0110 , n&lt;&lt;1 = 1100, (n&lt;&lt;1) &amp; 1010 = 1000 ;
+</span><span class='line'>
+</span><span class='line'>3. (n&gt;&gt;1)&amp;(0101) 把n右移一位，再与 0101 做与运算，只保留移位之后的奇数位的值，偶数位全为0，实际是只保留n 的偶数位的值，并把它们交换到对应的奇数位上。n = 0110； n&gt;&gt;1 = 0011； (n&gt;&gt;1) &amp; 0101 = 0001；
+</span><span class='line'>
+</span><span class='line'>4. 最后做或运算（相加），得到1001。
+</span><span class='line'>
+</span><span class='line'>###（8）超高频面试题：一个整型数组里除了N个数字之外，其他的数字都出现了两次，找出这N个数字；
+</span><span class='line'>
+</span><span class='line'>比如，从{1, 2, 3, 4, 5, 3, 2, 4, 5}中找出单个的数字： 1
+</span><span class='line'>
+</span><span class='line'>让我们从最简单的，找一个数字开始(N=1)；
+</span><span class='line'>
+</span><span class='line'>题目：
+</span><span class='line'>
+</span><span class='line'>（LeetCode 中通过率最高的一道题） Single Number: Given an array of integers, every element appears twice except for one. Find that single one. Note:Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory? 思路： 拿到这个题目，本能的你会使用排序（数字文字我们常常需要排序），排序后可以来判断是否数字成对出现，思路很明显，但是排序的算法上限是 O(nlogn)，不符合题目要求；
+</span><span class='line'>
+</span><span class='line'>学习了强大的异或，我们可以轻松的使用它的特性来完成这道题目： 
+</span><span class='line'>
+</span><span class='line'>（1）A ^ A = 0; 
+</span><span class='line'>
+</span><span class='line'>（2）异或满足交换律、结合律；
+</span><span class='line'>
+</span><span class='line'>所有假设有数组：A B C B C D A 使用异或：
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    A ^ B ^ C ^ B ^ C ^ D ^ A
+</span><span class='line'>  = A ^ A ^ B ^ B ^ C ^ C ^ D
+</span><span class='line'>  = 0 ^ 0 ^ 0 ^ D
+</span><span class='line'>  = 0 ^ D
+</span><span class='line'>  = D
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>是不是很神奇？时间复杂度为O(n)，当然是线性的，空间复杂度O(1)；
+</span><span class='line'>
+</span><span class='line'>代码：
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;public int singleNumber(int A[], int n) {
+</span><span class='line'>    //特殊情况&lt;br/&gt;
+</span><span class='line'>    if(n&lt;=0) return -1;
+</span><span class='line'>    if(n==1) return A[0];&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;    int result = 0;
+</span><span class='line'>for (int i = 0; i &lt; n; i ++) {
+</span><span class='line'>    result = result ^ A[i];
+</span><span class='line'>}
+</span><span class='line'>return result;
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;}</span></code></pre></td></tr></table></div></figure>
+接下来让我们增加一些难度：(N=2)</p>
+
+<p>即题目：一个整型数组里除了两个数字之外，其他的数字都出现了两次。请写程序找出这两个只出现一次的数字？</p>
+
+<p>思路：</p>
+
+<pre><code>第一步：肯定还是像我们上面的解法一样，所有数进行异或，不过最终得到的结果是 a 和 b（假设 a 和 b 是落单的数字）两个值的异或结果 aXORb，没有直接得到 a 和 b 的值；
+
+第二步：想办法得到 a 或者 b，假设 aXORb 为 00001001（F肯定不为0），根君 aXORb 的值我们发现，值为1的位（比如从右向左第一位）表示在此位上 a 和 b 的值不同；
+所以，根据这个特点，我们找出来所有第一位为1的数进行异或，得到的就是 a 或者 b；
+
+第三步：aXORb = a ^ b，假设我们已经找到了 a，根据异或特性，我们知道，b = aXORb ^ a；这样我们就可以找出 b；所以我们只需要循环两次；
+</code></pre>
+
+<p>这样我们的时间复杂度是 O(n)，空间复杂度是 O(1) 代码：</p>
+
+<pre><code>public class Xor {
+
+    //输出 num 的低位中的第一个 1 的位置 ，
+    public static int getLowFirstAppearOne(int num){
+        return num &amp; ~(num-1); // 通过 num &amp; -num 找到,神奇的&amp;运算
+    }
+
+    // 找到两个Single的数字
+    public static void findUniqueTwo(int[] arr , int len){
+        int a = 0 ;
+        int b = 0 ;
+        int temp = 0 ;
+        int aXORb = 0;
+        for (int i = 0; i &lt; len; i++) {
+            aXORb ^= arr[i];
+        }
+        int firstLocation = getLowFirstAppearOne(aXORb);
+        for (int i = 0; i &lt;len; i++) {
+            if ((arr[i]&amp;firstLocation)==firstLocation) {
+                a ^= arr[i];
+            }
+        }
+        b = aXORb ^ a;
+        System.out.println("a="+a+" , b="+b);
+    }
+
+    public static void main(String[] args) {
+        int[] array = { 1, 2, 3, 4, 5, 3, 2, 4, 5, 9};
+        findUniqueTwo(array, array.length);
+    }
+}
+</code></pre>
+
+<p>接下来让我们再增加一些难度：(N=3)</p>
+
+<p>题目：一个整型数组里除了三个数字之外，其他的数字都出现了两次。请写程序找出这两个只出现一次的数字？</p>
+
+<p>思路：</p>
+
+<p>第一步：肯定还是像我们上面的解法一样，所有数进行异或，不过最终得到的结果是 a、b 和 c（假设 a、b 和 c 是落单的数字）三个值的异或结果 aXORbXORc，没有直接得到 a、b 和 c 的值；</p>
+
+<p>第二步：想办法得到 a、b 和 c 中的一个，让偶们把问题简化一下；</p>
+
+<p>假设一个数组中有3个不同的数字 a、b 和 c，已知 aXORbXORc = a ^ b ^ c ，求 a、b 和 c 。</p>
+
+<p>思路： 1. 根据题目 aXORbXORc ^ a = b ^ c; aXORbXORc ^ b = a ^ c; aXORbXORc ^ c = a ^ b; 因为：(b ^ c) ^ (a ^ c) ^ (a ^ b) = 0; 所以：(aXORbXORc ^ a) ^ (aXORbXORc ^ b) ^ (aXORbXORc ^ c) = 0;</p>
+
+<p>下一步是关键： 假设 X ^ Y ^ Z = 0，则 X Y Z 三个数的低位第一位为1的位置两个相同，一个不同； 比如 X: 00001000, Y: 00000100, Z: 00001100 Y和Z的低位第一位都是00000100， X的低位第一位是00001000； 这一步可以使用倒推法证明： 已知：三个数的低位第一位为1的位置有三种情况，一种就是全相同，一种就是两个不同，一个不同，一种就是三个不同； （1）如果是全相同，则 X ^ Y ^ Z != 0 (1 ^ 1 ^ 1 = 1)，与前提X ^ Y ^ Z = 0矛盾，不成立； （2）如果三个不同，则 X ^ Y ^ Z != 0 (1 ^ 0 ^ 0 = 1)，与前提X ^ Y ^ Z = 0矛盾，不成立； 所以结果是：两个不同，一个不同</p>
+
+<p>(aXORbXORc ^ a) ^ (aXORbXORc ^ b) ^ (aXORbXORc ^ c) = 0; 所以三个数(aXORbXORc ^ a)、(aXORbXORc ^ b) 和 (aXORbXORc ^ c) 的低位第一位为1的位置两个相同，一个不同；那么我们获取到这三个数的低位第一位为1的位置后，进行异或并取低位第一位为1的位置，就可以找到三个中“一个不同”的低位第一位为1的位置，假设这个值为 firstOneBit。</p>
+
+<p>遍历这三个数(aXORbXORc ^ a)、(aXORbXORc ^ b) 和 (aXORbXORc ^ c)，如果发现某个数异或 aXORbXORc 等于 firstOneBit，这个数就是“一个不同”的那个数；</p>
+
+<p>找到了一个数，剩下的两个数，我们就可以通过上面的方法找出来；</p>
+
+<p>第三步：完成了第二步的简化题，我们回到我们的问题，我们的问题比简化的问题多了一个成对的干扰数据，我们可以使用异或要去除干扰数据（记住，我们这个题目都是用异或i去除干扰数据的）；</p>
+
+<p>这样我们的时间复杂度还是 O(n)，空间复杂度是 O(1)</p>
+
+<p>代码如下：</p>
+
+<pre><code>#include &lt;iostream&gt;
+#include &lt;assert.h&gt;
+using namespace std;
+
+int getFirstOneBit(int num) //输出 num 的低位中的第一个 1 的位置  
+{
+    return num &amp; ~(num - 1);  // num 与 -num 相与找到
+}
+
+void findTwo(int *array, int length){
+    int aXORb = 0;
+    int firstOneBit = 0;
+    int a = 0;
+    int b = 0;
+    for (int i = 0; i &lt; length; i++) {
+        aXORb ^= array[i];
+    }
+    assert(aXORb != 0); //保证题目要求，有两个single的数字
+    firstOneBit = getFirstOneBit(aXORb);
+    for (int i = 0; i &lt; length; ++i) {
+        if(array[i] &amp; firstOneBit) {
+            a ^= array[i];
+        }
+    }
+    b = aXORb ^ a;
+    cout &lt;&lt; "a: " &lt;&lt; a &lt;&lt; endl;
+    cout &lt;&lt; "b: " &lt;&lt; b &lt;&lt; endl;
+}
+
+int findOne(int *array, int length) {
+    int aXORbXORc = 0;
+    int c = 0;
+    int firstOneBit = 0;
+    for (int i = 0; i &lt; length; ++i) {
+        aXORbXORc ^= array[i];
+    }
+
+    for (int i = 0; i &lt; length; ++i) {
+        firstOneBit ^= getFirstOneBit(aXORbXORc ^ array[i]); //使用异或会排除掉不相干的元素
+    }
+    // firstOneBit = getFirstOneBit(a ^ b) ^ getFirstOneBit(a ^ c) ^ getFirstOneBit(b ^ c);
+
+    firstOneBit = getFirstOneBit(firstOneBit); //获取到最低位下面要用
+
+    for (int i = 0; i &lt; length; ++i) {
+        if (getFirstOneBit(aXORbXORc ^ array[i]) == firstOneBit) {
+            c ^= array[i]; //使用异或会排除掉不相干的元素
+        }
+    }
+    cout &lt;&lt; "c: " &lt;&lt; c &lt;&lt; endl;
+    return c;
+}
+
+int main()
+{
+    int array1[] = {2, 5, 8, 2, 5, 8, 6, 7, 1};
+    int c = findOne(array1, 9);
+    int array2[] = {2, 5, 8, 2, 5, 8, 6, 7, 1, c}; //为了更好重用函数，我重新定义了一个数组让大家理解
+    findTwo(array2, 10);
+    return 0;
+}
+</code></pre>
+
+<p>写这篇文档参考了《离散数学与应用》课本，参考了别人多个博客，如果我参考了你的博客，但没有注明出处，请联系告知，有错误的地方，希望可以指出来，也希望大家有更多的补充，非常感谢。</p>
+
+<p>参考：</p>
+
+<p><a href="http://zh.wikipedia.org/wiki/%E9%80%BB%E8%BE%91%E5%BC%82%E6%88%96">http://zh.wikipedia.org/wiki/%E9%80%BB%E8%BE%91%E5%BC%82%E6%88%96</a></p>
+
+<p><a href="http://yjq24.blogbus.com/logs/41863963.html">http://yjq24.blogbus.com/logs/41863963.html</a></p>
+
+<p><a href="http://wzw19191.blog.163.com/blog/static/131135470200992610551971/">http://wzw19191.blog.163.com/blog/static/131135470200992610551971/</a></p>
+
+<p><a href="http://kapok.blog.51cto.com/517862/129941">http://kapok.blog.51cto.com/517862/129941</a></p>
+
+<p><a href="http://blog.csdn.net/huxian370/article/details/8024416">http://blog.csdn.net/huxian370/article/details/8024416</a></p>
+
+<p><a href="http://www.cnblogs.com/Ivony/archive/2009/07/23/1529254.html">http://www.cnblogs.com/Ivony/archive/2009/07/23/1529254.html</a></p>
+
+<p><a href="http://blog.chinaunix.net/uid-20937170-id-3407361.html">http://blog.chinaunix.net/uid-20937170-id-3407361.html</a></p>
+
+<p><a href="http://blog.csdn.net/yfkiss/article/details/11775569">http://blog.csdn.net/yfkiss/article/details/11775569</a></p>
+
+<p><a href="http://blog.sina.com.cn/s/blog_88c9ddc50101810p.html">http://blog.sina.com.cn/s/blog_88c9ddc50101810p.html</a></p>
+
+<p><a href="http://blog.csdn.net/pathuang68/article/details/7567027">http://blog.csdn.net/pathuang68/article/details/7567027</a></p>
+
+<p><a href="http://blog.csdn.net/qingen1/article/details/12656763">http://blog.csdn.net/qingen1/article/details/12656763</a></p>
+
+<p><a href="https://www.lijinma.com/blog/2014/05/29/amazing-xor/">https://www.lijinma.com/blog/2014/05/29/amazing-xor/</a></p>
+
+<p>本文链接： <a href="http://zhanheng.github.io/blog/2016/06/14/xor/">http://zhanheng.github.io/blog/2016/06/14/xor/</a></p>
 ]]></content>
   </entry>
   
