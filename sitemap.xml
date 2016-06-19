@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://zhanheng.github.io/blog/2016/06/19/mavenlearningpartone/</loc>
+<lastmod>2016-06-19T10:27:59+08:00</lastmod>
+</url>
+<url>
 <loc>http://zhanheng.github.io/blog/2016/06/14/fifoandlru/</loc>
 <lastmod>2016-06-14T14:39:53+08:00</lastmod>
 </url>
@@ -66,5 +70,11 @@
 </url>
 <url>
 <loc>http://zhanheng.github.io/blog/categories/jquery/</loc>
+</url>
+<url>
+<loc>http://zhanheng.github.io/blog/categories/maven/</loc>
+</url>
+<url>
+<loc>http://zhanheng.github.io/blog/categories/note/</loc>
 </url>
 </urlset>

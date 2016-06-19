@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Note | Ranger]]></title>
+  <link href="http://zhanheng.github.io/blog/categories/note/atom.xml" rel="self"/>
+  <link href="http://zhanheng.github.io/"/>
+  <updated>2016-06-19T17:27:09+08:00</updated>
+  <id>http://zhanheng.github.io/</id>
+  <author>
+    <name><![CDATA[Zhan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Maven学习笔记(一)]]></title>
+    <link href="http://zhanheng.github.io/blog/2016/06/19/mavenlearningpartone/"/>
+    <updated>2016-06-19T10:27:59+08:00</updated>
+    <id>http://zhanheng.github.io/blog/2016/06/19/mavenlearningpartone</id>
+    <content type="html"><![CDATA[<p>本文主要介绍本人学习Maven的一些心得，记录学习历程的第一部分!</p>
+
+<h2>项目对象模型介绍</h2>
+
+<p>下面主要从以下几个部分来学习，主要包括：POM介绍、POM语法、项目关系、项目依赖、Maven的生命周期、自定义插件、属性和资源过滤</p>
+
+<h3>1.POM介绍</h3>
+
+<p>我们都知道pom.xml文件是Maven中的核心配置文件，只有理解了这个pom.xml文件才能理解整个项目的架构和依赖信息。</p>
+
+<h4>1.pom包含的内容</h4>
+
+<p><code>1.项目的总体信息</code>
+<code>2.pom关系和依赖关系</code>
+<code>2.构建设置</code>
+<code>2.构建环境</code></p>
+
+<h4>2.超级pom</h4>
+
+<p> 超级pom的概念有点类似Java中Object的概念,表示所有的pom默认都继承自超级pom。超级pom位于maven/lib目录下的maven-model-builder.jar中，包含一些基本的配置信息，比如：Maven的中央仓库信息配置，插件的仓库设置，输出目录、测试目录的设置等等。</p>
+
+<h4>3.简单的pom</h4>
+
+<p> 简单的pom半包含一些基本信息：</p>
+
+<p><code>1.项目坐标</code>
+```
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.maven</groupId>
+  <artifactId>student.test</artifactId>
+  <packaging>jar</packaging>
+  <version>0.0.1-SNAPSHOT</version></p>
+
+<pre><code>`2.项目的基本信息`
+</code></pre>
+
+<p>  <name>Maven test</name>
+  <url><a href="http://maven.apache.org">http://maven.apache.org</a></url></p>
+
+<pre><code>
+`3.properties信息`
+</code></pre>
+
+<p>  <properties>
+&lt;project.build.sourceEncoding>UTF-8&lt;/project.build.sourceEncoding>
+  &lt;/<properties></p>
+
+<pre><code>
+`4.项目依赖`
+</code></pre>
+
+<p> <dependencies>
+    <dependency>
+        <groupId>org.hsqldb</groupId>
+        <artifactId>hsqldb</artifactId>
+        <version>2.3.2</version>
+    </dependency>
+    <dependency>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis</artifactId>
+        <version>3.2.8</version>
+    </dependency></p>
+
+<pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;junit&lt;/groupId&gt;
+  &lt;artifactId&gt;junit&lt;/artifactId&gt;
+  &lt;version&gt;4.12&lt;/version&gt;
+  &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<p>  </dependencies></p>
+
+<pre><code>
+####4.有效的pom
+
+项目中起作用的pom,一般包括自定义的pom和超级pom
+
+###2.POM语法
+
+主要包括项目版本和属性引用。
+
+####1.项目版本
+
+`1.版本构建号      2.snapshot版本    3.latest版本      4.release版本`
+
+####2.属性引用
+
+`1.env `
+
+暴露了操作系统shell 和环境变量
+
+`2.project `
+
+暴露了pom,例如 ${project.artifactId}
+
+`3.settings`
+
+暴露了Maven Settings属性,例如${settings.offline}
+
+`4.env`
+
+暴露了操作系统shell 和环境变量
+
+###3.项目关系
+
+####1.项目坐标
+
+&gt; groupId : 一个groupId相当于归类了一组构件,类似于Java的包名。组定义符在仓库里被翻译成路径
+
+&gt; artifactId ：项目定义符,即项目名称。
+
+&gt; version：版本号
+
+&gt; classifier：分类器,若要发布同样的代码,但由于技术原因需要生成两个单独的构件,就要使用一个分类器。
+
+
+####2.多模块项目
+
+多模块项目是包含一系列带构件模块的项目，多个模块组合成一个整体大项目。
+
+####3.项目继承
+
+Maven中的项目继承有点类似于Java中子类与父类的关系，下面是代码样例
+</code></pre>
+
+<p><project>
+    <parent>
+            <groupId>test</groupId>
+        <artifactId>a-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>project-a</artifactId>
+</project></p>
+
+<p>```</p>
+
+<p>注意区分多模块项目和项目继承,两者有本质的区别。</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -9,46 +9,7 @@
   <meta name="author" content="Zhan">
 
   
-  <meta name="description" content="1.先看最简单的FIFO算法，获取未命中次数： FIFO 模拟实现Java 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40 &hellip;">
+  <meta name="description" content="本文主要介绍本人学习Maven的一些心得，记录学习历程的第一部分! 项目对象模型介绍 下面主要从以下几个部分来学习，主要包括：POM介绍、POM语法、项目关系、项目依赖、Maven的生命周期、自定义插件、属性和资源过滤 1.POM介绍 我们都知道pom.xml文件是Maven中的核心配置文件， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -105,6 +66,207 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/06/19/mavenlearningpartone/">Maven学习笔记(一)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-06-19T10:27:59+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:27 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>本文主要介绍本人学习Maven的一些心得，记录学习历程的第一部分!</p>
+
+<h2>项目对象模型介绍</h2>
+
+<p>下面主要从以下几个部分来学习，主要包括：POM介绍、POM语法、项目关系、项目依赖、Maven的生命周期、自定义插件、属性和资源过滤</p>
+
+<h3>1.POM介绍</h3>
+
+<p>我们都知道pom.xml文件是Maven中的核心配置文件，只有理解了这个pom.xml文件才能理解整个项目的架构和依赖信息。</p>
+
+<h4>1.pom包含的内容</h4>
+
+<p><code>1.项目的总体信息</code>
+<code>2.pom关系和依赖关系</code>
+<code>2.构建设置</code>
+<code>2.构建环境</code></p>
+
+<h4>2.超级pom</h4>
+
+<p> 超级pom的概念有点类似Java中Object的概念,表示所有的pom默认都继承自超级pom。超级pom位于maven/lib目录下的maven-model-builder.jar中，包含一些基本的配置信息，比如：Maven的中央仓库信息配置，插件的仓库设置，输出目录、测试目录的设置等等。</p>
+
+<h4>3.简单的pom</h4>
+
+<p> 简单的pom半包含一些基本信息：</p>
+
+<p><code>1.项目坐标</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+</span><span class='line'>  &lt;groupId&gt;com.maven&lt;/groupId&gt;
+</span><span class='line'>  &lt;artifactId&gt;student.test&lt;/artifactId&gt;
+</span><span class='line'>  &lt;packaging&gt;jar&lt;/packaging&gt;
+</span><span class='line'>  &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>2.项目的基本信息</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  &lt;name&gt;Maven test&lt;/name&gt;
+</span><span class='line'>  &lt;url&gt;http://maven.apache.org&lt;/url&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>3.properties信息</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  &lt;properties&gt;
+</span><span class='line'>&lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+</span><span class='line'>  &lt;/&lt;properties&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>4.项目依赖</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> &lt;dependencies&gt;
+</span><span class='line'>      &lt;dependency&gt;
+</span><span class='line'>          &lt;groupId&gt;org.hsqldb&lt;/groupId&gt;
+</span><span class='line'>          &lt;artifactId&gt;hsqldb&lt;/artifactId&gt;
+</span><span class='line'>          &lt;version&gt;2.3.2&lt;/version&gt;
+</span><span class='line'>      &lt;/dependency&gt;
+</span><span class='line'>      &lt;dependency&gt;
+</span><span class='line'>          &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
+</span><span class='line'>          &lt;artifactId&gt;mybatis&lt;/artifactId&gt;
+</span><span class='line'>          &lt;version&gt;3.2.8&lt;/version&gt;
+</span><span class='line'>      &lt;/dependency&gt;
+</span><span class='line'>      
+</span><span class='line'>    &lt;dependency&gt;
+</span><span class='line'>      &lt;groupId&gt;junit&lt;/groupId&gt;
+</span><span class='line'>      &lt;artifactId&gt;junit&lt;/artifactId&gt;
+</span><span class='line'>      &lt;version&gt;4.12&lt;/version&gt;
+</span><span class='line'>      &lt;scope&gt;test&lt;/scope&gt;
+</span><span class='line'>    &lt;/dependency&gt;
+</span><span class='line'>  &lt;/dependencies&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>4.有效的pom</h4>
+
+<p>项目中起作用的pom,一般包括自定义的pom和超级pom</p>
+
+<h3>2.POM语法</h3>
+
+<p>主要包括项目版本和属性引用。</p>
+
+<h4>1.项目版本</h4>
+
+<p><code>1.版本构建号      2.snapshot版本    3.latest版本      4.release版本</code></p>
+
+<h4>2.属性引用</h4>
+
+<p><code>1.env</code></p>
+
+<p>暴露了操作系统shell 和环境变量</p>
+
+<p><code>2.project</code></p>
+
+<p>暴露了pom,例如 ${project.artifactId}</p>
+
+<p><code>3.settings</code></p>
+
+<p>暴露了Maven Settings属性,例如${settings.offline}</p>
+
+<p><code>4.env</code></p>
+
+<p>暴露了操作系统shell 和环境变量</p>
+
+<h3>3.项目关系</h3>
+
+<h4>1.项目坐标</h4>
+
+<blockquote><p>groupId : 一个groupId相当于归类了一组构件,类似于Java的包名。组定义符在仓库里被翻译成路径</p>
+
+<p>artifactId ：项目定义符,即项目名称。</p>
+
+<p>version：版本号</p>
+
+<p>classifier：分类器,若要发布同样的代码,但由于技术原因需要生成两个单独的构件,就要使用一个分类器。</p></blockquote>
+
+<h4>2.多模块项目</h4>
+
+<p>多模块项目是包含一系列带构件模块的项目，多个模块组合成一个整体大项目。</p>
+
+<h4>3.项目继承</h4>
+
+<p>Maven中的项目继承有点类似于Java中子类与父类的关系，下面是代码样例</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;project&gt;
+</span><span class='line'>  &lt;parent&gt;
+</span><span class='line'>          &lt;groupId&gt;test&lt;/groupId&gt;
+</span><span class='line'>          &lt;artifactId&gt;a-parent&lt;/artifactId&gt;
+</span><span class='line'>          &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+</span><span class='line'>  &lt;/parent&gt;
+</span><span class='line'>  &lt;artifactId&gt;project-a&lt;/artifactId&gt;
+</span><span class='line'>&lt;/project&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意区分多模块项目和项目继承,两者有本质的区别。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1738,6 +1900,10 @@ Configure your HikariCP idleTimeout and maxLifeTime settings to be one minute le
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/06/19/mavenlearningpartone/">Maven学习笔记(一)</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/06/14/fifoandlru/">页面置换算法FIFO和LRU的JAVA实现</a>
       </li>
     
@@ -1751,10 +1917,6 @@ Configure your HikariCP idleTimeout and maxLifeTime settings to be one minute le
     
       <li class="post">
         <a href="/blog/2016/05/24/Tomcat/">Tomcat 虚拟目录配置</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/05/20/DataBasePool/">Java数据库连接池之 HikariCP</a>
       </li>
     
   </ul>
