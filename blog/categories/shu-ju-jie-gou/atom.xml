@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 数据结构 | Ranger]]></title>
+  <link href="http://zhanheng.github.io/blog/categories/shu-ju-jie-gou/atom.xml" rel="self"/>
+  <link href="http://zhanheng.github.io/"/>
+  <updated>2016-06-23T13:58:28+08:00</updated>
+  <id>http://zhanheng.github.io/</id>
+  <author>
+    <name><![CDATA[Zhan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[堆栈的实现]]></title>
+    <link href="http://zhanheng.github.io/blog/2016/06/23/stackimplementbyarray/"/>
+    <updated>2016-06-23T12:15:28+08:00</updated>
+    <id>http://zhanheng.github.io/blog/2016/06/23/stackimplementbyarray</id>
+    <content type="html"><![CDATA[<p>堆栈是一种抽象的数据结构(Abstract Data Type, ADT),有以下特性：</p>
+
+<ol>
+<li>只能从栈的顶端访问数据</li>
+<li>数据访问符合“后进先出(Last In First Out)”原则</li>
+</ol>
+
+
+<p>栈的基本运算有：
+        <code>  create  push    pop     empty       full</code></p>
+
+<h3>1.堆栈的数据组实现(存整型数据)：</h3>
+
+<pre><code>import java.util.Scanner;
+
+public class StackByArray {
+
+    private int[] stack;    // 数组实现栈
+    private int   top;      //指向顶端的索引
+
+    // 构造函数，初始化栈的大小
+    public StackByArray(int stack_size) {
+        stack = new int[stack_size];
+        top = -1;
+    }
+
+    //push方法，存放顶端元素并更新堆栈内容  
+    public boolean push(int data){
+        if(top&gt;=stack.length){
+            System.out.println("堆栈已满,无法加入");
+            return false;
+        }else{
+            stack[++top] = data;
+            return true;
+        }
+    }
+
+    //empty方法，判断堆栈是否为空，是返回true,不是则返回false
+    public boolean empty(){
+        if(top==-1) return true;
+        else        return false;
+    }
+
+    //pop方法，从堆栈中取出数据
+    public int pop(){
+        if(empty()) return -1;
+        else
+            return stack[top--];
+    }
+    public static void main(String[] args) {
+        StackByArray stack = new StackByArray(8);
+        Scanner cin = new Scanner(System.in);
+        for (int i = 0; i &lt; 8; i++) {
+            int value = cin.nextInt();
+            stack.push(value);
+        }
+        while(!stack.empty()){
+            System.out.println("堆栈弹出顺序："+stack.pop());
+        }
+        cin.close();
+    }
+}
+</code></pre>
+
+<h3>2.堆栈的链表实现：</h3>
+
+<p>用数组制作堆栈设计和算法相对简单，但由于对战本身的大小是变动的，数组大小并无法事先规划声明。这时候往往需要考虑使用最大可能性的数组空间，这样会造成内存空间的浪费。而用链表来制作堆栈的优点是随时可以动态改变表的长度，缺点就是算法较复杂。下面是用链表实现的堆栈算法：</p>
+
+<pre><code>
+
+class Node{
+    int data;
+    Node next;
+    public Node(int data){
+        this.data = data;
+        this.next = null;
+    }
+}
+public class StackByLink {
+
+    public Node front;  //指向栈底的指针
+    public Node rear;   //指向栈顶的指针
+
+    //判断堆栈是否为空
+    public boolean isEmpty(){
+        return front==null;
+    }
+
+    //push，顶端加入数据
+    public void push(int data){
+        Node node = new Node(data);
+        if(this.isEmpty()){
+            front=node;
+            rear =node;
+        }else{
+            rear.next=node;
+            rear=node;
+        }
+    }
+    //pop，顶端删除数据
+    public void pop(){
+        Node node;
+        if(this.isEmpty()){
+            System.out.println("栈为空");
+            return;
+        }else{
+            node = front;
+            if(node==rear){ //只有一个元素
+                front=null;
+                rear=null;
+            }else{
+                while(node.next!=rear){ //找到rear的前驱节点
+                    node = node.next;
+                }
+                node.next = rear.next;  //删除rear所指向的节点
+                rear = node;
+            }
+        }
+    }
+
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

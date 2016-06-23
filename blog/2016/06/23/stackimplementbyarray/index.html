@@ -1,0 +1,475 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>堆栈的实现 - Ranger</title>
+  <meta name="author" content="Zhan">
+
+  
+  <meta name="description" content="堆栈是一种抽象的数据结构(Abstract Data Type, ADT),有以下特性： 只能从栈的顶端访问数据
+数据访问符合“后进先出(Last In First Out)”原则 栈的基本运算有： create push pop empty full 1.堆栈的数据组实现(存整型数据)： 1
+2 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://zhanheng.github.io/blog/2016/06/23/stackimplementbyarray/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Ranger" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Ranger</a></h1>
+  
+    <h2>简单不先于复杂，而是在复杂之后.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="zhanheng.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/aboutme">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">堆栈的实现</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-06-23T12:15:28+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2016</span></span> <span class='time'>12:15 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>堆栈是一种抽象的数据结构(Abstract Data Type, ADT),有以下特性：</p>
+
+<ol>
+<li>只能从栈的顶端访问数据</li>
+<li>数据访问符合“后进先出(Last In First Out)”原则</li>
+</ol>
+
+
+<p>栈的基本运算有：
+        <code>  create  push    pop     empty       full</code></p>
+
+<h3>1.堆栈的数据组实现(存整型数据)：</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import java.util.Scanner;
+</span><span class='line'>
+</span><span class='line'>public class StackByArray {
+</span><span class='line'>  
+</span><span class='line'>  private int[] stack;    // 数组实现栈
+</span><span class='line'>  private int   top;      //指向顶端的索引
+</span><span class='line'>  
+</span><span class='line'>  // 构造函数，初始化栈的大小
+</span><span class='line'>  public StackByArray(int stack_size) {
+</span><span class='line'>      stack = new int[stack_size];
+</span><span class='line'>      top = -1;
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  //push方法，存放顶端元素并更新堆栈内容  
+</span><span class='line'>  public boolean push(int data){
+</span><span class='line'>      if(top&gt;=stack.length){
+</span><span class='line'>          System.out.println("堆栈已满,无法加入");
+</span><span class='line'>          return false;
+</span><span class='line'>      }else{
+</span><span class='line'>          stack[++top] = data;
+</span><span class='line'>          return true;
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  //empty方法，判断堆栈是否为空，是返回true,不是则返回false
+</span><span class='line'>  public boolean empty(){
+</span><span class='line'>      if(top==-1) return true;
+</span><span class='line'>      else        return false;
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  //pop方法，从堆栈中取出数据
+</span><span class='line'>  public int pop(){
+</span><span class='line'>      if(empty()) return -1;
+</span><span class='line'>      else
+</span><span class='line'>          return stack[top--];
+</span><span class='line'>  }
+</span><span class='line'>  public static void main(String[] args) {
+</span><span class='line'>      StackByArray stack = new StackByArray(8);
+</span><span class='line'>      Scanner cin = new Scanner(System.in);
+</span><span class='line'>      for (int i = 0; i &lt; 8; i++) {
+</span><span class='line'>          int value = cin.nextInt();
+</span><span class='line'>          stack.push(value);
+</span><span class='line'>      }
+</span><span class='line'>      while(!stack.empty()){
+</span><span class='line'>          System.out.println("堆栈弹出顺序："+stack.pop());
+</span><span class='line'>      }
+</span><span class='line'>      cin.close();
+</span><span class='line'>  }
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2.堆栈的链表实现：</h3>
+
+<p>用数组制作堆栈设计和算法相对简单，但由于对战本身的大小是变动的，数组大小并无法事先规划声明。这时候往往需要考虑使用最大可能性的数组空间，这样会造成内存空间的浪费。而用链表来制作堆栈的优点是随时可以动态改变表的长度，缺点就是算法较复杂。下面是用链表实现的堆栈算法：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>
+</span><span class='line'>class Node{
+</span><span class='line'>  int data;
+</span><span class='line'>  Node next;
+</span><span class='line'>  public Node(int data){
+</span><span class='line'>      this.data = data;
+</span><span class='line'>      this.next = null;
+</span><span class='line'>  }
+</span><span class='line'>}
+</span><span class='line'>public class StackByLink {
+</span><span class='line'>
+</span><span class='line'>  public Node front;  //指向栈底的指针
+</span><span class='line'>  public Node rear;   //指向栈顶的指针
+</span><span class='line'>  
+</span><span class='line'>  //判断堆栈是否为空
+</span><span class='line'>  public boolean isEmpty(){
+</span><span class='line'>      return front==null;
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  //push，顶端加入数据
+</span><span class='line'>  public void push(int data){
+</span><span class='line'>      Node node = new Node(data);
+</span><span class='line'>      if(this.isEmpty()){
+</span><span class='line'>          front=node;
+</span><span class='line'>          rear =node;
+</span><span class='line'>      }else{
+</span><span class='line'>          rear.next=node;
+</span><span class='line'>          rear=node;
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>  //pop，顶端删除数据
+</span><span class='line'>  public void pop(){
+</span><span class='line'>      Node node;
+</span><span class='line'>      if(this.isEmpty()){
+</span><span class='line'>          System.out.println("栈为空");
+</span><span class='line'>          return;
+</span><span class='line'>      }else{
+</span><span class='line'>          node = front;
+</span><span class='line'>          if(node==rear){ //只有一个元素
+</span><span class='line'>              front=null;
+</span><span class='line'>              rear=null;
+</span><span class='line'>          }else{
+</span><span class='line'>              while(node.next!=rear){ //找到rear的前驱节点
+</span><span class='line'>                  node = node.next;
+</span><span class='line'>              }
+</span><span class='line'>              node.next = rear.next;  //删除rear所指向的节点
+</span><span class='line'>              rear = node;
+</span><span class='line'>          }
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Zhan</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-06-23T12:15:28+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2016</span></span> <span class='time'>12:15 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/algorithm/'>algorithm</a>, <a class='category' href='/blog/categories/shu-ju-jie-gou/'>数据结构</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing" style="margin-bottom:15px">
+  
+  
+  
+  
+    <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_32x32">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  
+  </br>
+</div>
+</br>
+</br>
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2103668"></script>
+<!-- UY END -->
+ <a href="#" onclick="goTop();return false;" style="position:fixed; right:52px;bottom:47px;"><img src="../../../../../images/totop.gif"  alt="返回顶部"></a>
+<section>
+<h1>QR-Code<abbr title="The word 'QR Code' is a registered trademark of DENSO WAVE INCORPORATED. It applies only for the word 'QR Code', not for image.">&trade;</abbr></h1>
+<a href="http://zhanheng.github.io/blog/2016/06/23/stackimplementbyarray/" style="position:fixed; right:77px;bottom:40px;"><img src="http://pan.baidu.com/share/qrcode?w=90&h=90&url=http://zhanheng.github.io/blog/2016/06/23/stackimplementbyarray/" style="padding:0px" alt="post-qrcode" ></a></section>
+<script src="../../../../../javascripts/top.js" type="text/javascript"></script>
+    
+    <p class="meta" style="margin-top:15px">
+      
+        <a class="basic-alignment left" href="/blog/2016/06/19/mavenlearningpartwo/" title="Previous Post: Maven学习笔记(二)">&laquo; Maven学习笔记(二)</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite">
+<div class="ds-thread" data-source-thread-id="/blog/2016/06/23/stackimplementbyarray" data-title="堆栈的实现"  data-url="http://zhanheng.github.io/blog/2016/06/23/stackimplementbyarray/" ></div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jikeblog"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:' )+ 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 
+
+<script type="text/javascript">
+var duoshuoQuery = {short_name: "dtyu100"};
+(function(){
+	var ds = document.createElement("script");
+	ds.type = "text/javascript"; ds.async= true;
+	ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:' )+ '//static.duoshuo.com/embed.js';
+	ds.charset = "utf-8";
+	(document.getElementsByTagName('head')[0]
+	|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+--></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>最近发布</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/06/23/stackimplementbyarray/">堆栈的实现</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/06/19/mavenlearningpartwo/">Maven学习笔记(二)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/06/19/mavenlearningpartone/">Maven学习笔记(一)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/06/14/fifoandlru/">页面置换算法FIFO和LRU的JAVA实现</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/06/14/xor/">异或的神奇</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Zhan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

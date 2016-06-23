@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Maven | Ranger]]></title>
   <link href="http://zhanheng.github.io/blog/categories/maven/atom.xml" rel="self"/>
   <link href="http://zhanheng.github.io/"/>
-  <updated>2016-06-19T17:27:09+08:00</updated>
+  <updated>2016-06-23T13:58:28+08:00</updated>
   <id>http://zhanheng.github.io/</id>
   <author>
     <name><![CDATA[Zhan]]></name>
@@ -12,6 +12,36 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Maven学习笔记(二)]]></title>
+    <link href="http://zhanheng.github.io/blog/2016/06/19/mavenlearningpartwo/"/>
+    <updated>2016-06-19T10:27:59+08:00</updated>
+    <id>http://zhanheng.github.io/blog/2016/06/19/mavenlearningpartwo</id>
+    <content type="html"><![CDATA[<p>Maven学习笔记续篇</p>
+
+<h2>项目对象模型介绍</h2>
+
+<p>下面主要从以下几个部分来学习，主要包括：POM介绍、POM语法、项目关系、项目依赖、Maven的生命周期、自定义插件、属性和资源过滤</p>
+
+<h3>1.项目依赖</h3>
+
+<p>我们都知道pom.xml文件是Maven中的核心配置文件，只有理解了这个pom.xml文件才能理解整个项目的架构和依赖信息。</p>
+
+<h4>1.pom包含的内容</h4>
+
+<p><code>1.项目的总体信息</code>
+<code>2.pom关系和依赖关系</code>
+<code>2.构建设置</code>
+<code>2.构建环境</code></p>
+
+<h3>2.Maven的生命周期</h3>
+
+<h3>3.自定义插件</h3>
+
+<h3>4.属性和资源过滤</h3>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Maven学习笔记(一)]]></title>
