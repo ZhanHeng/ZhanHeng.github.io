@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 数据结构 | Ranger]]></title>
   <link href="http://zhanheng.github.io/blog/categories/shu-ju-jie-gou/atom.xml" rel="self"/>
   <link href="http://zhanheng.github.io/"/>
-  <updated>2016-06-23T13:58:28+08:00</updated>
+  <updated>2016-07-11T00:22:33+08:00</updated>
   <id>http://zhanheng.github.io/</id>
   <author>
     <name><![CDATA[Zhan]]></name>
@@ -138,6 +138,40 @@ public class StackByLink {
         }
     }
 
+}
+</code></pre>
+
+<h3>3.两个栈实现队列</h3>
+
+<p>思想就是：stack1模拟压入队列，stack2充当辅助的功能</p>
+
+<p>入队时不用判断直接压入
+出队列时，判断stack2是否为空</p>
+
+<p>1.不为空则弹出栈顶元素;</p>
+
+<p>2.若为空则将stack1的全部元素压入stack2再弹出栈顶元素</p>
+
+<pre><code>
+public class Solution {
+    Stack&lt;Integer&gt; stack1 = new Stack&lt;Integer&gt;();
+    Stack&lt;Integer&gt; stack2 = new Stack&lt;Integer&gt;();
+
+    public void push(int node) {
+        stack1.push(node);
+    }
+
+    public int pop() {
+        //不为空则弹出栈顶元素
+        if(!stack2.isEmpty()){
+            return stack2.pop();
+        }else{
+            while (!stack1.isEmpty()) {
+                stack2.push(stack1.pop());
+            }
+            return stack2.pop();
+        }
+    }
 }
 </code></pre>
 ]]></content>

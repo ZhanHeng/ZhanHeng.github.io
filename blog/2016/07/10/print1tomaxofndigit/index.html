@@ -5,11 +5,20 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>防止XSS攻击 - Ranger</title>
+  <title>打印1到最大的n位数 - Ranger</title>
   <meta name="author" content="Zhan">
 
   
-  <meta name="description" content="在开发项目的过程中，网站的安全问题不能被忽视，其中Xss跨脚本攻击很常见。下面就XSS攻击做一下基本介绍，同时给出了我自己的解决办法。 XSS又称CSS，全称Cross Site Script，跨站脚本攻击，是Web程序中常见的漏洞，XSS属于被动式且用于客户端的攻击方式，所以容易被忽略其危害性。 &hellip;">
+  <meta name="description" content="题目描述： 输入数字n,按顺序打印出从1到最大的n位十进制数。 比如输入3,打印出1、2、3一直到最大的三位数即999 1.题目陷阱： 看到问题很容易想到的办法，就是用一个循环从1 开始逐个打印。代码如下： 1
+2
+3
+4
+5
+6
+7
+8
+9
+public static void printNum &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +27,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://zhanheng.github.io/blog/2016/05/16/XssSQLSecurity/">
+  <link rel="canonical" href="http://zhanheng.github.io/blog/2016/07/10/print1tomaxofndigit/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Ranger" type="application/atom+xml">
@@ -69,7 +78,7 @@
   
   <header>
     
-      <h1 class="entry-title">防止XSS攻击</h1>
+      <h1 class="entry-title">打印1到最大的n位数</h1>
     
     
       <p class="meta">
@@ -78,41 +87,22 @@
 
 
 
-<time class='entry-date' datetime='2016-05-16T10:15:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:15 am</span></time>
+<time class='entry-date' datetime='2016-07-10T22:44:55+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:44 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>在开发项目的过程中，网站的安全问题不能被忽视，其中Xss跨脚本攻击很常见。下面就XSS攻击做一下基本介绍，同时给出了我自己的解决办法。</p>
+<div class="entry-content"><p>题目描述：</p>
 
-<h5>XSS又称CSS，全称Cross Site Script，跨站脚本攻击，是Web程序中常见的漏洞，XSS属于被动式且用于客户端的攻击方式，所以容易被忽略其危害性。其原理是攻击者向有XSS漏洞的网站中输入(传入)恶意的HTML代码，当其它用户浏览该网站时，这段HTML代码会自动执行，从而达到攻击的目的。如，盗取用户Cookie、破坏页面结构、重定向到其它网站等。</h5>
+<p>输入数字n,按顺序打印出从1到最大的n位十进制数。</p>
 
-<p>举个简单的例子：页面名字叫test.jsp：</p>
+<p>比如输入3,打印出1、2、3一直到最大的三位数即999</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;html&gt;
-</span><span class='line'>&lt;head&gt;
-</span><span class='line'>&lt;title&gt;XSS测试&lt;/title&gt;
-</span><span class='line'>&lt;/head&gt;
-</span><span class='line'>&lt;body&gt;
-</span><span class='line'>页面内容：&lt;%=request.getParameter("content")%&gt;
-</span><span class='line'>&lt;/body&gt;
-</span><span class='line'>&lt;/html&gt;</span></code></pre></td></tr></table></div></figure>
+<h3>1.题目陷阱：</h3>
 
-
-<p>请求下面链接就会出现问题了：
-<code>http://www.domain.com/test.jsp?content=&lt;script&gt;alert(' XSS注入' ); &lt;/script&gt;</code>
-为了防止在请求链接中插入恶意的代码，我采用了以下方法：
-首先自定义一个Filter 取名XssFilter, 在Web.xml中配置如下：</p>
+<p>看到问题很容易想到的办法，就是用一个循环从1 开始逐个打印。代码如下：</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -122,22 +112,29 @@
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'> &lt;filter&gt;
-</span><span class='line'>  &lt;filter-name&gt;XssFilter&lt;/filter-name&gt;
-</span><span class='line'>  &lt;filter-class&gt;test.XssFilter&lt;/filter-class&gt;
-</span><span class='line'>&lt;/filter&gt;
-</span><span class='line'>&lt;filter-mapping&gt;
-</span><span class='line'>  &lt;filter-name&gt;XssFilter&lt;/filter-name&gt;
-</span><span class='line'>  &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
-</span><span class='line'>&lt;/filter-mapping&gt;
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public static void printNum(int n){
+</span><span class='line'>  int num = 1 ;
+</span><span class='line'>  int i = 0 ;
+</span><span class='line'>  while(i++&lt;n){
+</span><span class='line'>      num*=10;
+</span><span class='line'>  }
+</span><span class='line'>  for (int j = 0; j &lt; num; j++) 
+</span><span class='line'>      System.out.println(j);
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>第二步，自定义一个类继承HttpServletRequestWrapper类，并重写父类的方法。
-其中包括getParameter() ， getHeader() ,getParameterValues()
-其中最重要的是自定义一个过滤特殊字符的方法。</p>
+<p>没有规定n的范围，当输入的n很大的时候，最大的n位数就会溢出所以要考虑大数的问题。</p>
 
-<p>具体实现代码如下：</p>
+<h3>2.转化成数字全排列解题，利用递归</h3>
+
+<p>如果我们在数字前面补0的话，就会发现n位所有的十进制数其实就是n个从0到9的全排列。也就是说，把数字的每一位从0到9排列一遍就得到了所有的十进制数。打印的时候数字前面的0不打印出来即可。</p>
+
+<pre><code>全排列用递归表达，每一位可能是0-9中的一个数，然后设置下一位。结束条件：已经设置数字的最后一位。
+</code></pre>
+
+<p>代码如下:</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -184,55 +181,55 @@
 <span class='line-number'>43</span>
 <span class='line-number'>44</span>
 <span class='line-number'>45</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>import javax.servlet.http.HttpServletRequest;
-</span><span class='line'>import javax.servlet.http.HttpServletRequestWrapper;
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>import java.util.Scanner;
 </span><span class='line'>
-</span><span class='line'>public class XssHttpServletRequestWapper extends HttpServletRequestWrapper {
+</span><span class='line'>public class Main {
 </span><span class='line'>
-</span><span class='line'>  public XssHttpServletRequestWapper(HttpServletRequest request) {
-</span><span class='line'>      super(request);
-</span><span class='line'>  }
-</span><span class='line'>
-</span><span class='line'>  @Override
-</span><span class='line'>  public String getParameter(String name) {
-</span><span class='line'>      return clearXss(super.getParameter(name));
-</span><span class='line'>  }
-</span><span class='line'>  
-</span><span class='line'>  @Override
-</span><span class='line'>  public String getHeader(String name) {
-</span><span class='line'>      return clearXss(super.getHeader(name));
-</span><span class='line'>  }
-</span><span class='line'>
-</span><span class='line'>  @Override
-</span><span class='line'>  public String[] getParameterValues(String name) {
-</span><span class='line'>      String[] values = super.getParameterValues(name);
-</span><span class='line'>      String[] newValues = new String[values.length];
-</span><span class='line'>      for (int i = 0; i &lt; values.length; i++) {
-</span><span class='line'>          newValues[i] = clearXss(values[i]);
+</span><span class='line'>  public static void printToMaxOfDigit(int n ,char[] number){
+</span><span class='line'>      if(n&lt;0) return;
+</span><span class='line'>      number[n]='\0';
+</span><span class='line'>      for (int i = 0; i &lt; 10; i++) {
+</span><span class='line'>          number[0] = (char) (i + '0');
+</span><span class='line'>          Recusrsevely(number, n, 0);
 </span><span class='line'>      }
-</span><span class='line'>      return newValues;
 </span><span class='line'>  }
-</span><span class='line'>  /**
-</span><span class='line'>   *  处理 字符转义 
-</span><span class='line'>   *  &gt; &lt; ( ) '  javascript: 
-</span><span class='line'>   */
-</span><span class='line'>  private String clearXss(String value){
-</span><span class='line'>      if (value==null || "".equals(value)) {
-</span><span class='line'>          return value;
+</span><span class='line'>  //打印字符串，注意从第一个非零字符开始打印
+</span><span class='line'>  public static void printNumber(char[] number){
+</span><span class='line'>      boolean flag = true; //从第一个非零字符开始打印标记
+</span><span class='line'>      for (int i = 0; i &lt; number.length; i++) {
+</span><span class='line'>          if(flag && number[i]!='0')
+</span><span class='line'>              flag = false;
+</span><span class='line'>          if(!flag){
+</span><span class='line'>              System.out.print(number[i]);
+</span><span class='line'>          }
 </span><span class='line'>      }
-</span><span class='line'>      value = value.replaceAll("&lt;", "&lt").replaceAll("&gt;", "&gt");
-</span><span class='line'>      value = value.replaceAll("(", "&#40").replaceAll("\\)", "&#41");
-</span><span class='line'>      value = value.replaceAll("'", "&#39");
-</span><span class='line'>      value = value.replaceAll("eval\\((.*)\\)", "");
-</span><span class='line'>      value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
-</span><span class='line'>      value = value.replaceAll("script", "");
-</span><span class='line'>      return value;
+</span><span class='line'>  }
+</span><span class='line'>  //递归实现全排列，数字的每一位都可能是0-9中的一个数，然后设置下一位。结束条件是已经设置了数字的最后一位
+</span><span class='line'>  public static void  Recusrsevely(char[] number , int length , int index){
+</span><span class='line'>      if(index==length-1){
+</span><span class='line'>          printNumber(number);    //打印
+</span><span class='line'>          return;
+</span><span class='line'>      }
+</span><span class='line'>      for (int i = 0; i &lt; 10; i++) {
+</span><span class='line'>          number[index+1]= (char) (i+'0');  
+</span><span class='line'>          Recusrsevely(number, length, index+1);
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>  public static void main(String[] args) {
+</span><span class='line'>      Scanner cin = new Scanner(System.in);
+</span><span class='line'>      while (cin.hasNext()) {
+</span><span class='line'>          int n = cin.nextInt();
+</span><span class='line'>          char[] number =new char[n+1];
+</span><span class='line'>          printToMaxOfDigit(n,number);
+</span><span class='line'>      }
 </span><span class='line'>  }
 </span><span class='line'>}
+</span><span class='line'>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>最后一步，在自定义的Filter中引用上述方法，执行过滤操作。</p>
+<h3>3.数值的整数次方</h3>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -257,37 +254,47 @@
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
 <span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>import java.io.IOException;
-</span><span class='line'>import javax.servlet.Filter;
-</span><span class='line'>import javax.servlet.FilterChain;
-</span><span class='line'>import javax.servlet.FilterConfig;
-</span><span class='line'>import javax.servlet.ServletException;
-</span><span class='line'>import javax.servlet.ServletRequest;
-</span><span class='line'>import javax.servlet.ServletResponse;
-</span><span class='line'>import javax.servlet.http.HttpServletRequest;
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>public class Main{
 </span><span class='line'>
-</span><span class='line'>public class XssFilter implements Filter {
-</span><span class='line'>  public void doFilter(ServletRequest request, ServletResponse response,
-</span><span class='line'>          FilterChain chain) throws IOException, ServletException {
-</span><span class='line'>      XssHttpServletRequestWapper xssRequest = new XssHttpServletRequestWapper((HttpServletRequest) request);
-</span><span class='line'>        chain.doFilter(xssRequest, response);
+</span><span class='line'>  public static double power(double base , int exponent){
+</span><span class='line'>      if(equal(base, 0.0) && exponent &lt; 0){
+</span><span class='line'>          // 底数是0 ，指数是负数的情况特殊考虑
+</span><span class='line'>          return 0.0;
+</span><span class='line'>      }
+</span><span class='line'>      //负指数变化成正指数，求倒数
+</span><span class='line'>      int absExponent = exponent &lt; 0 ? Math.abs(exponent) : exponent;
+</span><span class='line'>      double result = exponent &lt; 0 ? 1.0 / PowerWithUnsignedExponent(base, absExponent):PowerWithUnsignedExponent(base, absExponent);
+</span><span class='line'>      return result;
 </span><span class='line'>  }
-</span><span class='line'>  public void init(FilterConfig filterConfig) throws ServletException {
-</span><span class='line'>      
+</span><span class='line'>  
+</span><span class='line'>  public static double PowerWithUnsignedExponent(double base , int exponent){
+</span><span class='line'>      double result = 1.0 ;
+</span><span class='line'>      for (int i = 1; i &lt;= exponent; i++)
+</span><span class='line'>          result *= base;
+</span><span class='line'>      return result;
+</span><span class='line'>  }
+</span><span class='line'>  public static boolean equal(double num1 , double num2){
+</span><span class='line'>      if((num1-num2 &gt; -0.0000001) && (num1-num2&lt;0.0000001)) 
+</span><span class='line'>          return true;
+</span><span class='line'>      else 
+</span><span class='line'>          return false;
+</span><span class='line'>  }
+</span><span class='line'>  public static void main(String[] args) {
+</span><span class='line'>      System.out.println(power(10,5));
 </span><span class='line'>  }
 </span><span class='line'>
-</span><span class='line'>  public void destroy() {
-</span><span class='line'>      
-</span><span class='line'>  }
 </span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>以上是我整个解决的思路和方法，比较容易能想到，能防止大部分的Xss攻击，一些具体的要求还得大家在开发过程中去留意和总结。</p>
-
-<blockquote><p><a href="http://www.2cto.com/Article/201312/264747.html">http://www.2cto.com/Article/201312/264747.html</a></p>
-
-<p><a href="http://hc24.iteye.com/blog/1995213">http://hc24.iteye.com/blog/1995213</a></p></blockquote>
 </div>
 
 
@@ -303,12 +310,12 @@
 
 
 
-<time class='entry-date' datetime='2016-05-16T10:15:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:15 am</span></time>
+<time class='entry-date' datetime='2016-07-10T22:44:55+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:44 pm</span></time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/security/'>security</a>, <a class='category' href='/blog/categories/web/'>web</a>
+    <a class='category' href='/blog/categories/algorithm/'>algorithm</a>
   
 </span>
 
@@ -345,15 +352,13 @@
  <a href="#" onclick="goTop();return false;" style="position:fixed; right:52px;bottom:47px;"><img src="../../../../../images/totop.gif"  alt="返回顶部"></a>
 <section>
 <h1>QR-Code<abbr title="The word 'QR Code' is a registered trademark of DENSO WAVE INCORPORATED. It applies only for the word 'QR Code', not for image.">&trade;</abbr></h1>
-<a href="http://zhanheng.github.io/blog/2016/05/16/XssSQLSecurity/" style="position:fixed; right:77px;bottom:40px;"><img src="http://pan.baidu.com/share/qrcode?w=90&h=90&url=http://zhanheng.github.io/blog/2016/05/16/XssSQLSecurity/" style="padding:0px" alt="post-qrcode" ></a></section>
+<a href="http://zhanheng.github.io/blog/2016/07/10/print1tomaxofndigit/" style="position:fixed; right:77px;bottom:40px;"><img src="http://pan.baidu.com/share/qrcode?w=90&h=90&url=http://zhanheng.github.io/blog/2016/07/10/print1tomaxofndigit/" style="padding:0px" alt="post-qrcode" ></a></section>
 <script src="../../../../../javascripts/top.js" type="text/javascript"></script>
     
     <p class="meta" style="margin-top:15px">
       
-        <a class="basic-alignment left" href="/blog/2016/05/14/StringEncrypt/" title="Previous Post: 字符串加密">&laquo; 字符串加密</a>
+        <a class="basic-alignment left" href="/blog/2016/06/23/stackimplementbyarray/" title="Previous Post: 堆栈的实现">&laquo; 堆栈的实现</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2016/05/20/DataBasePool/" title="Next Post: Java数据库连接池之 HikariCP">Java数据库连接池之 HikariCP &raquo;</a>
       
     </p>
   </footer>
@@ -362,7 +367,7 @@
   <section>
     <h1>Comments</h1>
     <div id="disqus_thread" aria-live="polite">
-<div class="ds-thread" data-source-thread-id="/blog/2016/05/16/XssSQLSecurity" data-title="防止XSS攻击"  data-url="http://zhanheng.github.io/blog/2016/05/16/XssSQLSecurity/" ></div>
+<div class="ds-thread" data-source-thread-id="/blog/2016/07/10/print1tomaxofndigit" data-title="打印1到最大的n位数"  data-url="http://zhanheng.github.io/blog/2016/07/10/print1tomaxofndigit/" ></div>
 <!--多说js加载开始，一个页面只需要加载一次 -->
 <script type="text/javascript">
 var duoshuoQuery = {short_name:"jikeblog"};

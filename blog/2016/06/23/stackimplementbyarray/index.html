@@ -312,6 +312,62 @@
 </span><span class='line'>
 </span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
+
+<h3>3.两个栈实现队列</h3>
+
+<p>思想就是：stack1模拟压入队列，stack2充当辅助的功能</p>
+
+<p>入队时不用判断直接压入
+出队列时，判断stack2是否为空</p>
+
+<p>1.不为空则弹出栈顶元素;</p>
+
+<p>2.若为空则将stack1的全部元素压入stack2再弹出栈顶元素</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>public class Solution {
+</span><span class='line'>    Stack&lt;Integer&gt; stack1 = new Stack&lt;Integer&gt;();
+</span><span class='line'>    Stack&lt;Integer&gt; stack2 = new Stack&lt;Integer&gt;();
+</span><span class='line'>    
+</span><span class='line'>    public void push(int node) {
+</span><span class='line'>        stack1.push(node);
+</span><span class='line'>    }
+</span><span class='line'>    
+</span><span class='line'>    public int pop() {
+</span><span class='line'>        //不为空则弹出栈顶元素
+</span><span class='line'>      if(!stack2.isEmpty()){
+</span><span class='line'>            return stack2.pop();
+</span><span class='line'>        }else{
+</span><span class='line'>            while (!stack1.isEmpty()) {
+</span><span class='line'>              stack2.push(stack1.pop());
+</span><span class='line'>          }
+</span><span class='line'>            return stack2.pop();
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
 </div>
 
 
@@ -377,6 +433,8 @@
         <a class="basic-alignment left" href="/blog/2016/06/19/mavenlearningpartwo/" title="Previous Post: Maven学习笔记(二)">&laquo; Maven学习笔记(二)</a>
       
       
+        <a class="basic-alignment right" href="/blog/2016/07/10/print1tomaxofndigit/" title="Next Post: 打印1到最大的n位数">打印1到最大的n位数 &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -421,6 +479,10 @@ var duoshuoQuery = {short_name: "dtyu100"};
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/07/10/print1tomaxofndigit/">打印1到最大的n位数</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/06/23/stackimplementbyarray/">堆栈的实现</a>
       </li>
     
@@ -434,10 +496,6 @@ var duoshuoQuery = {short_name: "dtyu100"};
     
       <li class="post">
         <a href="/blog/2016/06/14/fifoandlru/">页面置换算法FIFO和LRU的JAVA实现</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/06/14/xor/">异或的神奇</a>
       </li>
     
   </ul>
