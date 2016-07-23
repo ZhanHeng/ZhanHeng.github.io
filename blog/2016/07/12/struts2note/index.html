@@ -1,0 +1,422 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Struts2学习笔记 - Ranger</title>
+  <meta name="author" content="Zhan">
+
+  
+  <meta name="description" content="struts2简介 struts2是在webwork2基础上发展而来的。和struts1一样，struts2也属于MVC框架。不过有一点需要注意的是：struts2和struts2虽然名字很相似，但是在两者在代码编写风格上几乎是不一样的。那么既然有了struts1，为什么还要推出struts2。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://zhanheng.github.io/blog/2016/07/12/struts2note/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Ranger" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Ranger</a></h1>
+  
+    <h2>简单不先于复杂，而是在复杂之后.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="zhanheng.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/aboutme">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Struts2学习笔记</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-07-12T10:51:51+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:51 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>struts2简介</h3>
+
+<p>struts2是在webwork2基础上发展而来的。和struts1一样，struts2也属于MVC框架。不过有一点需要注意的是：struts2和struts2虽然名字很相似，但是在两者在代码编写风格上几乎是不一样的。那么既然有了struts1，为什么还要推出struts2。主要的原因是struts2有以下优点：</p>
+
+<pre><code>1.在软件设计上struts2没有像struts1那样跟servlet API和struts API有着紧密的耦合，struts2的应用可以不依赖于servlet API和struts API。struts2的这种设计属于无侵入式设计，而struts1却属于侵入式设计。
+
+2.struts2提供了拦截器，利用拦截器可以进行AOP编程，实现如权限拦截等功能。
+
+3.struts2提供了类型转换器，可以把特殊的请求参数转化成需要的类型。在struts1中，如果我们要实现同样的功能，就必须向struts1的底层实现BeanUtil注册类型转换器才行。
+
+4.struts2提供支持多种表现层技术，如：jsp、freemarker、velocity等。
+
+5.struts2的输入校验可以对指定的方法进行校验，解决了struts1长久之痛。
+
+6.提供了全局范围、包范围和Action范围的国际化资源文件实现。
+</code></pre>
+
+<h3>struts2开发环境搭建</h3>
+
+<p>搭建struts2（这里使用的是2.1.8版的）的开发环境的时，一般都会按如下的步骤：</p>
+
+<p>1.引入struts2需要的jar文件（一般需要commons-fileupload-1.2.1.jar、commons-logging-1.0.4.jar、freemarker-2.3.15.jar、ognl-2.7.3.jar、struts2-core-2.1.8.1.jar和xwork-core-2.1.6.jar这6个jar文件，可以从struts2自带的示例项目中拷贝，粘贴到WebRoot/WEB-INF/lib下面）</p>
+
+<p>2.编写struts2的配置文件（可以从struts2自带的示例项目中拷贝struts.xml，粘贴到src目录下，然后在这个基础上按照自己的需要来更改）
+3.在web.xml中加入struts2框架启动配置，具体的方法是在web.xml中加入如下的代码：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;filter&gt;
+</span><span class='line'>  &lt;filter-name&gt;struts2&lt;/filter-name&gt;
+</span><span class='line'>  &lt;filter-class&gt;org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter&lt;/filter-class&gt;
+</span><span class='line'>&lt;/filter&gt;
+</span><span class='line'>  
+</span><span class='line'>&lt;filter-mapping&gt;
+</span><span class='line'>  &lt;filter-name&gt;struts2&lt;/filter-name&gt;
+</span><span class='line'>  &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+</span><span class='line'>&lt;/filter-mapping&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>从上面可以看出，struts2框架是通过filter启动的。在StrutsPrepareAndExecuteFilter的init()方法中读取类路径下默认的配置文件struts.xml完成初始化操作。
+注意：struts2读取到struts.xml中的内容后，以javabean的形式保存在内存中，以后struts2对用户的每次请求处理将使用内存中的数据，而不是每次都读取struts.xml文件。</p>
+
+<h3>struts2配置中的包介绍</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;package name="accesscontrol" namespace="/"   extends="struts-default,json-default"&gt;
+</span><span class='line'>
+</span><span class='line'>      &lt;!-- Action --&gt;
+</span><span class='line'>      &lt;action name="loginAction" class="LoginAction"&gt;
+</span><span class='line'>          &lt;result name="login" type="json"&gt;&lt;/result&gt;
+</span><span class='line'>          &lt;result name="uploadc"&gt;/uploadSuccess.jsp&lt;/result&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      
+</span><span class='line'>      &lt;!-- 上传的Action 配置 --&gt;
+</span><span class='line'>      &lt;action name="logout" class="LoginAction" method="logout"&gt;
+</span><span class='line'>          &lt;result name="logout"&gt;/userLogin.jsp&lt;/result&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      
+</span><span class='line'>      &lt;!-- 下载的Action 配置 --&gt;
+</span><span class='line'>      &lt;action name="downLoadAction" class="LoginAction" method="downLoad"&gt;
+</span><span class='line'>          &lt;result name="downLoad" type="stream"&gt;
+</span><span class='line'>              &lt;param name="contentDisposition"&gt;attachment;filename=${filename}&lt;/param&gt;
+</span><span class='line'>              &lt;param name="inputName"&gt;downloadFile&lt;/param&gt;
+</span><span class='line'>              &lt;param name="bufferSize"&gt;1024&lt;/param&gt;  
+</span><span class='line'>          &lt;/result&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      
+</span><span class='line'>      
+</span><span class='line'>      &lt;action name="upAction" class="LoginAction" method="uploadTest"&gt;
+</span><span class='line'>          &lt;result name="uploadc" &gt;/uploadSuccess.jsp&lt;/result&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      &lt;action name="resetAction" class="LoginAction" method="reset"&gt;
+</span><span class='line'>          &lt;result name="reset"&gt;/resetSuccess.jsp&lt;/result&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      &lt;action name="loadTemperatureData" class="LoadTemperatureData"&gt;
+</span><span class='line'>          &lt;result type="json" /&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      &lt;action name="loadHumidityData" class="LoadHumidityData"&gt;
+</span><span class='line'>          &lt;result type="json" /&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      &lt;action name="loadSunlightData" class="LoadSunlightData"&gt;
+</span><span class='line'>          &lt;result type="json" /&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      &lt;action name="loadRainDropData" class="LoadRainDropData"&gt;
+</span><span class='line'>          &lt;result type="json" /&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>
+</span><span class='line'>      &lt;action name="registerActionForMgr" class="RegisterActionForMgr"&gt;
+</span><span class='line'>          &lt;result name="saveuser" type="redirect"&gt;/registerActionForMgr!queryUserForPage?page=1
+</span><span class='line'>          &lt;/result&gt;
+</span><span class='line'>          &lt;result name="deleteuser" type="redirect"&gt;/registerActionForMgr!queryUserForPage?page=1
+</span><span class='line'>          &lt;/result&gt;
+</span><span class='line'>          &lt;result name="queryUserForPage"&gt;/showInfo.jsp&lt;/result&gt;
+</span><span class='line'>          &lt;result type="json"&gt;&lt;/result&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>  &lt;/package&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>struts2中使用包来管理action。包的作用和java中类包是非常类似的，它主要用于管理一组业务功能相关的action。在实际应用中，应该把一组业务功能相关的action放在同一个包下面。
+配置包是必须指定name属性，该name可以随意取名，但是必须唯一，它不对应Java的类包，如果其他类要继承该包，必须使用该属性进行使用。包的namespace属性用于定义包的命名空间，命名空间作为该action路径的一部分，如访问上面的例子中的action的路径为：/upload/upload.action。namespace属性可以不用配置，如果不指定该属性，默认的命名空间为“”（空字符串）。
+通常每个包都必须继承struts-default包，因为struts很多核心的功能都是在这个包中定义的拦截器实现的，如：从请求中把请求参数封装到action、文件上传和数据验证等功能搜是通过拦截器实现的。struts-default包中定义了这些拦截器和result类型。换句话说，当包继承了strtus-default包才能使用struts提供的核心功能。struts-default包是在struts2-core-2.x.x.x.jar文件中的struts-default.xml中定义的。struts-default.xml是struts2的默认配置文件，struts2每次都会自动加载struts-default.xml文件。
+包还可以通过abstract=“true”定义为抽象包，抽象包中不能包含action。
+注意，在配置文件struts.xml中没有提示的解决办法：window->preference->xml catalog中添加struts-2.0.dtd文件，key type为URI，key为<a href="http://struts.apache.org/dtds/struts-2.0.dtd%E3%80%82">http://struts.apache.org/dtds/struts-2.0.dtd%E3%80%82</a></p>
+
+<h3>action配置中的默认值</h3>
+
+<p>1.如果没有为action指定class，默认的class是ActionSupport。
+2.如果没有为action指定method，默认执行action中的execute方法。
+3.如果没有为result指定name属性，默认值为success。</p>
+
+<h3>action中result的各种转发类型</h3>
+
+<p>result配置类似于struts1中的forward，但struts2提供了多种结果类型，常用的类型有dispatcher（默认值）、redirect、redirectAction、plainText。
+result中还可以使用${属性名}表达式来访问action中的属性，表达式中的属性名为action中的属性名</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Zhan</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-07-12T10:51:51+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:51 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/note/'>note</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing" style="margin-bottom:15px">
+  
+  
+  
+  
+    <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_32x32">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  
+  </br>
+</div>
+</br>
+</br>
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2103668"></script>
+<!-- UY END -->
+ <a href="#" onclick="goTop();return false;" style="position:fixed; right:52px;bottom:47px;"><img src="../../../../../images/totop.gif"  alt="返回顶部"></a>
+<section>
+<h1>QR-Code<abbr title="The word 'QR Code' is a registered trademark of DENSO WAVE INCORPORATED. It applies only for the word 'QR Code', not for image.">&trade;</abbr></h1>
+<a href="http://zhanheng.github.io/blog/2016/07/12/struts2note/" style="position:fixed; right:77px;bottom:40px;"><img src="http://pan.baidu.com/share/qrcode?w=90&h=90&url=http://zhanheng.github.io/blog/2016/07/12/struts2note/" style="padding:0px" alt="post-qrcode" ></a></section>
+<script src="../../../../../javascripts/top.js" type="text/javascript"></script>
+    
+    <p class="meta" style="margin-top:15px">
+      
+        <a class="basic-alignment left" href="/blog/2016/07/10/print1tomaxofndigit/" title="Previous Post: 打印1到最大的n位数">&laquo; 打印1到最大的n位数</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2016/07/15/jacobtowordandexcel/" title="Next Post: jacob对excel,word进行打印等操作">jacob对excel,word进行打印等操作 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite">
+<div class="ds-thread" data-source-thread-id="/blog/2016/07/12/struts2note" data-title="struts2学习笔记"  data-url="http://zhanheng.github.io/blog/2016/07/12/struts2note/" ></div>
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jikeblog"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:' )+ 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 
+
+<script type="text/javascript">
+var duoshuoQuery = {short_name: "dtyu100"};
+(function(){
+	var ds = document.createElement("script");
+	ds.type = "text/javascript"; ds.async= true;
+	ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:' )+ '//static.duoshuo.com/embed.js';
+	ds.charset = "utf-8";
+	(document.getElementsByTagName('head')[0]
+	|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+--></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>最近发布</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/07/23/sendemail/">使用JavaEmail发送邮件</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/16/findkthtotail/">链表中倒数第K个结点</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/15/jacobtowordandexcel/">Jacob对excel,word进行打印等操作</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/12/struts2note/">Struts2学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/10/print1tomaxofndigit/">打印1到最大的n位数</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Zhan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Note | Ranger]]></title>
   <link href="http://zhanheng.github.io/blog/categories/note/atom.xml" rel="self"/>
   <link href="http://zhanheng.github.io/"/>
-  <updated>2016-07-11T00:22:33+08:00</updated>
+  <updated>2016-07-23T23:04:09+08:00</updated>
   <id>http://zhanheng.github.io/</id>
   <author>
     <name><![CDATA[Zhan]]></name>
@@ -12,6 +12,125 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Struts2学习笔记]]></title>
+    <link href="http://zhanheng.github.io/blog/2016/07/12/struts2note/"/>
+    <updated>2016-07-12T10:51:51+08:00</updated>
+    <id>http://zhanheng.github.io/blog/2016/07/12/struts2note</id>
+    <content type="html"><![CDATA[<h3>struts2简介</h3>
+
+<p>struts2是在webwork2基础上发展而来的。和struts1一样，struts2也属于MVC框架。不过有一点需要注意的是：struts2和struts2虽然名字很相似，但是在两者在代码编写风格上几乎是不一样的。那么既然有了struts1，为什么还要推出struts2。主要的原因是struts2有以下优点：</p>
+
+<pre><code>1.在软件设计上struts2没有像struts1那样跟servlet API和struts API有着紧密的耦合，struts2的应用可以不依赖于servlet API和struts API。struts2的这种设计属于无侵入式设计，而struts1却属于侵入式设计。
+
+2.struts2提供了拦截器，利用拦截器可以进行AOP编程，实现如权限拦截等功能。
+
+3.struts2提供了类型转换器，可以把特殊的请求参数转化成需要的类型。在struts1中，如果我们要实现同样的功能，就必须向struts1的底层实现BeanUtil注册类型转换器才行。
+
+4.struts2提供支持多种表现层技术，如：jsp、freemarker、velocity等。
+
+5.struts2的输入校验可以对指定的方法进行校验，解决了struts1长久之痛。
+
+6.提供了全局范围、包范围和Action范围的国际化资源文件实现。
+</code></pre>
+
+<h3>struts2开发环境搭建</h3>
+
+<p>搭建struts2（这里使用的是2.1.8版的）的开发环境的时，一般都会按如下的步骤：</p>
+
+<p>1.引入struts2需要的jar文件（一般需要commons-fileupload-1.2.1.jar、commons-logging-1.0.4.jar、freemarker-2.3.15.jar、ognl-2.7.3.jar、struts2-core-2.1.8.1.jar和xwork-core-2.1.6.jar这6个jar文件，可以从struts2自带的示例项目中拷贝，粘贴到WebRoot/WEB-INF/lib下面）</p>
+
+<p>2.编写struts2的配置文件（可以从struts2自带的示例项目中拷贝struts.xml，粘贴到src目录下，然后在这个基础上按照自己的需要来更改）
+3.在web.xml中加入struts2框架启动配置，具体的方法是在web.xml中加入如下的代码：</p>
+
+<pre><code>&lt;filter&gt;
+    &lt;filter-name&gt;struts2&lt;/filter-name&gt;
+    &lt;filter-class&gt;org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter&lt;/filter-class&gt;
+&lt;/filter&gt;
+
+&lt;filter-mapping&gt;
+    &lt;filter-name&gt;struts2&lt;/filter-name&gt;
+    &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+</code></pre>
+
+<p>从上面可以看出，struts2框架是通过filter启动的。在StrutsPrepareAndExecuteFilter的init()方法中读取类路径下默认的配置文件struts.xml完成初始化操作。
+注意：struts2读取到struts.xml中的内容后，以javabean的形式保存在内存中，以后struts2对用户的每次请求处理将使用内存中的数据，而不是每次都读取struts.xml文件。</p>
+
+<h3>struts2配置中的包介绍</h3>
+
+<pre><code>&lt;package name="accesscontrol" namespace="/" extends="struts-default,json-default"&gt;
+
+        &lt;!-- Action --&gt;
+        &lt;action name="loginAction" class="LoginAction"&gt;
+            &lt;result name="login" type="json"&gt;&lt;/result&gt;
+            &lt;result name="uploadc"&gt;/uploadSuccess.jsp&lt;/result&gt;
+        &lt;/action&gt;
+
+        &lt;!-- 上传的Action 配置 --&gt;
+        &lt;action name="logout" class="LoginAction" method="logout"&gt;
+            &lt;result name="logout"&gt;/userLogin.jsp&lt;/result&gt;
+        &lt;/action&gt;
+
+        &lt;!-- 下载的Action 配置 --&gt;
+        &lt;action name="downLoadAction" class="LoginAction" method="downLoad"&gt;
+            &lt;result name="downLoad" type="stream"&gt;
+                &lt;param name="contentDisposition"&gt;attachment;filename=${filename}&lt;/param&gt;
+                &lt;param name="inputName"&gt;downloadFile&lt;/param&gt;
+                &lt;param name="bufferSize"&gt;1024&lt;/param&gt;  
+            &lt;/result&gt;
+        &lt;/action&gt;
+
+
+        &lt;action name="upAction" class="LoginAction" method="uploadTest"&gt;
+            &lt;result name="uploadc" &gt;/uploadSuccess.jsp&lt;/result&gt;
+        &lt;/action&gt;
+        &lt;action name="resetAction" class="LoginAction" method="reset"&gt;
+            &lt;result name="reset"&gt;/resetSuccess.jsp&lt;/result&gt;
+        &lt;/action&gt;
+        &lt;action name="loadTemperatureData" class="LoadTemperatureData"&gt;
+            &lt;result type="json" /&gt;
+        &lt;/action&gt;
+        &lt;action name="loadHumidityData" class="LoadHumidityData"&gt;
+            &lt;result type="json" /&gt;
+        &lt;/action&gt;
+        &lt;action name="loadSunlightData" class="LoadSunlightData"&gt;
+            &lt;result type="json" /&gt;
+        &lt;/action&gt;
+        &lt;action name="loadRainDropData" class="LoadRainDropData"&gt;
+            &lt;result type="json" /&gt;
+        &lt;/action&gt;
+
+        &lt;action name="registerActionForMgr" class="RegisterActionForMgr"&gt;
+            &lt;result name="saveuser" type="redirect"&gt;/registerActionForMgr!queryUserForPage?page=1
+            &lt;/result&gt;
+            &lt;result name="deleteuser" type="redirect"&gt;/registerActionForMgr!queryUserForPage?page=1
+            &lt;/result&gt;
+            &lt;result name="queryUserForPage"&gt;/showInfo.jsp&lt;/result&gt;
+            &lt;result type="json"&gt;&lt;/result&gt;
+        &lt;/action&gt;
+    &lt;/package&gt;
+</code></pre>
+
+<p>struts2中使用包来管理action。包的作用和java中类包是非常类似的，它主要用于管理一组业务功能相关的action。在实际应用中，应该把一组业务功能相关的action放在同一个包下面。
+配置包是必须指定name属性，该name可以随意取名，但是必须唯一，它不对应Java的类包，如果其他类要继承该包，必须使用该属性进行使用。包的namespace属性用于定义包的命名空间，命名空间作为该action路径的一部分，如访问上面的例子中的action的路径为：/upload/upload.action。namespace属性可以不用配置，如果不指定该属性，默认的命名空间为“”（空字符串）。
+通常每个包都必须继承struts-default包，因为struts很多核心的功能都是在这个包中定义的拦截器实现的，如：从请求中把请求参数封装到action、文件上传和数据验证等功能搜是通过拦截器实现的。struts-default包中定义了这些拦截器和result类型。换句话说，当包继承了strtus-default包才能使用struts提供的核心功能。struts-default包是在struts2-core-2.x.x.x.jar文件中的struts-default.xml中定义的。struts-default.xml是struts2的默认配置文件，struts2每次都会自动加载struts-default.xml文件。
+包还可以通过abstract=“true”定义为抽象包，抽象包中不能包含action。
+注意，在配置文件struts.xml中没有提示的解决办法：window->preference->xml catalog中添加struts-2.0.dtd文件，key type为URI，key为<a href="http://struts.apache.org/dtds/struts-2.0.dtd%E3%80%82">http://struts.apache.org/dtds/struts-2.0.dtd%E3%80%82</a></p>
+
+<h3>action配置中的默认值</h3>
+
+<p>1.如果没有为action指定class，默认的class是ActionSupport。
+2.如果没有为action指定method，默认执行action中的execute方法。
+3.如果没有为result指定name属性，默认值为success。</p>
+
+<h3>action中result的各种转发类型</h3>
+
+<p>result配置类似于struts1中的forward，但struts2提供了多种结果类型，常用的类型有dispatcher（默认值）、redirect、redirectAction、plainText。
+result中还可以使用${属性名}表达式来访问action中的属性，表达式中的属性名为action中的属性名</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Maven学习笔记(二)]]></title>
@@ -36,6 +155,37 @@
 <code>2.构建环境</code></p>
 
 <h3>2.Maven的生命周期</h3>
+
+<h4>标准生命周期</h4>
+
+<p>1.清理生命周期 mvn clean (清空target目录)</p>
+
+<p>2.默认生命周期 validate -> destroy</p>
+
+<p>3.站点生命周期(生成文档报告) mvn site</p>
+
+<h4>打包生命周期</h4>
+
+<ol>
+<li>jar (独立子件) package install deploy test compile process</li>
+<li>pom (父项目)</li>
+<li>war (web项目)</li>
+</ol>
+
+
+<h4>通用生命周期</h4>
+
+<ol>
+<li>process Resources 复制资源src/main/resources 到target/classes</li>
+<li>compile  编译 输入输出 src/main/java 到target/classes</li>
+<li>process Test Resources</li>
+<li>Test Compile</li>
+<li>Test surfile 寻找测试类，以test结尾，生成文件到target/surfire-report目录，包含一个运行信息的xml文件，另一个是包含单元测试输出的文本文件</li>
+<li>package</li>
+<li>install 将项目构件安装到本地仓库</li>
+<li>deploy  部署到远程仓库，别的项目可以依赖</li>
+</ol>
+
 
 <h3>3.自定义插件</h3>
 

@@ -9,16 +9,7 @@
   <meta name="author" content="Zhan">
 
   
-  <meta name="description" content="题目描述： 输入数字n,按顺序打印出从1到最大的n位十进制数。 比如输入3,打印出1、2、3一直到最大的三位数即999 1.题目陷阱： 看到问题很容易想到的办法，就是用一个循环从1 开始逐个打印。代码如下： 1
-2
-3
-4
-5
-6
-7
-8
-9
-public static void printNum &hellip;">
+  <meta name="description" content="现在很多的网站都提供有用户注册功能， 通常我们注册成功之后就会收到一封来自注册网站的邮件。邮件里面的内容可能包含了我们的注册的用户名和密码以及一个激活账户的超链接等信息。今天我们也来实现一个这样的功能，用户注册成功之后，就将用户的注册信息以Email的形式发送到用户的注册邮箱当中， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -75,6 +66,600 @@ public static void printNum &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/07/23/sendemail/">使用JavaEmail发送邮件</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-07-23T13:01:16+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2016</span></span> <span class='time'>1:01 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>现在很多的网站都提供有用户注册功能， 通常我们注册成功之后就会收到一封来自注册网站的邮件。邮件里面的内容可能包含了我们的注册的用户名和密码以及一个激活账户的超链接等信息。今天我们也来实现一个这样的功能，用户注册成功之后，就将用户的注册信息以Email的形式发送到用户的注册邮箱当中，实现发送邮件功能就得借助于JavaMail了。这个功能可以用到我们的项目中去。</p>
+
+<h4>1.引入相关的jar包</h4>
+
+<p>项目的目录结构如下图所示</p>
+
+<p><img src="http://images.cnitblog.com/blog/289233/201501/122321383394010.png" alt="image" /></p>
+
+<h4>2.注册的jsp页面 和 成功发送邮件后的jsp页面</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;%@ page language="java" import="java.util.*" pageEncoding="utf-8"%&gt;
+</span><span class='line'>&lt;%
+</span><span class='line'>  String path = request.getContextPath();
+</span><span class='line'>  String basePath = request.getScheme() + "://"
+</span><span class='line'>          + request.getServerName() + ":" + request.getServerPort()
+</span><span class='line'>          + path + "/";
+</span><span class='line'>%&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;
+</span><span class='line'>&lt;html&gt;
+</span><span class='line'>&lt;head&gt;
+</span><span class='line'>&lt;base href="&lt;%=basePath%&gt;"&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;title&gt;&lt;/title&gt;
+</span><span class='line'>&lt;meta http-equiv="pragma" content="no-cache"&gt;
+</span><span class='line'>&lt;meta http-equiv="cache-control" content="no-cache"&gt;
+</span><span class='line'>&lt;meta http-equiv="expires" content="0"&gt;
+</span><span class='line'>&lt;meta http-equiv="keywords" content="keyword1,keyword2,keyword3"&gt;
+</span><span class='line'>&lt;meta http-equiv="description" content="This is my page"&gt;
+</span><span class='line'>&lt;/head&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;body&gt;
+</span><span class='line'>  &lt;center&gt;
+</span><span class='line'>      &lt;form  method="post" action="RegisterServlet"&gt;
+</span><span class='line'>          &lt;table&gt;
+</span><span class='line'>              &lt;tr&gt;
+</span><span class='line'>                  &lt;td&gt;&lt;div align="" right&gt;User Name&lt;/div&gt;
+</span><span class='line'>                  &lt;/td&gt;
+</span><span class='line'>                  &lt;td&gt;&lt;input type="text" name="username"&gt;
+</span><span class='line'>                  &lt;/td&gt;
+</span><span class='line'>              &lt;/tr&gt;
+</span><span class='line'>              &lt;tr&gt;
+</span><span class='line'>                  &lt;td&gt;&lt;div align="right"&gt;Password:&lt;/div&gt;
+</span><span class='line'>                  &lt;/td&gt;
+</span><span class='line'>                  &lt;td&gt;&lt;input type="password" name="password"&gt;
+</span><span class='line'>                  &lt;/td&gt;
+</span><span class='line'>              &lt;/tr&gt;
+</span><span class='line'>                  &lt;tr&gt;
+</span><span class='line'>                  &lt;td&gt;&lt;div align="right"&gt;E-mail:&lt;/div&gt;
+</span><span class='line'>                  &lt;/td&gt;
+</span><span class='line'>                  &lt;td&gt;&lt;input type="text" name="email"&gt;
+</span><span class='line'>                  &lt;/td&gt;
+</span><span class='line'>              &lt;/tr&gt;
+</span><span class='line'>              &lt;tr&gt;
+</span><span class='line'>                  &lt;td&gt;&lt;input type="submit"  value="submit"&gt;
+</span><span class='line'>                  &lt;/td&gt;
+</span><span class='line'>                  &lt;td&gt;&lt;input type="reset" value="reset"&gt;
+</span><span class='line'>                  &lt;/td&gt;
+</span><span class='line'>              &lt;/tr&gt;
+</span><span class='line'>          &lt;/table&gt;
+</span><span class='line'>      &lt;/form&gt;
+</span><span class='line'>  &lt;/center&gt;
+</span><span class='line'>&lt;/body&gt;
+</span><span class='line'>&lt;/html&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%&gt;
+</span><span class='line'>&lt;%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%&gt;
+</span><span class='line'>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;
+</span><span class='line'>&lt;html&gt;
+</span><span class='line'>  &lt;head&gt;
+</span><span class='line'>    &lt;%
+</span><span class='line'>  response.setHeader("Pragma", "No-cache");
+</span><span class='line'>  response.setHeader("Cache-Control", "no-cache");
+</span><span class='line'>  response.setHeader("Cache-Control", "no-store");
+</span><span class='line'>  response.setDateHeader("Expires", 0);
+</span><span class='line'>  %&gt; 
+</span><span class='line'>    &lt;title&gt;&lt;/title&gt;
+</span><span class='line'>      &lt;meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"&gt;
+</span><span class='line'>      &lt;link rel="stylesheet" type="text/css" href="css/"/&gt;
+</span><span class='line'>      &lt;script type="text/javascript"&gt;
+</span><span class='line'>
+</span><span class='line'>      &lt;/script&gt;
+</span><span class='line'>      &lt;style type="text/css"&gt;
+</span><span class='line'>
+</span><span class='line'>      &lt;/style&gt;
+</span><span class='line'>  &lt;/head&gt;
+</span><span class='line'>  
+</span><span class='line'>  
+</span><span class='line'>
+</span><span class='line'>  &lt;body&gt;
+</span><span class='line'>    ${message}
+</span><span class='line'>
+</span><span class='line'>  &lt;/body&gt;
+</span><span class='line'>&lt;/html&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/07/16/findkthtotail/">链表中倒数第K个结点</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-07-16T20:10:27+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>8:10 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>题目：输入一个链表，输出链表中倒数第K个结点。
+从1开始计数，尾结点是倒数第一个结点。例如一个链表有6个结点1 -> 2 -> 3 -> 4 -> 5 -> 6那么倒数第3个结点就是值为4的结点。</p>
+
+<p>为了实现遍历一遍就能找到倒数第K个结点，采用快慢指针。
+代码如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>  /**
+</span><span class='line'>   * 思路：快慢指针，快指针往前走k-1步后，慢指针开始走。
+</span><span class='line'>   * @param head 链表的头节点
+</span><span class='line'>   * @param k      倒数第K个节点
+</span><span class='line'>   * @return
+</span><span class='line'>   * 
+</span><span class='line'>   * 注意事项：
+</span><span class='line'>   * 1.head为空指针
+</span><span class='line'>   * 2.链表的总节点数少于k，导致快指针走不了k-1步
+</span><span class='line'>   * 3.k的非法输入，比如0
+</span><span class='line'>   */
+</span><span class='line'>  public static ListNode FindKthToTail(ListNode head, int k){
+</span><span class='line'>      if(head==null || k &lt;=0) return null;
+</span><span class='line'>      ListNode pAhead  = head;
+</span><span class='line'>      ListNode pBehind = null;
+</span><span class='line'>      for (int i = 0; i &lt; k-1; i++) {
+</span><span class='line'>          if(pAhead.next!=null)
+</span><span class='line'>              pAhead = pAhead.next;
+</span><span class='line'>          else
+</span><span class='line'>              return null;
+</span><span class='line'>      }
+</span><span class='line'>      pBehind = head;
+</span><span class='line'>      while (pAhead.next!=null) {
+</span><span class='line'>          pAhead  = pAhead.next;
+</span><span class='line'>          pBehind = pBehind.next;
+</span><span class='line'>      }
+</span><span class='line'>      return pBehind;
+</span><span class='line'>  }
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/07/15/jacobtowordandexcel/">Jacob对excel,word进行打印等操作</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-07-15T23:27:58+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>11:27 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>java平台下，因为项目有个需求，要求能够对数据进行打印，比如打印学生四年的成绩单。还有其他的一些数据报表，报表的形式主要是excel。后台是ssh框架基于java实现，这里的打印不同于常见的页面手工打印，常见的操作是可以通过JavaScript调用打印机来控制某个div或者table打印。于是乎，开始摸索如何实现该功能。
+这不，关键时刻，jacob出现了。根据官方网站的介绍 jacob即Java COM Bridge充当java和windows平台的桥梁作用，通过com组件的方式。如果大家不了解com组件。可以google一下。通过它，是我们在java中可以很方便的操作office，包括word，excel等。
+     闲话少说，马上开始jacob之旅。首先，当然是从官网上下载我们必要的资源。<a href="http://danadler.com/jacob/">http://danadler.com/jacob/</a></p>
+
+<p>  解压:jacob-1.14.3.zip,将jacob.jar加入classpath，如果是intel平台，将jacob-1.14.3-x86.dll加入系统盘的system32下。比如我的路径是：C:/WINDOWS/system32 如果是AMD平台，则加入：jacob-1.14.3-x64.dll，</p>
+
+<p>参照自带的demo实现了简单的打开excel并打印的功能。代码如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/**  
+</span><span class='line'>* 功能:实现打印工作  
+</span><span class='line'>* @param path  
+</span><span class='line'>* @date Oct 29, 2008  
+</span><span class='line'>* @time 11:40:03 AM  
+</span><span class='line'>*/   
+</span><span class='line'>public static void print(String path){   
+</span><span class='line'>ComThread.InitSTA();   
+</span><span class='line'>ActiveXComponent xl = new ActiveXComponent("Excel.Application");   
+</span><span class='line'>try {   
+</span><span class='line'>// System.out.println("version=" + xl.getProperty("Version"));   
+</span><span class='line'>//不打开文档   
+</span><span class='line'>Dispatch.put(xl, "Visible", new Variant(true));   
+</span><span class='line'>Dispatch workbooks = xl.getProperty("Workbooks").toDispatch();   
+</span><span class='line'>//打开文档   
+</span><span class='line'>Dispatch excel=Dispatch.call(workbooks,"Open",path).toDispatch();   
+</span><span class='line'>//开始打印   
+</span><span class='line'>Dispatch.get(excel,"PrintOut");   
+</span><span class='line'>} catch (Exception e) {   
+</span><span class='line'>e.printStackTrace();   
+</span><span class='line'>} finally {   
+</span><span class='line'>//始终释放资源   
+</span><span class='line'>ComThread.Release();   
+</span><span class='line'>}   
+</span><span class='line'>}  </span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/07/12/struts2note/">Struts2学习笔记</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-07-12T10:51:51+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:51 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>struts2简介</h3>
+
+<p>struts2是在webwork2基础上发展而来的。和struts1一样，struts2也属于MVC框架。不过有一点需要注意的是：struts2和struts2虽然名字很相似，但是在两者在代码编写风格上几乎是不一样的。那么既然有了struts1，为什么还要推出struts2。主要的原因是struts2有以下优点：</p>
+
+<pre><code>1.在软件设计上struts2没有像struts1那样跟servlet API和struts API有着紧密的耦合，struts2的应用可以不依赖于servlet API和struts API。struts2的这种设计属于无侵入式设计，而struts1却属于侵入式设计。
+
+2.struts2提供了拦截器，利用拦截器可以进行AOP编程，实现如权限拦截等功能。
+
+3.struts2提供了类型转换器，可以把特殊的请求参数转化成需要的类型。在struts1中，如果我们要实现同样的功能，就必须向struts1的底层实现BeanUtil注册类型转换器才行。
+
+4.struts2提供支持多种表现层技术，如：jsp、freemarker、velocity等。
+
+5.struts2的输入校验可以对指定的方法进行校验，解决了struts1长久之痛。
+
+6.提供了全局范围、包范围和Action范围的国际化资源文件实现。
+</code></pre>
+
+<h3>struts2开发环境搭建</h3>
+
+<p>搭建struts2（这里使用的是2.1.8版的）的开发环境的时，一般都会按如下的步骤：</p>
+
+<p>1.引入struts2需要的jar文件（一般需要commons-fileupload-1.2.1.jar、commons-logging-1.0.4.jar、freemarker-2.3.15.jar、ognl-2.7.3.jar、struts2-core-2.1.8.1.jar和xwork-core-2.1.6.jar这6个jar文件，可以从struts2自带的示例项目中拷贝，粘贴到WebRoot/WEB-INF/lib下面）</p>
+
+<p>2.编写struts2的配置文件（可以从struts2自带的示例项目中拷贝struts.xml，粘贴到src目录下，然后在这个基础上按照自己的需要来更改）
+3.在web.xml中加入struts2框架启动配置，具体的方法是在web.xml中加入如下的代码：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;filter&gt;
+</span><span class='line'>  &lt;filter-name&gt;struts2&lt;/filter-name&gt;
+</span><span class='line'>  &lt;filter-class&gt;org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter&lt;/filter-class&gt;
+</span><span class='line'>&lt;/filter&gt;
+</span><span class='line'>  
+</span><span class='line'>&lt;filter-mapping&gt;
+</span><span class='line'>  &lt;filter-name&gt;struts2&lt;/filter-name&gt;
+</span><span class='line'>  &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+</span><span class='line'>&lt;/filter-mapping&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>从上面可以看出，struts2框架是通过filter启动的。在StrutsPrepareAndExecuteFilter的init()方法中读取类路径下默认的配置文件struts.xml完成初始化操作。
+注意：struts2读取到struts.xml中的内容后，以javabean的形式保存在内存中，以后struts2对用户的每次请求处理将使用内存中的数据，而不是每次都读取struts.xml文件。</p>
+
+<h3>struts2配置中的包介绍</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;package name="accesscontrol" namespace="/"   extends="struts-default,json-default"&gt;
+</span><span class='line'>
+</span><span class='line'>      &lt;!-- Action --&gt;
+</span><span class='line'>      &lt;action name="loginAction" class="LoginAction"&gt;
+</span><span class='line'>          &lt;result name="login" type="json"&gt;&lt;/result&gt;
+</span><span class='line'>          &lt;result name="uploadc"&gt;/uploadSuccess.jsp&lt;/result&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      
+</span><span class='line'>      &lt;!-- 上传的Action 配置 --&gt;
+</span><span class='line'>      &lt;action name="logout" class="LoginAction" method="logout"&gt;
+</span><span class='line'>          &lt;result name="logout"&gt;/userLogin.jsp&lt;/result&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      
+</span><span class='line'>      &lt;!-- 下载的Action 配置 --&gt;
+</span><span class='line'>      &lt;action name="downLoadAction" class="LoginAction" method="downLoad"&gt;
+</span><span class='line'>          &lt;result name="downLoad" type="stream"&gt;
+</span><span class='line'>              &lt;param name="contentDisposition"&gt;attachment;filename=${filename}&lt;/param&gt;
+</span><span class='line'>              &lt;param name="inputName"&gt;downloadFile&lt;/param&gt;
+</span><span class='line'>              &lt;param name="bufferSize"&gt;1024&lt;/param&gt;  
+</span><span class='line'>          &lt;/result&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      
+</span><span class='line'>      
+</span><span class='line'>      &lt;action name="upAction" class="LoginAction" method="uploadTest"&gt;
+</span><span class='line'>          &lt;result name="uploadc" &gt;/uploadSuccess.jsp&lt;/result&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      &lt;action name="resetAction" class="LoginAction" method="reset"&gt;
+</span><span class='line'>          &lt;result name="reset"&gt;/resetSuccess.jsp&lt;/result&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      &lt;action name="loadTemperatureData" class="LoadTemperatureData"&gt;
+</span><span class='line'>          &lt;result type="json" /&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      &lt;action name="loadHumidityData" class="LoadHumidityData"&gt;
+</span><span class='line'>          &lt;result type="json" /&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      &lt;action name="loadSunlightData" class="LoadSunlightData"&gt;
+</span><span class='line'>          &lt;result type="json" /&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>      &lt;action name="loadRainDropData" class="LoadRainDropData"&gt;
+</span><span class='line'>          &lt;result type="json" /&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>
+</span><span class='line'>      &lt;action name="registerActionForMgr" class="RegisterActionForMgr"&gt;
+</span><span class='line'>          &lt;result name="saveuser" type="redirect"&gt;/registerActionForMgr!queryUserForPage?page=1
+</span><span class='line'>          &lt;/result&gt;
+</span><span class='line'>          &lt;result name="deleteuser" type="redirect"&gt;/registerActionForMgr!queryUserForPage?page=1
+</span><span class='line'>          &lt;/result&gt;
+</span><span class='line'>          &lt;result name="queryUserForPage"&gt;/showInfo.jsp&lt;/result&gt;
+</span><span class='line'>          &lt;result type="json"&gt;&lt;/result&gt;
+</span><span class='line'>      &lt;/action&gt;
+</span><span class='line'>  &lt;/package&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>struts2中使用包来管理action。包的作用和java中类包是非常类似的，它主要用于管理一组业务功能相关的action。在实际应用中，应该把一组业务功能相关的action放在同一个包下面。
+配置包是必须指定name属性，该name可以随意取名，但是必须唯一，它不对应Java的类包，如果其他类要继承该包，必须使用该属性进行使用。包的namespace属性用于定义包的命名空间，命名空间作为该action路径的一部分，如访问上面的例子中的action的路径为：/upload/upload.action。namespace属性可以不用配置，如果不指定该属性，默认的命名空间为“”（空字符串）。
+通常每个包都必须继承struts-default包，因为struts很多核心的功能都是在这个包中定义的拦截器实现的，如：从请求中把请求参数封装到action、文件上传和数据验证等功能搜是通过拦截器实现的。struts-default包中定义了这些拦截器和result类型。换句话说，当包继承了strtus-default包才能使用struts提供的核心功能。struts-default包是在struts2-core-2.x.x.x.jar文件中的struts-default.xml中定义的。struts-default.xml是struts2的默认配置文件，struts2每次都会自动加载struts-default.xml文件。
+包还可以通过abstract=“true”定义为抽象包，抽象包中不能包含action。
+注意，在配置文件struts.xml中没有提示的解决办法：window->preference->xml catalog中添加struts-2.0.dtd文件，key type为URI，key为<a href="http://struts.apache.org/dtds/struts-2.0.dtd%E3%80%82">http://struts.apache.org/dtds/struts-2.0.dtd%E3%80%82</a></p>
+
+<h3>action配置中的默认值</h3>
+
+<p>1.如果没有为action指定class，默认的class是ActionSupport。
+2.如果没有为action指定method，默认执行action中的execute方法。
+3.如果没有为result指定name属性，默认值为success。</p>
+
+<h3>action中result的各种转发类型</h3>
+
+<p>result配置类似于struts1中的forward，但struts2提供了多种结果类型，常用的类型有dispatcher（默认值）、redirect、redirectAction、plainText。
+result中还可以使用${属性名}表达式来访问action中的属性，表达式中的属性名为action中的属性名</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -653,6 +1238,37 @@ public static void printNum &hellip;">
 <code>2.构建环境</code></p>
 
 <h3>2.Maven的生命周期</h3>
+
+<h4>标准生命周期</h4>
+
+<p>1.清理生命周期 mvn clean (清空target目录)</p>
+
+<p>2.默认生命周期 validate -> destroy</p>
+
+<p>3.站点生命周期(生成文档报告) mvn site</p>
+
+<h4>打包生命周期</h4>
+
+<ol>
+<li>jar (独立子件) package install deploy test compile process</li>
+<li>pom (父项目)</li>
+<li>war (web项目)</li>
+</ol>
+
+
+<h4>通用生命周期</h4>
+
+<ol>
+<li>process Resources 复制资源src/main/resources 到target/classes</li>
+<li>compile  编译 输入输出 src/main/java 到target/classes</li>
+<li>process Test Resources</li>
+<li>Test Compile</li>
+<li>Test surfile 寻找测试类，以test结尾，生成文件到target/surfire-report目录，包含一个运行信息的xml文件，另一个是包含单元测试输出的文本文件</li>
+<li>package</li>
+<li>install 将项目构件安装到本地仓库</li>
+<li>deploy  部署到远程仓库，别的项目可以依赖</li>
+</ol>
+
 
 <h3>3.自定义插件</h3>
 
@@ -1594,740 +2210,6 @@ public static void printNum &hellip;">
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/06/11/jsfixedsidebar/">jQuery实现常用功能</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-06-11T14:34:59+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>2:34 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h4>1.在实际开发过程中，当网页内容往下滚动一定距离的时候，左边的菜单栏通常需要固定。</h4>
-
-<p>原生js：</p>
-
-<pre><code>1.封装原生的js常用方法     2.对sideBar进行固定操作，改变其css
-</code></pre>
-
-<figure class='code'><figcaption><span>封装原生js的常用方法 </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script>
-</span><span class='line'>      var Getid = function(id){ return document.getElementById(id);}
-</span><span class='line'>      var addEvent = function(obj,event,fun){
-</span><span class='line'>          if(obj.addEventListener()){
-</span><span class='line'>              obj.addEventListener(event,fun,false);
-</span><span class='line'>          }else if(obj.attachEvent()){
-</span><span class='line'>              obj.attachEvent("on"+event,fun);
-</span><span class='line'>          }
-</span><span class='line'>      }
-</span><span class='line'>  &lt;/script></span></code></pre></td></tr></table></div></figure>
-
-
-<figure class='code'><figcaption><span>用jQuery改变侧边栏的css </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script>
-</span><span class='line'>      //获取菜单栏的div
-</span><span class='line'>      var lnSider = Getid("left-nav"); 
-</span><span class='line'>      addEvent(window,"scroll",function(){
-</span><span class='line'>      var scrollHeight = document.body.scrollTop;
-</span><span class='line'>      var contentHeight=Getid("changeid").offsetHeight - lnSider.offsetHeight;
-</span><span class='line'>      if(scrollHeight>253 && scrollHeight&lt;contentHeight+253){
-</span><span class='line'>          lnSider.style.position = "absolute";
-</span><span class='line'>          lnSider.style.left = "0px";
-</span><span class='line'>          lnSider.style.top = scrollHeight - 253 +"px";
-</span><span class='line'>      }else if(scrollHeight&lt;=253){
-</span><span class='line'>          lnSider.style.position = "absolute";
-</span><span class='line'>          lnSider.style.left = "0px";
-</span><span class='line'>          lnSider.style.top = "0px";
-</span><span class='line'>      }
-</span><span class='line'>  });
-</span><span class='line'>  &lt;/script></span></code></pre></td></tr></table></div></figure>
-
-
-<p>使用jQuery进行代码优化</p>
-
-<figure class='code'><figcaption><span>用js改变侧边栏的css </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;script>
-</span><span class='line'>      //获取window对象
-</span><span class='line'>      var jWindow = $(window); 
-</span><span class='line'>      jWindow.scroll(function(){
-</span><span class='line'>          var scrollHeight = jWindow.scrollTop();
-</span><span class='line'>          var contentHeight= $("#changeid").Height() - $("#left-nav").Height();
-</span><span class='line'>          if(scrollHeight>253 && scrollHeight&lt;contentHeight+253){
-</span><span class='line'>              $("#left-nav").css({
-</span><span class='line'>                  position:"absolute";
-</span><span class='line'>                  left:"0px";
-</span><span class='line'>                  top:scrollHeight - 253 +"px";
-</span><span class='line'>              });
-</span><span class='line'>          }else if(scrollHeight&lt;=253){
-</span><span class='line'>              $("#left-nav").css({
-</span><span class='line'>                  position:"absolute";
-</span><span class='line'>                  left:"0px";
-</span><span class='line'>                  top:"0px";
-</span><span class='line'>              });
-</span><span class='line'>          }
-</span><span class='line'>      });
-</span><span class='line'>  &lt;/script></span></code></pre></td></tr></table></div></figure>
-
-
-<h4>2.用jQuery实现图片的瀑布流并模拟动态加载 ，实际应用中很常见。</h4>
-
-<p>主要思想就是:先获取每个照片盒子的宽度，计算出屏幕能放几张照片。从第二行的照片开始，放在上一行高度最小的照片下面</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>//实现瀑布流图片定位
-</span><span class='line'>function imgLocation(){
-</span><span class='line'>    var box = $(".box");
-</span><span class='line'>    var boxWidth = box.eq(0).width();
-</span><span class='line'>    var num = Math.floor($(window).width()/boxWidth);
-</span><span class='line'>  //存第一行照片的高度
-</span><span class='line'>    var boxArr=[];
-</span><span class='line'>    box.each(function(index,value){
-</span><span class='line'>        var boxHeight = box.eq(index).height();
-</span><span class='line'>        if(index&lt;num){
-</span><span class='line'>            boxArr[index]= boxHeight;
-</span><span class='line'>        }else{
-</span><span class='line'>          //找到boxArr数组中最小的高度
-</span><span class='line'>            var minboxHeight = Math.min.apply(null,boxArr);
-</span><span class='line'>          //找到boxArr数组中最小的高度的下标索引
-</span><span class='line'>            var minboxIndex = $.inArray(minboxHeight,boxArr);
-</span><span class='line'>          //找到位置后，改变当前照片盒子的CSS样式
-</span><span class='line'>            $(value).css({
-</span><span class='line'>                "position":"absolute",
-</span><span class='line'>                "top":minboxHeight,
-</span><span class='line'>                "left":box.eq(minboxIndex).position().left
-</span><span class='line'>            });
-</span><span class='line'>          //堆叠照片以后，更新数组的值
-</span><span class='line'>            boxArr[minboxIndex]+=box.eq(index).height();
-</span><span class='line'>        }
-</span><span class='line'>    });
-</span><span class='line'>}
-</span><span class='line'>// 是否滚动到最后一张照片的一半的位置
-</span><span class='line'>function scrollside(){
-</span><span class='line'>    var box = $(".box");
-</span><span class='line'>    var lastboxHeight = box.last().get(0).offsetTop+Math.floor(box.last().height()/2);
-</span><span class='line'>    var documentHeight = $(document).width();
-</span><span class='line'>    var scrollHeight = $(window).scrollTop();
-</span><span class='line'>    return (lastboxHeight&lt;scrollHeight+documentHeight)?true:false;
-</span><span class='line'>}
-</span><span class='line'>// 模拟动态加载的过程
-</span><span class='line'>$(document).ready(function(){
-</span><span class='line'>    $(window).on("load",function(){
-</span><span class='line'>        imgLocation();
-</span><span class='line'>      //模拟后台加载出来的数据
-</span><span class='line'>        var dataImg = {"data":[{"src":"1.jpg"},{"src":"2.jpg"},{"src":"3.jpg"},{"src":"4.jpg"},{"src":"5.jpg"}]};
-</span><span class='line'>        window.onscroll = function(){
-</span><span class='line'>            if(scrollside()){
-</span><span class='line'>              if($(".box").length&lt;=125){
-</span><span class='line'>                  $.each(dataImg.data,function(index,value){
-</span><span class='line'>                    var box = $("&lt;div>").addClass("box").appendTo($("#container"));
-</span><span class='line'>                    var content = $("&lt;div>").addClass("content").appendTo(box);
-</span><span class='line'>                    $("&lt;img>").attr("src","./img/"+$(value).attr("src")).appendTo(content);
-</span><span class='line'>                  });
-</span><span class='line'>                  // 图片加入以后实现瀑布流定位
-</span><span class='line'>                  imgLocation();
-</span><span class='line'>              }else{
-</span><span class='line'>                  return false;
-</span><span class='line'>              }
-</span><span class='line'>            }
-</span><span class='line'>        };
-</span><span class='line'>    });
-</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/05/24/Tomcat/">Tomcat 虚拟目录配置</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-05-24T13:10:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:10 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Tomcat 是开发过程中经常用到的容器，它是免费的基于 JAVA 的开源 Web 应用服务器。由于它拥有先进的技术、稳定的性能以及良好的扩展性，深受 JAVA 开发者的喜爱以及得到众多软件开发商的认可，成为目前比较流行的 Web 应用服务器。 今天将学习到的Tomcat 虚拟目录配置进行了整理。</p>
-
-<h4>例如：<a href="http://www.xyz.com/course/1024.html">http://www.xyz.com/course/1024.html</a></h4>
-
-<h5>1.Tomcat的基准目录、根目录 。</h5>
-
-<p>上述URL中www.xyz.com表示：WEB服务器的地址(名称)，后边的‘/’代表站点根目录</p>
-
-<p>Tomcat的默认根目录是：apache-tomcat-8.0.24\webapps\ROOT
-其中webapps是Tomcat的默认基准目录，Tomcat启动时会加载基准目录下的所有web应用.</p>
-
-<p>修改基准目录的方法：</p>
-
-<h5>方法一：通过修改conf文件夹下的server.xml文件的的Host节点在的appbase属性即可。</h5>
-
-<blockquote><p><code>&lt;Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="true"&gt;&lt;/Host&gt;</code></p></blockquote>
-
-<h5>方法二：使用server.xml文件中的<Context>元素（不建议）</h5>
-
-<blockquote><p><code>&lt;Context docBase="E:\myapp" path="" autoDeploy="true"&gt;</code></p></blockquote>
-
-<h5>方法三：在<catalina_home>/conf/Catalina/localhost/下增加ROOT.xml文件（推荐）</h5>
-
-<blockquote><p><code>&lt;Context docBase="E:\myapp" path="" autoDeploy="true"&gt;</code></p></blockquote>
-
-<h5>2.虚拟子目录。</h5>
-
-<p>物理目录：实际存放在主目录(根目录)的子文件夹</p>
-
-<p>虚拟子目录：URL地址中不存在于主目录(根目录)下的子文件夹</p>
-
-<p>上述URL中的course就是一个虚拟子目录。</p>
-
-<p>下面介绍 修改虚拟子目录的方法：</p>
-
-<h5>方法一：通过修改conf文件夹下的server.xml文件的的<Context>元素在的path属性即可,默认是空的。（不建议）</h5>
-
-<blockquote><p><code>&lt;Context docBase="E:\myapp" path="/myweb" autoDeploy="true"&gt;</code></p></blockquote>
-
-<h5>方法二：在<catalina_home>/conf/Catalina/localhost/下增加xml文件,增加<Context>元素这种方法path属性中的值不再起作用，xml文件名就是虚拟子目录的名称</h5>
-
-<p>先在E盘建一个mycourse文件夹并新建个test.html文件，在<catalina_home>/conf/Catalina/localhost/下增加course.xml文件,增加<Context>元素，最后访问localhost:8080/course/test.html即可。</p>
-
-<p>如果有多级子目录，文件名中的‘/’改用‘#’代替,例如myapp#course.xml,最后访问localhost:8080/myapp/course/test.html即可。</p>
-
-<blockquote><p><code>&lt;Context docBase="E:\mycourse" path="" autoDeploy="true"&gt;</code></p></blockquote>
-
-<h5>方法三：在基准目录下直接放文件夹（通俗易懂）</h5>
-
-<h5>方法四：在基准目录下直接放WAR文件</h5>
-
-<p> 由于 有 unpackWARs=&ldquo;true&rdquo; autoDeploy=&ldquo;true&rdquo; 这两个属性。自动解压并且部署</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/05/20/DataBasePool/">Java数据库连接池之 HikariCP</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-05-20T23:10:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>11:10 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>在web项目开发过程中，数据的持久化是个老生常谈的话题，如何高效的与数据库建立连接就是我们需要解决的问题。</p>
-
-<h5>连接池技术的核心思想：连接复用，通过建立一个数据库连接池以及一套连接使用、分配、管理策略，使得该连接池中的连接可以得到高效、安全的复用，避免了数据库连接频繁建立、关闭的开销。</h5>
-
-<h4>连接池的组成部分：连接池的建立、连接池的管理、连接池的关闭。</h4>
-
-<p>自己维护一些数据库连接，需要使用的时候直接使用其中一个连接，用完之后不是关闭而是将他归还，等待其他操作使用。</p>
-
-<p>proxool、DBCP、C3P0最为常见的三种JDBC连接池技术。</p>
-
-<p>proxool是一种Java数据库连接池技术。sourceforge下的一个开源项目,这个项目提供一个健壮、易用的连接池，最为关键的是这个连接池提供监控的功能，方便易用，便于发现连接泄漏的情况。</p>
-
-<p>单例模式（Singleton）简单的说就是类在系统中只能被实例化一次，外界只有唯一一个类实例可以使用。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public class Singleton {  
-</span><span class='line'>    private static class LazyLoadSingleton{  
-</span><span class='line'>        private static final Singleton singleton = new Singleton();  
-</span><span class='line'>    }   
-</span><span class='line'>    private Singleton() {} 
-</span><span class='line'>    public static Singleton getSingleton(){  
-</span><span class='line'>        return LazyLoadSingleton.singleton;  
-</span><span class='line'>    }  
-</span><span class='line'>} </span></code></pre></td></tr></table></div></figure>
-
-
-<p>但是今天在这里介绍一个重量级的数据库连接池HiKariCP,它是数据库连接池的一个后起之秀，号称性能最好，可以完美地PK掉其他连接池。可能你会问 ：什么？为何要使用HiKariCP？不是有C3P0/DBCP这些成熟的数据库连接池吗？</p>
-
-<p>这要先从BoneCP说起：一直用的好好的，为什么又搞出一个BoneCP来？因为，传说中BoneCP在快速这个特点上做到了极致，官方数据是C3P0等的25倍左右。看数据对比图：
-<img src="http://img.blog.csdn.net/20150717155314196?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /></p>
-
-<p>但是……什么？又来一个CP？……什么是Hikari？
-Hikari来自日文，是“光”（阳光的光，不是光秃秃的光）的意思。作者估计是为了借助这个词来暗示这个CP速度飞快。不知作者是不是日本人，不过日本也有很多优秀的码农，听说比特币据说日本人搞出来的。。。</p>
-
-<p>这个产品的口号是“快速、简单、可靠”。实际情况跟这个口号真的匹配吗？又是有图有真相
-<img src="http://img.blog.csdn.net/20150717155421650?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /></p>
-
-<p>这个图，也间接地、再一次地证明了boneCP比c3p0强大很多，当然，跟“光”比起来，又弱了不少啊。</p>
-
-<p>那么，这么好的P是怎么做到的呢？官网详细地说明了HikariCP所做的一些优化，总结如下：
-字节码精简：优化代码，直到编译后的字节码最少，这样，CPU缓存可以加载更多的程序代码；
-优化代理和拦截器：减少代码，例如HikariCP的Statement proxy只有100行代码，只有BoneCP的十分之一；
-自定义数组类型（FastStatementList）代替ArrayList：避免每次get()调用都要进行range check，避免调用remove()时的从头到尾的扫描；
-自定义集合类型（ConcurrentBag）：提高并发读写的效率；
-其他针对BoneCP缺陷的优化，比如对于耗时超过一个CPU时间片的方法调用的研究（但没说具体怎么优化）。
-很多优化的对比都是针对BoneCP的。</p>
-
-<p>几个连接池的代码量对比（代码量越少，一般意味着执行效率越高、发生bug的可能性越低）：</p>
-
-<p><img src="http://img.blog.csdn.net/20150717155444740?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /></p>
-
-<p>第三方关于速度的测试：</p>
-
-<p><img src="http://img.blog.csdn.net/20150717155541525?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /></p>
-
-<p>也许你会说，速度高，如果不稳定也是硬伤啊。于是，关于稳定性的图也来了:
-<img src="http://img.blog.csdn.net/20150717155601214?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /></p>
-
-<p>另外，关于可靠性方面，也是有实验和数据支持的。对于数据库连接中断的情况，通过测试getConnection()，各种CP的不相同处理方法如下：
-（所有CP都配置了跟connectionTimeout类似的参数为5秒钟）
-<strong>HikariCP</strong>：等待5秒钟后，如果连接还是没有恢复，则抛出一个SQLExceptions 异常；后续的getConnection()也是一样处理；</p>
-
-<p><strong>C3P0</strong>：完全没有反应，没有提示，也不会在“CheckoutTimeout”配置的时长超时后有任何通知给调用者；然后等待2分钟后终于醒来了，返回一个error；</p>
-
-<p><strong>Tomcat</strong>：返回一个connection，然后……调用者如果利用这个无效的connection执行SQL语句……结果可想而知；大约55秒之后终于醒来了，这时候的getConnection()终于可以返回一个error，但没有等待参数配置的5秒钟，而是立即返回error；</p>
-
-<p><strong>BoneCP</strong>：跟Tomcat的处理方法一样；也是大约55秒之后才醒来，有了正常的反应，并且终于会等待5秒钟之后返回error了；</p>
-
-<p>可见，HikariCP的处理方式是最合理的。根据这个测试结果，对于各个CP处理数据库中断的情况，评分如下：</p>
-
-<p><img src="http://img.blog.csdn.net/20150717155628899?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image" /></p>
-
-<p>下面来看看HiKariCP的数据源配置，如果之前用的是BoneCP配置的数据源，那么，就简单了，只需要把dataSource换一下，稍微调整一下参数就行了：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;!-- Hikari Datasource --&gt;
-</span><span class='line'> &lt;bean id="dataSourceHikari" class="com.zaxxer.hikari.HikariDataSource"  destroy-method="shutdown"&gt;
-</span><span class='line'>  &lt;!-- &lt;property name="driverClassName" value="${db.driverClass}" /&gt; --&gt; &lt;!-- 无需指定，除非系统无法自动识别 --&gt;
-</span><span class='line'>  &lt;property name="jdbcUrl" value="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8" /&gt;
-</span><span class='line'>  &lt;property name="username" value="${db.username}" /&gt;
-</span><span class='line'>  &lt;property name="password" value="${db.password}" /&gt;
-</span><span class='line'>   &lt;!-- 连接只读数据库时配置为true， 保证安全 --&gt;
-</span><span class='line'>  &lt;property name="readOnly" value="false" /&gt;
-</span><span class='line'>  &lt;!-- 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒 --&gt;
-</span><span class='line'>  &lt;property name="connectionTimeout" value="30000" /&gt;
-</span><span class='line'>  &lt;!-- 一个连接idle状态的最大时长（毫秒），超时则被释放（retired），缺省:10分钟 --&gt;
-</span><span class='line'>  &lt;property name="idleTimeout" value="600000" /&gt;
-</span><span class='line'>  &lt;!-- 一个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟，建议设置比数据库超时时长少30秒，参考MySQL wait_timeout参数（show variables like '%timeout%';） --&gt;
-</span><span class='line'>  &lt;property name="maxLifetime" value="1800000" /&gt;
-</span><span class='line'>  &lt;!-- 连接池中允许的最大连接数。缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count) --&gt;
-</span><span class='line'>  &lt;property name="maximumPoolSize" value="15" /&gt;
-</span><span class='line'> &lt;/bean&gt;</span></code></pre></td></tr></table></div></figure>
-
-
-<p>其中，很多配置都使用缺省值就行了，除了maxLifetime和maximumPoolSize要注意自己计算一下。
-其他的配置（sqlSessionFactory、MyBatis MapperScannerConfigurer、transactionManager等）统统不用变。</p>
-
-<p>其他关于Datasource配置参数的建议：
-Configure your HikariCP idleTimeout and maxLifeTime settings to be one minute less than the wait_timeout of MySQL.
-对于有Java连接池的系统，建议MySQL的wait_timeout使用缺省的8小时（<a href="http://www.rackspace.com/knowledge_center/article/how-to-change-the-mysql-timeout-on-a-server%EF%BC%89%E3%80%82">http://www.rackspace.com/knowledge_center/article/how-to-change-the-mysql-timeout-on-a-server%EF%BC%89%E3%80%82</a></p>
-
-<p>另外：对于web项目，记得要配置：destroy-method=&ldquo;shutdown&rdquo;</p>
-
-<blockquote><p><a href="https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole">https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole</a></p>
-
-<p><a href="http://www.bubuko.com/infodetail-978464.html">http://www.bubuko.com/infodetail-978464.html</a></p>
-
-<p><a href="https://github.com/brettwooldridge/HikariCP/wiki/Bad-Behavior:-Handling-Database-Down">https://github.com/brettwooldridge/HikariCP/wiki/Bad-Behavior:-Handling-Database-Down</a></p></blockquote>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/05/16/XssSQLSecurity/">防止XSS攻击</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-05-16T10:15:30+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:15 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>在开发项目的过程中，网站的安全问题不能被忽视，其中Xss跨脚本攻击很常见。下面就XSS攻击做一下基本介绍，同时给出了我自己的解决办法。</p>
-
-<h5>XSS又称CSS，全称Cross Site Script，跨站脚本攻击，是Web程序中常见的漏洞，XSS属于被动式且用于客户端的攻击方式，所以容易被忽略其危害性。其原理是攻击者向有XSS漏洞的网站中输入(传入)恶意的HTML代码，当其它用户浏览该网站时，这段HTML代码会自动执行，从而达到攻击的目的。如，盗取用户Cookie、破坏页面结构、重定向到其它网站等。</h5>
-
-<p>举个简单的例子：页面名字叫test.jsp：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;html&gt;
-</span><span class='line'>&lt;head&gt;
-</span><span class='line'>&lt;title&gt;XSS测试&lt;/title&gt;
-</span><span class='line'>&lt;/head&gt;
-</span><span class='line'>&lt;body&gt;
-</span><span class='line'>页面内容：&lt;%=request.getParameter("content")%&gt;
-</span><span class='line'>&lt;/body&gt;
-</span><span class='line'>&lt;/html&gt;</span></code></pre></td></tr></table></div></figure>
-
-
-<p>请求下面链接就会出现问题了：
-<code>http://www.domain.com/test.jsp?content=&lt;script&gt;alert(' XSS注入' ); &lt;/script&gt;</code>
-为了防止在请求链接中插入恶意的代码，我采用了以下方法：
-首先自定义一个Filter 取名XssFilter, 在Web.xml中配置如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'> &lt;filter&gt;
-</span><span class='line'>  &lt;filter-name&gt;XssFilter&lt;/filter-name&gt;
-</span><span class='line'>  &lt;filter-class&gt;test.XssFilter&lt;/filter-class&gt;
-</span><span class='line'>&lt;/filter&gt;
-</span><span class='line'>&lt;filter-mapping&gt;
-</span><span class='line'>  &lt;filter-name&gt;XssFilter&lt;/filter-name&gt;
-</span><span class='line'>  &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
-</span><span class='line'>&lt;/filter-mapping&gt;
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>第二步，自定义一个类继承HttpServletRequestWrapper类，并重写父类的方法。
-其中包括getParameter() ， getHeader() ,getParameterValues()
-其中最重要的是自定义一个过滤特殊字符的方法。</p>
-
-<p>具体实现代码如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>import javax.servlet.http.HttpServletRequest;
-</span><span class='line'>import javax.servlet.http.HttpServletRequestWrapper;
-</span><span class='line'>
-</span><span class='line'>public class XssHttpServletRequestWapper extends HttpServletRequestWrapper {
-</span><span class='line'>
-</span><span class='line'>  public XssHttpServletRequestWapper(HttpServletRequest request) {
-</span><span class='line'>      super(request);
-</span><span class='line'>  }
-</span><span class='line'>
-</span><span class='line'>  @Override
-</span><span class='line'>  public String getParameter(String name) {
-</span><span class='line'>      return clearXss(super.getParameter(name));
-</span><span class='line'>  }
-</span><span class='line'>  
-</span><span class='line'>  @Override
-</span><span class='line'>  public String getHeader(String name) {
-</span><span class='line'>      return clearXss(super.getHeader(name));
-</span><span class='line'>  }
-</span><span class='line'>
-</span><span class='line'>  @Override
-</span><span class='line'>  public String[] getParameterValues(String name) {
-</span><span class='line'>      String[] values = super.getParameterValues(name);
-</span><span class='line'>      String[] newValues = new String[values.length];
-</span><span class='line'>      for (int i = 0; i &lt; values.length; i++) {
-</span><span class='line'>          newValues[i] = clearXss(values[i]);
-</span><span class='line'>      }
-</span><span class='line'>      return newValues;
-</span><span class='line'>  }
-</span><span class='line'>  /**
-</span><span class='line'>   *  处理 字符转义 
-</span><span class='line'>   *  &gt; &lt; ( ) '  javascript: 
-</span><span class='line'>   */
-</span><span class='line'>  private String clearXss(String value){
-</span><span class='line'>      if (value==null || "".equals(value)) {
-</span><span class='line'>          return value;
-</span><span class='line'>      }
-</span><span class='line'>      value = value.replaceAll("&lt;", "&lt").replaceAll("&gt;", "&gt");
-</span><span class='line'>      value = value.replaceAll("(", "&#40").replaceAll("\\)", "&#41");
-</span><span class='line'>      value = value.replaceAll("'", "&#39");
-</span><span class='line'>      value = value.replaceAll("eval\\((.*)\\)", "");
-</span><span class='line'>      value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
-</span><span class='line'>      value = value.replaceAll("script", "");
-</span><span class='line'>      return value;
-</span><span class='line'>  }
-</span><span class='line'>}
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>最后一步，在自定义的Filter中引用上述方法，执行过滤操作。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>import java.io.IOException;
-</span><span class='line'>import javax.servlet.Filter;
-</span><span class='line'>import javax.servlet.FilterChain;
-</span><span class='line'>import javax.servlet.FilterConfig;
-</span><span class='line'>import javax.servlet.ServletException;
-</span><span class='line'>import javax.servlet.ServletRequest;
-</span><span class='line'>import javax.servlet.ServletResponse;
-</span><span class='line'>import javax.servlet.http.HttpServletRequest;
-</span><span class='line'>
-</span><span class='line'>public class XssFilter implements Filter {
-</span><span class='line'>  public void doFilter(ServletRequest request, ServletResponse response,
-</span><span class='line'>          FilterChain chain) throws IOException, ServletException {
-</span><span class='line'>      XssHttpServletRequestWapper xssRequest = new XssHttpServletRequestWapper((HttpServletRequest) request);
-</span><span class='line'>        chain.doFilter(xssRequest, response);
-</span><span class='line'>  }
-</span><span class='line'>  public void init(FilterConfig filterConfig) throws ServletException {
-</span><span class='line'>      
-</span><span class='line'>  }
-</span><span class='line'>
-</span><span class='line'>  public void destroy() {
-</span><span class='line'>      
-</span><span class='line'>  }
-</span><span class='line'>}
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以上是我整个解决的思路和方法，比较容易能想到，能防止大部分的Xss攻击，一些具体的要求还得大家在开发过程中去留意和总结。</p>
-
-<blockquote><p><a href="http://www.2cto.com/Article/201312/264747.html">http://www.2cto.com/Article/201312/264747.html</a></p>
-
-<p><a href="http://hc24.iteye.com/blog/1995213">http://hc24.iteye.com/blog/1995213</a></p></blockquote>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -2343,23 +2225,23 @@ Configure your HikariCP idleTimeout and maxLifeTime settings to be one minute le
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/07/23/sendemail/">使用JavaEmail发送邮件</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/16/findkthtotail/">链表中倒数第K个结点</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/15/jacobtowordandexcel/">Jacob对excel,word进行打印等操作</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/12/struts2note/">Struts2学习笔记</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/07/10/print1tomaxofndigit/">打印1到最大的n位数</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/06/23/stackimplementbyarray/">堆栈的实现</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/06/19/mavenlearningpartwo/">Maven学习笔记(二)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/06/19/mavenlearningpartone/">Maven学习笔记(一)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/06/14/fifoandlru/">页面置换算法FIFO和LRU的JAVA实现</a>
       </li>
     
   </ul>

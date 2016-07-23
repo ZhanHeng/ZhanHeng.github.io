@@ -5,11 +5,20 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Maven学习笔记(二) - Ranger</title>
+  <title>链表中倒数第K个结点 - Ranger</title>
   <meta name="author" content="Zhan">
 
   
-  <meta name="description" content="Maven学习笔记续篇 项目对象模型介绍 下面主要从以下几个部分来学习，主要包括：POM介绍、POM语法、项目关系、项目依赖、Maven的生命周期、自定义插件、属性和资源过滤 1.项目依赖 我们都知道pom.xml文件是Maven中的核心配置文件，只有理解了这个pom. &hellip;">
+  <meta name="description" content="题目：输入一个链表，输出链表中倒数第K个结点。
+从1开始计数，尾结点是倒数第一个结点。例如一个链表有6个结点1 -> 2 -> 3 -> 4 -> 5 -> 6那么倒数第3个结点就是值为4的结点。 为了实现遍历一遍就能找到倒数第K个结点，采用快慢指针。
+代码如下： 1
+2
+3
+4
+5
+6
+7
+8 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +27,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://zhanheng.github.io/blog/2016/06/19/mavenlearningpartwo/">
+  <link rel="canonical" href="http://zhanheng.github.io/blog/2016/07/16/findkthtotail/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Ranger" type="application/atom+xml">
@@ -69,7 +78,7 @@
   
   <header>
     
-      <h1 class="entry-title">Maven学习笔记(二)</h1>
+      <h1 class="entry-title">链表中倒数第K个结点</h1>
     
     
       <p class="meta">
@@ -78,66 +87,79 @@
 
 
 
-<time class='entry-date' datetime='2016-06-19T10:27:59+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:27 am</span></time>
+<time class='entry-date' datetime='2016-07-16T20:10:27+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>8:10 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Maven学习笔记续篇</p>
+<div class="entry-content"><p>题目：输入一个链表，输出链表中倒数第K个结点。
+从1开始计数，尾结点是倒数第一个结点。例如一个链表有6个结点1 -> 2 -> 3 -> 4 -> 5 -> 6那么倒数第3个结点就是值为4的结点。</p>
 
-<h2>项目对象模型介绍</h2>
+<p>为了实现遍历一遍就能找到倒数第K个结点，采用快慢指针。
+代码如下：</p>
 
-<p>下面主要从以下几个部分来学习，主要包括：POM介绍、POM语法、项目关系、项目依赖、Maven的生命周期、自定义插件、属性和资源过滤</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>  /**
+</span><span class='line'>   * 思路：快慢指针，快指针往前走k-1步后，慢指针开始走。
+</span><span class='line'>   * @param head 链表的头节点
+</span><span class='line'>   * @param k      倒数第K个节点
+</span><span class='line'>   * @return
+</span><span class='line'>   * 
+</span><span class='line'>   * 注意事项：
+</span><span class='line'>   * 1.head为空指针
+</span><span class='line'>   * 2.链表的总节点数少于k，导致快指针走不了k-1步
+</span><span class='line'>   * 3.k的非法输入，比如0
+</span><span class='line'>   */
+</span><span class='line'>  public static ListNode FindKthToTail(ListNode head, int k){
+</span><span class='line'>      if(head==null || k &lt;=0) return null;
+</span><span class='line'>      ListNode pAhead  = head;
+</span><span class='line'>      ListNode pBehind = null;
+</span><span class='line'>      for (int i = 0; i &lt; k-1; i++) {
+</span><span class='line'>          if(pAhead.next!=null)
+</span><span class='line'>              pAhead = pAhead.next;
+</span><span class='line'>          else
+</span><span class='line'>              return null;
+</span><span class='line'>      }
+</span><span class='line'>      pBehind = head;
+</span><span class='line'>      while (pAhead.next!=null) {
+</span><span class='line'>          pAhead  = pAhead.next;
+</span><span class='line'>          pBehind = pBehind.next;
+</span><span class='line'>      }
+</span><span class='line'>      return pBehind;
+</span><span class='line'>  }
+</span></code></pre></td></tr></table></div></figure>
 
-<h3>1.项目依赖</h3>
-
-<p>我们都知道pom.xml文件是Maven中的核心配置文件，只有理解了这个pom.xml文件才能理解整个项目的架构和依赖信息。</p>
-
-<h4>1.pom包含的内容</h4>
-
-<p><code>1.项目的总体信息</code>
-<code>2.pom关系和依赖关系</code>
-<code>2.构建设置</code>
-<code>2.构建环境</code></p>
-
-<h3>2.Maven的生命周期</h3>
-
-<h4>标准生命周期</h4>
-
-<p>1.清理生命周期 mvn clean (清空target目录)</p>
-
-<p>2.默认生命周期 validate -> destroy</p>
-
-<p>3.站点生命周期(生成文档报告) mvn site</p>
-
-<h4>打包生命周期</h4>
-
-<ol>
-<li>jar (独立子件) package install deploy test compile process</li>
-<li>pom (父项目)</li>
-<li>war (web项目)</li>
-</ol>
-
-
-<h4>通用生命周期</h4>
-
-<ol>
-<li>process Resources 复制资源src/main/resources 到target/classes</li>
-<li>compile  编译 输入输出 src/main/java 到target/classes</li>
-<li>process Test Resources</li>
-<li>Test Compile</li>
-<li>Test surfile 寻找测试类，以test结尾，生成文件到target/surfire-report目录，包含一个运行信息的xml文件，另一个是包含单元测试输出的文本文件</li>
-<li>package</li>
-<li>install 将项目构件安装到本地仓库</li>
-<li>deploy  部署到远程仓库，别的项目可以依赖</li>
-</ol>
-
-
-<h3>3.自定义插件</h3>
-
-<h3>4.属性和资源过滤</h3>
 </div>
 
 
@@ -153,14 +175,8 @@
 
 
 
-<time class='entry-date' datetime='2016-06-19T10:27:59+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:27 am</span></time>
+<time class='entry-date' datetime='2016-07-16T20:10:27+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>8:10 pm</span></time>
       
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/maven/'>maven</a>, <a class='category' href='/blog/categories/note/'>note</a>
-  
-</span>
 
 
     </p>
@@ -195,15 +211,15 @@
  <a href="#" onclick="goTop();return false;" style="position:fixed; right:52px;bottom:47px;"><img src="../../../../../images/totop.gif"  alt="返回顶部"></a>
 <section>
 <h1>QR-Code<abbr title="The word 'QR Code' is a registered trademark of DENSO WAVE INCORPORATED. It applies only for the word 'QR Code', not for image.">&trade;</abbr></h1>
-<a href="http://zhanheng.github.io/blog/2016/06/19/mavenlearningpartwo/" style="position:fixed; right:77px;bottom:40px;"><img src="http://pan.baidu.com/share/qrcode?w=90&h=90&url=http://zhanheng.github.io/blog/2016/06/19/mavenlearningpartwo/" style="padding:0px" alt="post-qrcode" ></a></section>
+<a href="http://zhanheng.github.io/blog/2016/07/16/findkthtotail/" style="position:fixed; right:77px;bottom:40px;"><img src="http://pan.baidu.com/share/qrcode?w=90&h=90&url=http://zhanheng.github.io/blog/2016/07/16/findkthtotail/" style="padding:0px" alt="post-qrcode" ></a></section>
 <script src="../../../../../javascripts/top.js" type="text/javascript"></script>
     
     <p class="meta" style="margin-top:15px">
       
-        <a class="basic-alignment left" href="/blog/2016/06/19/mavenlearningpartone/" title="Previous Post: Maven学习笔记(一)">&laquo; Maven学习笔记(一)</a>
+        <a class="basic-alignment left" href="/blog/2016/07/15/jacobtowordandexcel/" title="Previous Post: jacob对excel,word进行打印等操作">&laquo; jacob对excel,word进行打印等操作</a>
       
       
-        <a class="basic-alignment right" href="/blog/2016/06/23/stackimplementbyarray/" title="Next Post: 堆栈的实现">堆栈的实现 &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2016/07/23/sendemail/" title="Next Post: 使用JavaEmail发送邮件">使用JavaEmail发送邮件 &raquo;</a>
       
     </p>
   </footer>
@@ -212,7 +228,7 @@
   <section>
     <h1>Comments</h1>
     <div id="disqus_thread" aria-live="polite">
-<div class="ds-thread" data-source-thread-id="/blog/2016/06/19/mavenlearningpartwo" data-title="Maven学习笔记(二)"  data-url="http://zhanheng.github.io/blog/2016/06/19/mavenlearningpartwo/" ></div>
+<div class="ds-thread" data-source-thread-id="/blog/2016/07/16/findkthtotail" data-title="链表中倒数第K个结点"  data-url="http://zhanheng.github.io/blog/2016/07/16/findkthtotail/" ></div>
 <!--多说js加载开始，一个页面只需要加载一次 -->
 <script type="text/javascript">
 var duoshuoQuery = {short_name:"jikeblog"};

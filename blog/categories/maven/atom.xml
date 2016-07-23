@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Maven | Ranger]]></title>
   <link href="http://zhanheng.github.io/blog/categories/maven/atom.xml" rel="self"/>
   <link href="http://zhanheng.github.io/"/>
-  <updated>2016-07-11T00:22:33+08:00</updated>
+  <updated>2016-07-23T23:04:09+08:00</updated>
   <id>http://zhanheng.github.io/</id>
   <author>
     <name><![CDATA[Zhan]]></name>
@@ -36,6 +36,37 @@
 <code>2.构建环境</code></p>
 
 <h3>2.Maven的生命周期</h3>
+
+<h4>标准生命周期</h4>
+
+<p>1.清理生命周期 mvn clean (清空target目录)</p>
+
+<p>2.默认生命周期 validate -> destroy</p>
+
+<p>3.站点生命周期(生成文档报告) mvn site</p>
+
+<h4>打包生命周期</h4>
+
+<ol>
+<li>jar (独立子件) package install deploy test compile process</li>
+<li>pom (父项目)</li>
+<li>war (web项目)</li>
+</ol>
+
+
+<h4>通用生命周期</h4>
+
+<ol>
+<li>process Resources 复制资源src/main/resources 到target/classes</li>
+<li>compile  编译 输入输出 src/main/java 到target/classes</li>
+<li>process Test Resources</li>
+<li>Test Compile</li>
+<li>Test surfile 寻找测试类，以test结尾，生成文件到target/surfire-report目录，包含一个运行信息的xml文件，另一个是包含单元测试输出的文本文件</li>
+<li>package</li>
+<li>install 将项目构件安装到本地仓库</li>
+<li>deploy  部署到远程仓库，别的项目可以依赖</li>
+</ol>
+
 
 <h3>3.自定义插件</h3>
 

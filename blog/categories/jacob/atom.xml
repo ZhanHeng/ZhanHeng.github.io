@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Jacob | Ranger]]></title>
+  <link href="http://zhanheng.github.io/blog/categories/jacob/atom.xml" rel="self"/>
+  <link href="http://zhanheng.github.io/"/>
+  <updated>2016-07-23T23:04:09+08:00</updated>
+  <id>http://zhanheng.github.io/</id>
+  <author>
+    <name><![CDATA[Zhan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Jacob对excel,word进行打印等操作]]></title>
+    <link href="http://zhanheng.github.io/blog/2016/07/15/jacobtowordandexcel/"/>
+    <updated>2016-07-15T23:27:58+08:00</updated>
+    <id>http://zhanheng.github.io/blog/2016/07/15/jacobtowordandexcel</id>
+    <content type="html"><![CDATA[<p>java平台下，因为项目有个需求，要求能够对数据进行打印，比如打印学生四年的成绩单。还有其他的一些数据报表，报表的形式主要是excel。后台是ssh框架基于java实现，这里的打印不同于常见的页面手工打印，常见的操作是可以通过JavaScript调用打印机来控制某个div或者table打印。于是乎，开始摸索如何实现该功能。
+这不，关键时刻，jacob出现了。根据官方网站的介绍 jacob即Java COM Bridge充当java和windows平台的桥梁作用，通过com组件的方式。如果大家不了解com组件。可以google一下。通过它，是我们在java中可以很方便的操作office，包括word，excel等。
+     闲话少说，马上开始jacob之旅。首先，当然是从官网上下载我们必要的资源。<a href="http://danadler.com/jacob/">http://danadler.com/jacob/</a></p>
+
+<p>  解压:jacob-1.14.3.zip,将jacob.jar加入classpath，如果是intel平台，将jacob-1.14.3-x86.dll加入系统盘的system32下。比如我的路径是：C:/WINDOWS/system32 如果是AMD平台，则加入：jacob-1.14.3-x64.dll，</p>
+
+<p>参照自带的demo实现了简单的打开excel并打印的功能。代码如下：</p>
+
+<pre><code>/**  
+* 功能:实现打印工作  
+* @param path  
+* @date Oct 29, 2008  
+* @time 11:40:03 AM  
+*/   
+public static void print(String path){   
+ComThread.InitSTA();   
+ActiveXComponent xl = new ActiveXComponent("Excel.Application");   
+try {   
+// System.out.println("version=" + xl.getProperty("Version"));   
+//不打开文档   
+Dispatch.put(xl, "Visible", new Variant(true));   
+Dispatch workbooks = xl.getProperty("Workbooks").toDispatch();   
+//打开文档   
+Dispatch excel=Dispatch.call(workbooks,"Open",path).toDispatch();   
+//开始打印   
+Dispatch.get(excel,"PrintOut");   
+} catch (Exception e) {   
+e.printStackTrace();   
+} finally {   
+//始终释放资源   
+ComThread.Release();   
+}   
+}  
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

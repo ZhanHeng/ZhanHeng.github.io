@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Javaemail | Ranger]]></title>
+  <link href="http://zhanheng.github.io/blog/categories/javaemail/atom.xml" rel="self"/>
+  <link href="http://zhanheng.github.io/"/>
+  <updated>2016-07-23T23:04:09+08:00</updated>
+  <id>http://zhanheng.github.io/</id>
+  <author>
+    <name><![CDATA[Zhan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[使用JavaEmail发送邮件]]></title>
+    <link href="http://zhanheng.github.io/blog/2016/07/23/sendemail/"/>
+    <updated>2016-07-23T13:01:16+08:00</updated>
+    <id>http://zhanheng.github.io/blog/2016/07/23/sendemail</id>
+    <content type="html"><![CDATA[<p>现在很多的网站都提供有用户注册功能， 通常我们注册成功之后就会收到一封来自注册网站的邮件。邮件里面的内容可能包含了我们的注册的用户名和密码以及一个激活账户的超链接等信息。今天我们也来实现一个这样的功能，用户注册成功之后，就将用户的注册信息以Email的形式发送到用户的注册邮箱当中，实现发送邮件功能就得借助于JavaMail了。这个功能可以用到我们的项目中去。</p>
+
+<h4>1.引入相关的jar包</h4>
+
+<p>项目的目录结构如下图所示</p>
+
+<p><img src="http://images.cnitblog.com/blog/289233/201501/122321383394010.png" alt="image" /></p>
+
+<h4>2.注册的jsp页面 和 成功发送邮件后的jsp页面</h4>
+
+<pre><code>&lt;%@ page language="java" import="java.util.*" pageEncoding="utf-8"%&gt;
+&lt;%
+    String path = request.getContextPath();
+    String basePath = request.getScheme() + "://"
+            + request.getServerName() + ":" + request.getServerPort()
+            + path + "/";
+%&gt;
+
+&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;base href="&lt;%=basePath%&gt;"&gt;
+
+&lt;title&gt;&lt;/title&gt;
+&lt;meta http-equiv="pragma" content="no-cache"&gt;
+&lt;meta http-equiv="cache-control" content="no-cache"&gt;
+&lt;meta http-equiv="expires" content="0"&gt;
+&lt;meta http-equiv="keywords" content="keyword1,keyword2,keyword3"&gt;
+&lt;meta http-equiv="description" content="This is my page"&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+    &lt;center&gt;
+        &lt;form  method="post" action="RegisterServlet"&gt;
+            &lt;table&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;&lt;div align="" right&gt;User Name&lt;/div&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;&lt;input type="text" name="username"&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;&lt;div align="right"&gt;Password:&lt;/div&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;&lt;input type="password" name="password"&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+                    &lt;tr&gt;
+                    &lt;td&gt;&lt;div align="right"&gt;E-mail:&lt;/div&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;&lt;input type="text" name="email"&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;&lt;input type="submit"  value="submit"&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;&lt;input type="reset" value="reset"&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+            &lt;/table&gt;
+        &lt;/form&gt;
+    &lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<pre><code>&lt;%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%&gt;
+&lt;%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%&gt;
+&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;%
+    response.setHeader("Pragma", "No-cache");
+    response.setHeader("Cache-Control", "no-cache");
+    response.setHeader("Cache-Control", "no-store");
+    response.setDateHeader("Expires", 0);
+    %&gt; 
+    &lt;title&gt;&lt;/title&gt;
+    &lt;meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"&gt;
+    &lt;link rel="stylesheet" type="text/css" href="css/"/&gt;
+    &lt;script type="text/javascript"&gt;
+
+    &lt;/script&gt;
+    &lt;style type="text/css"&gt;
+
+    &lt;/style&gt;
+  &lt;/head&gt;
+
+
+
+  &lt;body&gt;
+    ${message}
+
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>
